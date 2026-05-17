@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Search & Player</title>
+
+<style>
+body{
+  margin:0;
+  background:#0b0b0b;
+  font-family:Arial, Helvetica, sans-serif;
+  color:#fff;
+}
+button{cursor:pointer}
+
+/* ===== HEADER ===== */
+.header{
+  max-width:720px;
+  margin:15px auto;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  background:linear-gradient(135deg,#111,#1f1f1f);
+}
+.logo{  text-align:center;
+  padding:15px;
+
+  font-size:26px;
+  font-weight:900;
+  color:#9aff00;
+}
+.logo span{color:#00bfff}
+
+/* ===== SEARCH ===== */
+.search-box{
+  max-width:720px;
+  margin:auto;
+  background:#111;
+  padding:15px;
+  border-radius:12px;
+}
+.search-row{
+  display:flex;
+  gap:8px;
+}
+.search-row input{
+  flex:1;
+  padding:9px;
+  border:none;
+  border-radius:8px;
+  outline:none;
+}
+.search-btn{
+  padding:7px 14px;
+  background: #222;/*#e74c3c;*/
+  border:1px solid yellow;
+  border-radius:8px;
+  color:#fff;
+  font-weight:bold;
+}
+.search-btn:hover {
+  background: #111;    /* হালকা ডার্ক ব্লু */
+  transform: translateY(-1px); /* হালকা লিফট ইফেক্ট */
+}
+.clear-btn{
+  padding:9px 14px;
+  background:#555;
+  border:none;
+  border-radius:8px;
+  color:#fff;
+}
+.clear-btn:hover {
+  background: #444;    /* হালকা ডার্ক ব্লু */
+  transform: translateY(-1px); /* হালকা লিফট ইফেক্ট */
+}
+/* ===== SUGGEST ===== */
+.suggest-box{
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.suggest-box button{
+  flex:1 1 45%;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  color:#fff;
+  font-weight:bold;
+}
+
+/* ===== MOVIE CARD ===== */
+.movie-card{
+  display:flex;
+  gap:12px;
+  background:#1a1a1a;
+  padding:12px;
+  border-radius:10px;
+  margin-top:0;
+
+  /* ⭐ এই দুই লাইন মূল fix */
+  width: calc(50% - 6px);   /* এক লাইনে ২টা */
+  box-sizing: border-box;
+}
+
+.movie-card img{
+  width:90px;
+  border-radius:6px;
+}
+.play-btn{
+  margin-top:6px;
+  padding:7px 14px;
+  background:#2ecc71;
+  border:none;
+  border-radius:6px;
+  font-weight:bold;
+  
+}
+
+/* ===== PLAYER ===== */
+#playerArea{
+  max-width:720px;
+  margin:15px auto;
+  background:#111;
+  padding:15px;
+  border-radius:12px;
+  display:block; /* ✅ not সবসময় দেখা যাবে display:none; onle show if play*/
+ position:relative; /* ✅ NEW ADD*/
+
+}
+/* Server Buttons */
+.server-btn {
+  padding: 7px;
+  height:35px;
+  background: #3498db;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 11px;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.server-btn:hover {
+  background: #1d6fa5;    /* হালকা ডার্ক ব্লু */
+  transform: translateY(-2px); /* হালকা লিফট ইফেক্ট */
+}
+
+/* Active server */
+.server-btn.active {
+  background: #2ecc71;       /* সবুজ */
+  box-shadow: 0 0 0 2px #1abc9c inset;
+  transform: translateY(-1px);
+}
+
+
+/* ===== LOAD MORE ===== */
+.load-more{
+  margin:15px auto;
+  display:block;
+  padding:10px 5px;
+  background:#9b59b6;
+  border:none;
+  border-radius:8px;
+  color:#fff;
+  font-weight:bold;
+  
+}
+
+/* ===== FOOTER ===== */
+footer{
+  margin-top:20px;
+  padding:12px;
+  background:#0e0e0e;
+  font-size:12px;
+  text-align:center;
+  color:#aaa;
+}
+  
+  #result{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 600px){
+  .movie-card{
+    width: 100%;   /* একদম আগের মতো mobile view */
+  }
+  .header{
+  max-width:100%;
+  margin:15px auto;
+}
+  
+  
+}
+
+ #movieName{
+  background:#fff;
+}
+  
+.main-btn {
+  background: #333;    /* হালকা ডার্ক ব্লু */
+    cursor: pointer;
+  transition: all 0.2s ease;
+}
+ .main-btn:hover {
+  background: #222;    /* হালকা ডার্ক ব্লু */
+  transform: translateY(-1px); /* হালকা লিফট ইফেক্ট */
+}
+ .main-btn.active {
+  background: #27ae60;   /* হাইলাইট সবুজ রঙ */
+  color: #333;
+  font-weight: bold;
+}
+  
+  
+/* সব select এর জন্য সাধারণ স্টাইল */
+.search-row select {
+  padding:7px 0px;
+  background-color: #1e1e1e;  /* ডার্ক ব্যাকগ্রাউন্ড */
+  color: #999;                 /* সাদা টেক্সট */
+  border: 0px solid #444;      /* হালকা বর্ডার */
+  border-radius: 6px;          /* গোল কোণা */
+  /*   appearance: none;  ব্রাউজারের ডিফল্ট arrow hide
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: all 0.2s ease; */
+}
+
+/* Hover / Focus effect */
+.search-row select:hover,
+.search-row select:focus {
+  background-color: #1a1a1a;  /* হালকা ডার্ক ব্যাকগ্রাউন্ড */
+  transform: translateY(-1px); /* হালকা লিফট ইফেক্ট */
+  color: #fff;
+}
+
+/* TV controls overlay */
+#tvControls {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  gap: 3px;
+  opacity: 0;                 /* default hidden */
+  pointer-events: none;       /* hidden থাকলে click block */
+  transition: opacity 0.3s ease;
+  z-index: 20;
+}
+
+/* show হলে click enable */
+#tvControls.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ছোট select */
+#tvControls select {
+  padding: 6px 8px;
+  font-size: 12px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+  
+/* Next-Prev Container Style */
+.nav-container {
+  display: flex;
+  justify-content: flex-end; /* এটি বাটনগুলোকে ডান দিকে নিয়ে যাবে */
+/*justify-content: center; এটি বাটনগুলোকে মাঝখানে আনবে */
+/* Next-Prev Container Style */
+  align-items: center;
+  background: transparent;
+  padding: 0px;
+  gap: 0px 8px; /* বাটন দুটির মাঝে গ্যাপ তৈরি করবে */
+  width: 100%; /* কন্টেইনার ফুল উইডথ নিশ্চিত করবে */
+  box-sizing: border-box;
+}
+
+.nav-btn {
+  flex: none !important; /* এটি নিশ্চিত করবে যে বাটন পুরো জায়গা দখল করবে না */
+/* flex: 1; <--- এই লাইনটি অবশ্যই ডিলিট বা কমেন্ট আউট করে দিন */
+  padding: 5px;
+  background: #222; /* আপনি চাইলে এখানে অন্য কালার যেমন #1a1a1a দিতে পারেন */
+  border: 0px solid #444;
+  border-radius: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+   margin: 0;
+}
+
+.nav-btn:hover {
+  background: #333; /* হোভার করলে হালকা কালার চেঞ্জ হবে */
+}
+
+
+</style>
+</head>
+
+<body>
+  <div class="logo">🎬 Cine<span>Stream</span></div>
+<div class="header">
+  
+
+  <div style="font-size:12px;color:#aaa;letter-spacing:2px;">
+    SEARCH • PLAY • ENJOY
+  </div>
+</div>
+
+<div class="search-box">
+  <div class="search-row">
+    <input id="movieName" placeholder="Movie/Seris name লিখুন">
+    <button class="search-btn" onclick="searchMovie()">🔍 Search</button>
+    <button class="clear-btn" onclick="clearSearch()">❌</button>
+  </div>
+
+  <!-- Suggestion Buttons -->
+  <div class="suggest-box">
+    <button class="main-btn" onclick="fetchNewHindiMovies()">🇮🇳 Hindi New</button>
+    <button class="main-btn" onclick="fetchLatestHindi()">🎬 Hindi 2026 upcoming</button>
+    <button class="main-btn" onclick="fetchHindiSeries()">📺 Hindi Series</button>
+    <button class="main-btn" onclick="fetchHindiMovies()">🇮🇳 Hindi Movies</button>
+    <button class="main-btn" onclick="fetchToday()">🎬 Today Released</button>
+    <button class="main-btn" onclick="fetchAllNewMovies()">🌍 All New Movies</button>
+    <button class="main-btn" onclick="fetchAllSeries()">📺 All TV Series</button>
+    <button class="main-btn" onclick="fetchCategory('popular')">📂 All Movies</button>
+    <button class="main-btn" onclick="fetchCategory('upcoming')">📅 Upcoming</button>
+    <button class="main-btn" onclick="fetchCategory('top_rated')">⭐ Top Rated</button>
+  </div>
+<!-- ===== FILTER SYSTEM ===== -->
+<div class="search-box" style="margin-top:5px">
+  <div class="search-row" style="flex-wrap:wrap;border:2px solid #222;  padding:10px;align:center;">
+
+    <!-- Movie / TV -->
+    <select id="type">
+      <option value="movie">🎬 Movie</option>
+      <option value="tv">📺 Series</option>
+    </select>
+
+    <!-- Year -->
+    <select id="year">
+      <option value="">📅 All Year</option>
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+    </select>
+    
+<!-- Month -->
+<select id="month">
+  <option value="">📅 Full Year</option>
+  <option value="01">January</option>
+  <option value="02">February</option>
+  <option value="03">March</option>
+  <option value="04">April</option>
+  <option value="05">May</option>
+  <option value="06">June</option>
+  <option value="07">July</option>
+  <option value="08">August</option>
+  <option value="09">September</option>
+  <option value="10">October</option>
+  <option value="11">November</option>
+  <option value="12">December</option>
+</select>
+    
+    <!-- Language -->
+    <select id="language">
+      <option value="">🌍 All Language</option>
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="bn">Bangla</option>
+      <option value="ta">Tamil</option>
+      <option value="te">Telugu</option>
+      <option value="ml">Malayalam</option>
+      <option value="zh">Chinese</option>
+      <option value="ko">Korean</option>
+      <option value="tr">Turkish</option>
+    </select>
+
+    <!-- Genre -->
+    <select id="genre">
+      <option value="">🎭 All Genre</option>
+      <option value="28">Action</option>
+      <option value="35">Comedy</option>
+      <option value="18">Drama</option>
+      <option value="27">Horror</option>
+      <option value="878">Sci-Fi</option>
+      <option value="10749">Romance</option>
+      <option value="53">Thriller</option>
+    </select>
+
+    <button class="search-btn" onclick="filterSearch()"style="  border:2px;    background:#e74c3c;"  >Filter / Enter</button>
+  </div>
+</div>
+
+<div id="result"></div>
+<div style="text-align:center;margin:15px 0;">
+  <button id="prevBtn" class="load-more" style="display:none" onclick="loadPrev()"> ⏮ Back </button>
+     <span id="pageText" style="margin:10px;color:#aaa;font-size:14px;display:none;"> Page 1</span>
+  <button id="loadMoreBtn" class="load-more" style="display:none" onclick="loadMore()">⏭ Load More</button>
+</div>
+</div>
+
+  
+<div id="playerArea">
+  
+<div id="tvControls"style="display: none;">
+  <select id="seasonSelect" onchange="fetchEpisodes()" style="flex:1; padding:8px; background:#222; color:#fff; border:1px solid #444; border-radius:5px;"></select>
+  <select id="episodeSelect" onchange="changeEpisode()" style="flex:1; padding:8px; background:#222; color:#fff; border:1px solid #444; border-radius:5px;"></select>
+</div>
+  
+  <iframe id="player" style="width:100%;height:280px; background:#000; border:0;border-radius:8px;" allowfullscreen  scrolling="no"></iframe>
+
+  
+<div id="episodeNav" style="display:none; margin-top:0px;">
+  <div class="nav-container">
+    <button class="nav-btn" id="prevEpBtn" onclick="prevEpisode()">
+      ⏮ Prev
+    </button>
+    <div class="divider"></div>
+    <button class="nav-btn" id="nextEpBtn" onclick="nextEpisode()">
+      Next ⏭
+    </button>
+  </div>
+</div>
+  
+  
+<div id="servers"
+    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+    gap:6px;margin-top:10px;">
+</div>
+  
+<div style="display:flex;gap:6px;margin-top:16px;">
+    <input id="fullLink" readonly style="flex:1;padding:7px;border:none;border-radius:5px;background:#999;">
+    <button onclick="copyLink()" style="background:#999;border:none;border-radius:5px;color:#333;"> <b>COPY</b></button>
+</div>
+  
+</div>
+
+<footer>
+⚠️ Disclaimer: এই ওয়েবসাইটটি শুধুমাত্র <b>Learning & Educational Purpose</b> এর জন্য।
+</footer>
+
+<script>
+  
+  let currentVideoId = null;
+let currentIsTV = false;
+let activeServerIndex = 0;
+
+
+/* =====================================================
+   TMDB API KEY
+===================================================== */
+const API_KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
+
+/* ===== Pagination & Mode ===== */
+let currentPage = 1;
+let currentMode = ""; // search | popular | upcoming | top_rated | today
+let currentQuery = "";
+
+/* ===== Video Servers ===== */
+const servers = [
+  // --- মুভি ট্রেইলার সার্ভার ---
+ { name: "vidnest movie hindi", url: "https://vidnest.fun/movie/ID?server=delta" }, 
+  
+ { name: "vidsrc.wtf hindi", url: "https://vidsrc.wtf/api/2/movie/?id=ID" },  
+ { name: "vidsrc.wtf multi", url: "https://vidsrc.wtf/api/3/movie/?id=ID" },  
+ { name: "Godriveplayer", url: "https://godriveplayer.com/player.php?imdb=ID" },   
+{ name: "AutoEmbed", url: "https://player.autoembed.cc/embed/movie/ID" },
+{ name: "vidsrc.icu", url: "https://vidsrc.icu/embed/movie/ID" },
+{ name: "2Embed", url: "https://www.2embed.cc/embed/ID" },
+{ name: "VidSrc.Me", url: "https://vidsrc.me/embed/movie?tmdb=ID" },
+{ name: "moviesapi.club", url: "https://moviesapi.club/movie/ID" },
+{ name: "(5 player) multiembed", url: "https://multiembed.mov/?video_id=ID&tmdb=1" },
+{ name: "VidSrc.To", url: "https://vidsrc.to/embed/movie/ID" },
+{ name: "VidSrc.xyz", url: "https://vidsrc.xyz/embed/movie/ID" },
+{ name: "VidLink PRO", url: "https://vidlink.pro/movie/ID" },
+{name:"smashy.stream",url:"https://player.smashy.stream/movie/ID"},
+
+{ name: "vidsrc.vip", url: "https://vidsrc.vip/embed/movie/ID" },
+
+{ name: "cinetaro (Hindi)", url: "https://api.cinetaro.buzz/movie/ID/hindi" },
+{ name: "videasy ", url: "https://player.videasy.net/movie/ID" },
+  
+ { name: "vidfast server=hindi", url: "https://vidfast.net/movie/ID?server=Bollywood&autoPlay=true" }, 
+ { name: "autoembed MOVIES", url: "https://autoembed.co/movie/tmdb/ID" }, 
+
+  
+];
+
+/* ===== ENTER KEY SEARCH FIX ===== */
+movieName.addEventListener("keydown",e=>{
+  if(e.key==="Enter") searchMovie();
+});
+
+/* =====================================================
+   SEARCH MOVIE (100% WORKING)
+===================================================== */
+function searchMovie(){
+  const q = movieName.value.trim();
+  if(!q) return;
+
+  currentPage = 1;
+  currentMode = "search";
+  currentQuery = q;
+  result.innerHTML = "";
+
+  fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(q)}&page=${currentPage}`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.results.length === 0){
+        result.innerHTML = "<p style='text-align:center'>😢 কোন রেজাল্ট পাওয়া যায়নি</p>";
+        return;
+      }
+
+      d.results.forEach(item=>{
+        // শুধু movie এবং tv দেখাবে (person বাদ)
+        if(item.media_type === "movie" || item.media_type === "tv"){
+          if(item.media_type === "tv"){
+            item.title = item.name;
+            item.release_date = item.first_air_date;
+          }
+          loadMovieDetails(item);
+        }
+      });
+
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+
+
+/* =====================================================
+   TODAY RELEASED MOVIES
+===================================================== */
+function fetchToday(){
+  const today = new Date().toISOString().split("T")[0];
+
+  currentPage = 1;
+  currentMode = "today";
+  result.innerHTML = "";
+
+  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&primary_release_date.gte=${today}&primary_release_date.lte=${today}&page=${currentPage}`)
+    .then(r=>r.json())
+    .then(d=>{
+      d.results.forEach(m=>loadMovieDetails(m));
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+
+/* =====================================================
+   CATEGORY MOVIES
+===================================================== */
+function fetchCategory(type){
+  currentPage = 1;
+  currentMode = type;
+  result.innerHTML = "";
+
+  fetch(`https://api.themoviedb.org/3/movie/${type}?api_key=${API_KEY}&page=${currentPage}`)
+    .then(r=>r.json())
+    .then(d=>{
+      d.results.forEach(m=>loadMovieDetails(m));
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+
+/* =====================================================
+   LOAD MORE
+===================================================== */
+  const today = new Date().toISOString().split("T")[0];
+
+  
+function loadMore(){
+  currentPage++;
+
+  let url = "";
+
+  if(currentMode==="search"){
+  url = `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${currentPage}`;
+}
+
+  else if(currentMode==="today"){
+    const today = new Date().toISOString().split("T")[0];
+    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&primary_release_date.gte=${today}&primary_release_date.lte=${today}&page=${currentPage}`;
+  }
+    else if(currentMode === "hindi_new") {
+    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&primary_release_date.lte=${today}&sort_by=primary_release_date.desc&page=${currentPage}`;
+  }
+  else if (currentMode === "hindi") {
+    // হিন্দি মুভির পরের পেজ লোড করার জন্য
+    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&sort_by=popularity.desc&page=${currentPage}`;
+  }
+  else if(currentMode === "hindi_latest") {
+    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&primary_release_year=2026&sort_by=primary_release_date.desc&page=${currentPage}`;
+  }
+  else if(currentMode === "hindi_series") {
+    url = `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&with_original_language=hi&sort_by=first_air_date.desc&page=${currentPage}`;
+  }
+// loadMore ফাংশনের ভেতরে switch বা if-else এ এগুলো যোগ করুন
+else if(currentMode === "all_new") {
+    const today = new Date().toISOString().split("T")[0];
+    url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&primary_release_date.lte=${today}&sort_by=primary_release_date.desc&page=${currentPage}`;
+}
+else if(currentMode === "all_series") {
+    url = `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&page=${currentPage}`;
+}
+else if(currentMode === "filter"){
+  const type = document.getElementById("type").value;
+  const year = document.getElementById("year").value;
+  const month = document.getElementById("month").value;
+  const lang = document.getElementById("language").value;
+  const genre = document.getElementById("genre").value;
+
+  url = `https://api.themoviedb.org/3/discover/${type}?api_key=${API_KEY}&page=${currentPage}`;
+
+  if(month){
+    const start = `${year}-${month}-01`;
+    const end = `${year}-${month}-31`;
+
+    if(type==="movie"){
+      url += `&primary_release_date.gte=${start}&primary_release_date.lte=${end}`;
+    }else{
+      url += `&first_air_date.gte=${start}&first_air_date.lte=${end}`;
+    }
+  }else{
+    if(type==="movie") url += `&primary_release_year=${year}`;
+    else url += `&first_air_date_year=${year}`;
+  }
+
+  if(lang) url += `&with_original_language=${lang}`;
+  if(genre) url += `&with_genres=${genre}`;
+}
+
+  else{
+    url = `https://api.themoviedb.org/3/movie/${currentMode}?api_key=${API_KEY}&page=${currentPage}`;
+  }
+
+  // … অন্যান্য mode এর জন্যও রাখো যেমন আগের কোডে আছে
+
+  fetch(url)
+    .then(r => r.json())
+    .then(d => {
+      // ✅ পুরানো পোস্ট মুছে ফেলা
+      result.innerHTML = "";
+
+      // ✅ নতুন পোস্ট লোড করা
+      d.results.forEach(m => loadMovieDetails(m));
+
+      // ✅ Load More বাটন হাইড/শো করা
+     if (d.page >= d.total_pages) {
+  loadMoreBtn.style.display = "none";
+       prevBtn.style.display = "none";
+  pageText.style.display = "none";   // ✅ page text hide
+} else {
+  loadMoreBtn.style.display = "inline-block";
+  prevBtn.style.display = "inline-block";
+  pageText.style.display = "inline-block"; // ✅ page text show
+}
+    
+        // ✅ শুধু text change হবে
+      pageText.innerText = "Page " + currentPage + "";
+
+      // ✅ // 4️⃣ স্ক্রল আপ করা
+      window.scrollTo({
+        top: result.offsetTop - 20,  // result div এর উপরে স্ক্রল
+        behavior: 'smooth' });
+    });
+}
+/* =====================================================
+    BACK (PREVIOUS) BUTTON FIX
+===================================================== */
+function loadPrev() {
+  if (currentPage > 1) {
+    currentPage -= 2; // loadMore() ফাংশন নিজে থেকে ১ যোগ করে, তাই আগের পেজে যেতে ২ কমাতে হবে
+    loadMore(); 
+  }
+}
+  
+  
+
+/* =====================================================
+    CLEAR SEARCH 
+===================================================== */
+function clearSearch() {
+  movieName.value = "";
+  result.innerHTML = "";
+  loadMoreBtn.style.display = "none";
+  prevBtn.style.display = "none";
+  pageText.style.display = "none";
+}
+
+/* =====================================================
+   MOVIE DETAILS
+===================================================== */
+function loadMovieDetails(movie, type = "movie") {
+  // যদি মুভির টাইটেল না থাকে (তার মানে এটি সিরিজ), তবে 'tv' ক্যাটাগরিতে সার্চ করবে
+  const finalType = movie.name ? "tv" : "movie"; 
+  
+  fetch(`https://api.themoviedb.org/3/${finalType}/${movie.id}?api_key=${API_KEY}`)
+    .then(r => r.json())
+    .then(info => renderMovie(movie, info));
+}
+
+/* =====================================================
+   RENDER MOVIE
+===================================================== */
+function renderMovie(movie,info){
+  // ===== extra movie details =====
+const genres = info.genres && info.genres.length
+  ? info.genres.map(g => g.name).join(", ")
+  : "N/A";
+
+const language = info.original_language
+  ? info.original_language.toUpperCase()
+  : "N/A";
+
+const runtime = info.runtime
+  ? info.runtime + " min"
+  : "N/A";
+
+const rating = info.vote_average
+  ? info.vote_average.toFixed(1)
+  : "N/A";
+
+// ... আপনার আগের সব কোড ঠিক থাকবে ...
+  
+  // চেক করা হচ্ছে এটা মুভি না সিরিজ
+  const isTV = info.name ? true : false;
+  const displayTitle = info.name || info.title;
+
+const poster = movie.poster_path
+  ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+  : "https://placehold.co/300x450?text=NO+IMAGE";
+
+  
+  result.innerHTML += `
+  <div class="movie-card">
+    ${poster ? `<img src="${poster}">` : ""}
+    <div>
+      <b style="color:#ffcc00">${displayTitle}</b><br>
+      🆔 ${movie.id}<br>
+      📅 ${movie.release_date || movie.first_air_date || "N/A"}<br>
+      🎭 ${info.genres ? info.genres.map(g => g.name).join(", ") : "N/A"}<br>
+      🌐 ${info.original_language?.toUpperCase() || "N/A"}<br>
+      ⭐ ${info.vote_average?.toFixed(1) || "N/A"}<br>
+      <button class="play-btn" onclick="playMovie(${movie.id}, ${isTV})">▶ Play</button>
+    </div>
+  </div>`;
+}
+
+/* =====================================================
+   PLAY MOVIE
+===================================================== */
+
+function playMovie(id, isTV){
+  currentVideoId = id;
+  currentIsTV = isTV;
+  activeServerIndex = 0;
+
+  // ভিডিও দেখানো
+  playerArea.style.display = "block";
+
+  // প্রথম সার্ভার লোড
+  loadServer(0, id, isTV);
+
+  // প্রথম সার্ভার active করা
+  const allButtons = document.querySelectorAll(".server-btn");
+  allButtons.forEach(btn => btn.classList.remove("active"));
+  if(allButtons[0]) allButtons[0].classList.add("active");
+
+  // এখানে scroll হবে, শুধু play করলে
+  playerArea.scrollIntoView({ behavior: "smooth" });
+}
+
+
+
+/* =====================================================
+   LOAD SERVER
+===================================================== */
+
+function loadServer(i, id, isTV) {
+  let url = servers[i].url.replace("ID", id);
+
+  if (isTV) {
+    if (
+      url.includes("vidsrc") ||
+      url.includes("embed") ||
+      url.includes("gdriveplayer")
+    ) {
+      url = url
+        .replace("/movie/", "/tv/")
+        .replace("movie?tmdb=", "tv?tmdb=");
+    }
+  }
+
+  player.src = url;
+  fullLink.value = url;
+}
+
+/* =====================================================
+   COPY LINK
+===================================================== */
+function copyLink(){
+  fullLink.select();
+  document.execCommand("copy");
+}
+  
+  
+  /* =====================================================
+   HINDI MOVIES FETCH (ONLY HINDI)
+===================================================== */
+function fetchHindiMovies() {
+  currentPage = 1;
+  currentMode = "hindi"; // মোড সেট করা হলো যাতে Load More কাজ করে
+  result.innerHTML = "";
+
+  // TMDB API-তে with_original_language=hi দিলে শুধু হিন্দি মুভি আসবে
+  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&sort_by=popularity.desc&page=${currentPage}`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.results.length === 0) {
+          result.innerHTML = "<p style='text-align:center;'>কোন হিন্দি মুভি পাওয়া যায়নি!</p>";
+      }
+      d.results.forEach(m => loadMovieDetails(m));
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+  
+  /* =====================================================
+   LATEST HINDI MOVIES (2025-2026)
+===================================================== */
+function fetchLatestHindi() {
+  currentPage = 1;
+  currentMode = "hindi_latest"; 
+  result.innerHTML = "";
+
+  // primary_release_year=2026 এবং রিলিজ ডেট অনুযায়ী সর্ট করা হয়েছে
+  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&primary_release_year=2026&sort_by=primary_release_date.desc&page=${currentPage}`)
+    .then(r => r.json())
+    .then(d => {
+      d.results.forEach(m => loadMovieDetails(m));
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+
+/* =====================================================
+   HINDI WEB SERIES (LATEST)
+===================================================== */
+function fetchHindiSeries() {
+  currentPage = 1;
+  currentMode = "hindi_series";
+  result.innerHTML = "";
+
+  // মুভির বদলে 'tv' (Web Series) ডিসকভার করা হচ্ছে
+  fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&with_original_language=hi&sort_by=first_air_date.desc&page=${currentPage}`)
+    .then(r => r.json())
+    .then(d => {
+      // সিরিজের জন্য আলাদা রেন্ডার ফাংশন দরকার হতে পারে কারণ সিরিজ আইডি মুভি আইডির থেকে আলাদা
+      d.results.forEach(s => {
+          // সিরিজের টাইটেল 'name' ফিল্ডে থাকে, মুভির মতো 'title' এ নয়
+          s.title = s.name; 
+          s.release_date = s.first_air_date;
+          loadMovieDetails(s);
+      });
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+  
+  /* =====================================================
+   HINDI NEW RELEASES (NOW PLAYING)
+===================================================== */
+function fetchNewHindiMovies() {
+  currentPage = 1;
+  currentMode = "hindi_new"; 
+  result.innerHTML = "";
+
+  // lte (less than or equal) এ আজকের তারিখ ব্যবহার করা হয়েছে
+  const today = new Date().toISOString().split("T")[0];
+
+  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&primary_release_date.lte=${today}&sort_by=primary_release_date.desc&page=${currentPage}`)
+    .then(r => r.json())
+    .then(d => {
+      d.results.forEach(m => loadMovieDetails(m));
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+  
+  /* =====================================================
+   ALL LANGUAGES NEW RELEASES
+===================================================== */
+function fetchAllNewMovies() {
+  currentPage = 1;
+  currentMode = "all_new"; 
+  result.innerHTML = "";
+  const today = new Date().toISOString().split("T")[0];
+
+  // এখানে with_original_language দেওয়া হয়নি, তাই সব ভাষার মুভি আসবে
+  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&primary_release_date.lte=${today}&sort_by=primary_release_date.desc&page=${currentPage}`)
+    .then(r => r.json())
+    .then(d => {
+      d.results.forEach(m => loadMovieDetails(m, "movie"));
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+
+/* =====================================================
+   ALL TV SERIES (GLOBAL)
+===================================================== */
+function fetchAllSeries() {
+  currentPage = 1;
+  currentMode = "all_series";
+  result.innerHTML = "";
+
+  fetch(`https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&page=${currentPage}`)
+    .then(r => r.json())
+    .then(d => {
+      d.results.forEach(s => {
+          s.title = s.name; 
+          s.release_date = s.first_air_date;
+          loadMovieDetails(s, "tv");
+      });
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+  
+/* =====================================================
+   Filtar search
+===================================================== */
+function filterSearch(){
+  const type = document.getElementById("type").value; // movie / tv
+  const year = document.getElementById("year").value;
+  const month = document.getElementById("month").value;
+  const lang = document.getElementById("language").value;
+  const genre = document.getElementById("genre").value;
+
+  if(!year){
+    alert("Please select a Year");
+    return;
+  }
+
+  currentPage = 1;
+  currentMode = "filter";
+  result.innerHTML = "";
+
+  let url = `https://api.themoviedb.org/3/discover/${type}?api_key=${API_KEY}&page=${currentPage}`;
+
+  // ===== DATE FILTER =====
+  if(month){
+    const start = `${year}-${month}-01`;
+    const end = `${year}-${month}-31`;
+
+    if(type==="movie"){
+      url += `&primary_release_date.gte=${start}&primary_release_date.lte=${end}`;
+    }else{
+      url += `&first_air_date.gte=${start}&first_air_date.lte=${end}`;
+    }
+  }else{
+    if(type==="movie"){
+      url += `&primary_release_year=${year}`;
+    }else{
+      url += `&first_air_date_year=${year}`;
+    }
+  }
+
+  if(lang) url += `&with_original_language=${lang}`;
+  if(genre) url += `&with_genres=${genre}`;
+
+  fetch(url)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.results.length === 0){
+        result.innerHTML = "<p style='text-align:center'>😢 No result found</p>";
+      }
+
+      d.results.forEach(m=>{
+        if(type==="tv"){
+          m.title = m.name;
+          m.release_date = m.first_air_date;
+        }
+        loadMovieDetails(m,type);
+      });
+
+      loadMoreBtn.style.display = d.page < d.total_pages ? "block" : "none";
+    });
+}
+/* =====================================================
+   ....
+===================================================== */
+const serversList = document.getElementById("servers");
+
+servers.forEach((s, i) => {
+  const b = document.createElement("button");
+  b.className = "server-btn";
+  b.innerText = s.name;
+  b.onclick = () => {
+    if(currentVideoId !== null){
+      activeServerIndex = i; // ইনডেক্স সেভ রাখা
+      loadServer(i, currentVideoId, currentIsTV);
+
+      // ✅ সব button থেকে active class রিমুভ
+      document.querySelectorAll(".server-btn").forEach(btn => btn.classList.remove("active"));
+
+      // ✅ এই button-কে active বানানো
+      b.classList.add("active");
+    }
+  };
+  serversList.appendChild(b);
+});
+  
+
+/* =====================================================
+   পেজ লোড হলে একদম উপরে যাওয়ার সমাধান
+===================================================== */
+
+// ১. ব্রাউজারের অটো স্ক্রল মেমোরি বন্ধ করা
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+window.addEventListener('load', () => {
+  // ২. সামান্য ডিলে (Delay) দিয়ে স্ক্রল করা যাতে কন্টেন্ট লোড হওয়ার সময় পায়
+  setTimeout(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, 100); 
+});
+/* =====================================================
+   tv seris  লোড হলে ড্রপডাউন
+===================================================== */
+  let currentSeason = 1;
+let currentEpisode = 1;
+
+// ১. সিরিজ প্লে করলে সিজন লোড হবে
+async function playMovie(id, isTV) {
+    currentVideoId = id;
+    currentIsTV = isTV;
+    activeServerIndex = 0;
+    playerArea.style.display = "block";
+
+    const tvControls = document.getElementById("tvControls");
+    
+   if (isTV) {
+        // সিরিজ হলে ড্রপডাউন দেখাবে
+        tvControls.style.display = "flex"; 
+        tvControls.classList.add("show"); // ৫ সেকেন্ড আইডল হওয়ার জন্য
+        await fetchSeasons(id);
+    } else {
+        // মুভি হলে ড্রপডাউন পুরোপুরি লুকিয়ে ফেলবে
+        tvControls.style.display = "none";
+        tvControls.classList.remove("show");
+        loadServer(0, id, false);
+    }
+    
+    playerArea.scrollIntoView({ behavior: "smooth" });
+}
+
+// ২. TMDB থেকে সিজন সংখ্যা বের করা
+async function fetchSeasons(id) {
+    const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`);
+    const data = await res.json();
+    
+    const seasonSelect = document.getElementById("seasonSelect");
+    seasonSelect.innerHTML = ""; // আগের ডাটা ক্লিয়ার করা
+    
+    data.seasons.forEach(s => {
+        if(s.season_number > 0) { // স্পেশাল এপিসোড বাদ দিতে চাইলে
+            let opt = document.createElement("option");
+            opt.value = s.season_number;
+            opt.innerText = `Season ${s.season_number}`;
+            seasonSelect.appendChild(opt);
+        }
+    });
+    
+    fetchEpisodes(); // প্রথম সিজনের এপিসোড লোড করা
+}
+
+// ৩. সিজন সিলেক্ট করলে এপিসোড লোড হবে
+async function fetchEpisodes() {
+    const sNum = document.getElementById("seasonSelect").value;
+    const res = await fetch(`https://api.themoviedb.org/3/tv/${currentVideoId}/season/${sNum}?api_key=${API_KEY}`);
+    const data = await res.json();
+    
+    const epSelect = document.getElementById("episodeSelect");
+    epSelect.innerHTML = "";
+    
+    data.episodes.forEach(e => {
+        let opt = document.createElement("option");
+        opt.value = e.episode_number;
+        opt.innerText = `Episode ${e.episode_number}`;// এখানে = `Episode ${e.episode_number}: ${e.name}`; ব্যবহার করে এপিসোডের নাম দেখানো হচ্ছে
+        epSelect.appendChild(opt);
+    });
+    
+    changeEpisode(); // ভিডিও প্লে করা
+}
+
+// ৪. এপিসোড পরিবর্তন এবং সার্ভার ইউআরএল আপডেট
+function changeEpisode() {
+    currentSeason = document.getElementById("seasonSelect").value;
+    currentEpisode = document.getElementById("episodeSelect").value;
+    loadServer(activeServerIndex, currentVideoId, true);
+}
+
+// ৫. loadServer ফাংশন আপডেট (এটি আপনার বর্তমান ফাংশনকে রিপ্লেস করবে)
+function loadServer(i, id, isTV) {
+    activeServerIndex = i;
+    let url = servers[i].url.replace("ID", id);
+
+    if (isTV) {
+        // ড্রপডাউন থেকে সিজন ও এপিসোড নিয়ে লিংকে বসানো
+        // বেশিরভাগ সার্ভার এই ফরম্যাট সাপোর্ট করে: &s=1&e=1
+        url = url.replace("/movie/", "/tv/")
+                 .replace("movie?tmdb=", "tv?tmdb=") + `&s=${currentSeason}&e=${currentEpisode}`;
+        
+        // কিছু বিশেষ সার্ভারের জন্য ম্যানুয়াল রিপ্লেসমেন্ট (যদি প্রয়োজন হয়)
+        if(url.includes("vidsrc.me")) {
+            url = `https://vidsrc.me/embed/tv?tmdb=${id}&sea=${currentSeason}&epi=${currentEpisode}`;
+        }
+        if(url.includes("vidsrc.to")) {
+            url = `https://vidsrc.to/embed/tv/${id}/${currentSeason}/${currentEpisode}`;
+        }
+    }
+
+    player.src = url;
+    fullLink.value = url;
+}
+  
+/* =====================================================
+   tv seris ড্রপডাউন  hover + ৫ সেকেন্ড idle hide
+===================================================== */
+let tvHideTimer;
+
+function showTVControls() {
+  tvControls.classList.add("show");
+
+  clearTimeout(tvHideTimer);
+  tvHideTimer = setTimeout(() => {
+    tvControls.classList.remove("show");
+  }, 5000);
+}
+
+/* Desktop */
+playerArea.addEventListener("mousemove", showTVControls);
+playerArea.addEventListener("mouseenter", showTVControls);
+
+/* Mobile */
+playerArea.addEventListener("touchstart", showTVControls);
+
+/* =====================================================
+    tv seris next and prev
+===================================================== */
+  // ১. playMovie ফাংশন আপডেট (বাটন হাইড/শো করার জন্য)
+async function playMovie(id, isTV) {
+    currentVideoId = id;
+    currentIsTV = isTV;
+    activeServerIndex = 0;
+    playerArea.style.display = "block";
+
+    const tvControls = document.getElementById("tvControls");
+    const episodeNav = document.getElementById("episodeNav");
+    
+    if (isTV) {
+        tvControls.style.display = "flex";
+        episodeNav.style.display = "flex"; // নেভিগেশন দেখাবে
+        await fetchSeasons(id);
+    } else {
+        tvControls.style.display = "none";
+        episodeNav.style.display = "none"; // নেভিগেশন লুকাবে
+        loadServer(0, id, false);
+    }
+    
+    playerArea.scrollIntoView({ behavior: "smooth" });
+}
+
+// ২. পরবর্তী এপিসোডে যাওয়ার ফাংশন
+function nextEpisode() {
+    const epSelect = document.getElementById("episodeSelect");
+    const currentIndex = epSelect.selectedIndex;
+    
+    if (currentIndex < epSelect.options.length - 1) {
+        epSelect.selectedIndex = currentIndex + 1; // পরের অপশন সিলেক্ট করবে
+        changeEpisode(); // ভিডিও লোড করবে
+    } else {
+        alert("এটি এই সিজনের শেষ এপিসোড!");
+    }
+}
+
+// ৩. আগের এপিসোডে যাওয়ার ফাংশন
+function prevEpisode() {
+    const epSelect = document.getElementById("episodeSelect");
+    const currentIndex = epSelect.selectedIndex;
+    
+    if (currentIndex > 0) {
+        epSelect.selectedIndex = currentIndex - 1; // আগের অপশন সিলেক্ট করবে
+        changeEpisode(); // ভিডিও লোড করবে
+    } else {
+        alert("এটি এই সিজনের প্রথম এপিসোড!");
+    }
+}
+</script>
+
+</body>
+</html>
