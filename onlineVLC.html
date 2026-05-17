@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONLINE VLC & IPTV HUB</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+/* =====================================================
+   ১. Global body & html সেটিংস
+   ===================================================== */
+body, html {
+    margin: 0; 
+    padding: 0; 
+    background: #111; 
+    color: #fff; 
+    font-family: sans-serif; 
+}
+
+/* ===============================
+   PAGE CENTER CONTAINER
+   PC তে max-width 950px, centered
+   =============================== */
+.page-center {
+    max-width: 850px;   /* সর্বোচ্চ প্রস্থ */
+    margin: 20px auto;     /* horizontally center */
+    padding: 10px;    /* screen edge থেকে distance */
+    /* box-sizing: border-box; */
+}
+
+/* ===============================
+   TOP HEADER
+   Logo + Text এক লাইনে center
+   =============================== */
+.top-header {
+    display: flex;              /* এক লাইনে বসানো */
+    align-items: center;        /* vertical center */
+    justify-content: center;    /* horizontal center */
+    gap: 10px;                  /* logo + text gap */
+    margin-bottom: 10px;
+}
+
+.top-header img {
+    width: 30px;
+    height: 30px;
+}
+
+.top-header span {
+    font-size: 19px;
+    font-weight: bold;
+     color: #38bdf8; /* আপনার প্রিয় নীল রঙ */
+}
+
+/* =====================================================
+   ২.মেইন প্লেয়ার লেআউট (পিসি বা বড় স্ক্রিনের জন্য)
+   ===================================================== */
+.player-wrapper { 
+     display: flex !important; 
+     flex-direction: row !important; /* পিসিতে ভিডিও ডানে, লিস্ট বামে */
+    /*margin: 20px 0;
+    display: flex; 
+    height: 600px; 
+    width: 100%;  */
+   
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    border: 2px solid #1e293b; /* ছোট বর্ডার */
+    border-radius: 15px;       /* রাউন্ড কর্নার */
+    overflow: hidden; 
+    background: #000; 
+    box-sizing: border-box; 
+    height:450px; /* আপনি আপনার পছন্দমতো হাইট দিতে পারেন (যেমন ৯৫০px উইডথ এর জন্য ৫৩৫px উচ্চতা ১৬:৯ রেশিও) */
+    min-height: 300px; /* উইন্ডো ছোট করলে এর চেয়ে ছোট হবে না */
+}
+
+/* ===============================
+   ৩. সাইডবার বা প্লেলিস্ট এরিয়া(left menu)
+   =============================== */
+.sidebar { 
+    width: 220px !important;
+    background: #111; 
+    display: flex !important;
+    flex-direction: column !important; 
+    border-right: 1px solid #333; 
+   flex-shrink: 0;
+}
+
+.sidebar-header { 
+    display: flex; /* IMPORT BOX + PLAY BUTTON (এক লাইনে) */
+     /* lex-direction: column; এলিমেন্টগুলো উপর-নিচে থাকবে */
+   /* align-items: center;   অনুভূমিকভাবে (Horizontally) মাঝখানে আনবে */
+   /* justify-content: center;  উল্লম্বভাবে (Vertically) মাঝখানে আনবে */
+     gap: 8px;              /* গ্যাপ জিরো করা হয়েছে */
+    padding: 10px;         /* আপনার প্রয়োজন মতো প্যাডিং রাখুন */
+    background: #000;  /*#1a1a1a;  */
+  /* border-bottom: 1px solid #333;  */
+}
+  
+.input-box { 
+    width: 100%; 
+    padding: 10px; 
+    background: #000; 
+    border: 1px solid #444; 
+    color: #888;
+    margin-bottom: 0px;    /* মার্জিন রিমুভ করা হয়েছে */
+    /* border-bottom-left-radius: 0;  নিচের কোণা সোজা করার জন্য */
+     /*border-bottom-right-radius: 0;  নিচের কোণা সোজা করার জন্য */
+    box-sizing: border-box; 
+    font-size: 14px; 
+}
+  
+
+.btn { 
+    width: 100%; 
+    padding: 10px; 
+    cursor: pointer; 
+    border: none; 
+    font-weight: bold; 
+    border-radius: 5px; 
+    margin-bottom: 5px; 
+    color: #fff; 
+    position: relative; 
+}
+
+.btn-import { 
+    background: #28a745; 
+    width: 40%; 
+    margin: 0 auto !important; 
+  font-size: 16px
+    padding: 10px;
+}
+.btn-default { background:#007bff; border-radius: 0px; margin-top: auto;     box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    border: 2px solid #38bdf8; /* ছোট বর্ডার */}
+.btn-user-list { background: #6f42c1; margin-bottom: 5px; border-radius: 0; display: none; }
+.btn-user-list .cancel-x { 
+    position: absolute; 
+    right: 10px; 
+    color: #ff4d4d; 
+    font-weight: bold; 
+    padding: 0 5px; 
+    background: rgba(0,0,0,0.3); 
+    border-radius: 3px; 
+}
+
+.list-controls { 
+    display: none; 
+    padding: 10px; 
+    background: #222; 
+    border-bottom: 1px solid #333; 
+}
+
+.cat-select { 
+    width: 100%; 
+    padding: 8px; 
+    background: #333; 
+    color: #fff; 
+    border: none; 
+    border-radius: 4px; 
+    margin-top: 5px; 
+}
+
+.list-area { 
+    flex: 1; /* এটি সাইডবারের বাকি সবটুকু খালি জায়গা দখল করবে */
+    overflow-y: auto; /* লিস্ট বড় হলে স্ক্রলবার আসবে */
+    background: #0a0a0a; 
+   /* max-height: 400px; একটি নির্দিষ্ট উচ্চতা */
+}
+
+.channel-item { 
+    padding: 12px; 
+    border-bottom: 1px solid #222; 
+    cursor: pointer; 
+    font-size: 14px; 
+   
+}
+
+.channel-item.active { 
+    background: #004d99; 
+    border-left: 5px solid #fff; 
+    font-weight: bold; 
+}
+
+/* ===============================
+   ৪. ডিসপ্লে প্যানেল (যেখানে ভিডিও চলবে) (right video area)
+   =============================== */
+.display-panel { 
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important; 
+    min-width: 0;
+    background: #000; 
+   
+}
+/* ভিডিও কন্টেইনার - ১৬:৯ রেশিও নিশ্চিত করার জন্য */
+.video-container { 
+     width: 100%;
+    aspect-ratio: 16 / 11; /* ভিডিওর আসল মাপ ঠিক রাখে */
+   background: #000;    /* সাদা বার দূর করার জন্য মেইন ব্যাকগ্রাউন্ড কালো */
+     /* flex: 1;  */
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden;  
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    border: 0px solid #1e293b; /* ছোট বর্ডার */
+ }
+  
+/* ভিডিও এবং আইফ্রেম ফুল স্ক্রিন করার জন্য */
+#mainVideo, #mainAudio, #mainIframe { 
+    position: absolute;
+    inset: 0;   /* top:0 left:0 right:0 bottom:0 */
+    /*top: 0;
+    left: 0; */
+    width: 100% !important; 
+    height: 100% !important;
+    z-index: 2; /* প্লেসহোল্ডারের উপরে থাকবে */
+    display: none; 
+    object-fit: contain; /* ভিডিও যেন ফেটে না যায় */
+    border: none !important;     /* ❌ ভিডিওতে border নয় */
+    background: transparent;
+}
+
+#mainAudio { 
+    height: 60px; 
+    width: 80%; 
+}
+
+/* ===============================
+   ৫. Player Controls (Next / Prev buttons)
+   =============================== */
+.player-controls { 
+    position: absolute;
+    bottom: 0px;             /* নিচ থেকে distance */
+    left: 50%;               /* horizontal center */
+    gap: 8px;
+    transform: translateX(-50%);
+    z-index: 999;
+    opacity: 0;             /* শুরুতে অদৃশ্য বাটনগুলো লুকানো থাকবে*/
+   /*  visibility: hidden;     ক্লিক করা যাবে না */
+}
+
+/* যখন ভিডিও কন্টেইনারের ওপর মাউস থাকবে তখন Next / Prev দেখা যাবে 
+.video-container:hover .player-controls {
+    opacity: 1;             // দৃশ্যমান হবে 
+    visibility: visible;    // ক্লিক করা যাবে 
+}  */
+  
+.control-btn {
+    padding: 7px 14px;
+    background: rgba(0,0,0,0.6); 
+    color:  #38bdf8;
+    border:  1px solid #38bdf8;
+    border-radius: 10px;
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: 0.3s; 
+}
+
+.control-btn:hover { 
+    background: none; 
+}
+
+
+
+/* ===============================
+   ৬. Instruction Box / Footer Disclaimer
+   =============================== */
+.instruction-box { 
+    padding: 5px 20px; 
+    background: #111; 
+    color: #444; 
+    font-size: 15px; 
+    line-height: 1.6; 
+     align-items: center;
+}
+
+.instruction-box b { 
+    color: #007bff; 
+}
+
+/* ===============================
+   ৭. Channel Overlay
+   ভিডিওর উপর চ্যানেলের নাম দেখানোর স্টাইল
+   =============================== */
+.channel-display-overlay {
+    position: absolute;
+    bottom: 50px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    color: yellow;
+    padding: 8px 15px;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 10;
+    display: none; 
+    pointer-events: none;
+    animation: fadeInOut 4s forwards;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }   
+    10% { opacity: 1; }  
+    80% { opacity: 1; }  
+    100% { opacity: 0; } 
+ }
+  
+/* 🧾 Playlist নিচের helper text */
+.playlist-hint {
+  height: 100%;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;/* #38bdf8; */
+  line-height: 1.6;
+}
+/* =====================================================
+   ৮. মোবাইল ভিউ (রেসপনসিভ ডিজাইন) (768px এর নিচে)
+   ===================================================== */
+/* =====================================================
+   📱 MOBILE RESPONSIVE ONLY (≤ 700px)
+   PC তে কোন প্রভাব পড়বে না
+===================================================== */
+@media (max-width: 700px) {
+
+  /* ===============================
+     1️⃣ পুরো প্লেয়ার লেআউট
+     মোবাইলে ভিডিও উপরে, লিস্ট নিচে
+  =============================== */
+  .player-wrapper {
+    flex-direction: column !important;
+    height: auto !important;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    border: 2px solid #1e293b; /* ছোট বর্ডার */
+  }
+
+  /* ===============================
+     2️⃣ VIDEO AREA – পরিষ্কার ও ফোকাসড
+  =============================== */
+  .display-panel {
+    order: 1 !important;
+    width: 100% !important;
+    background: #000;
+  }
+
+  .video-container {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* মোবাইলে পারফেক্ট ভিডিও রেশিও */
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    /* border: 2px solid #1e293b;  ছোট বর্ডার */
+  }
+
+  /* ভিডিও / iframe ফুল ফিট */
+  #mainVideo,
+  #mainIframe,
+  #mainAudio {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    background: #000;
+  }
+
+  
+  /* ===============================
+     3️⃣ CHANNEL NAME – সুন্দর overlay
+  =============================== */
+  .channel-display-overlay {
+    display: block;
+    bottom: 55px;
+    font-size: 15px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: none;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===============================
+     4️⃣ NEXT / PREV BUTTON – মোবাইল ফ্রেন্ডলি
+  =============================== */
+  .player-controls {
+    /*  bottom: 0px;
+    gap: 8px; */ 
+    display: none !important;
+  }
+
+  .control-btn {
+    padding: 7px 14px;
+    font-size: 14px;
+    border-radius: 20px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #38bdf8;
+    color: #38bdf8;
+  }
+
+  .control-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* ===============================
+     5️⃣ SIDEBAR / CHANNEL LIST
+  =============================== */
+  .sidebar {
+    order: 2 !important;
+    width: 100% !important;
+    height: 260px !important;
+    border-top: 1px solid #333;
+    border-right: none;
+  }
+
+  
+
+  /* ===============================
+     6️⃣ IMPORT BOX + PLAY BUTTON (এক লাইনে)
+  =============================== */
+
+
+
+  .btn-import {
+    width: auto;
+    padding: 10px;
+    white-space: nowrap;
+  }
+
+  /* ===============================
+     7️⃣ Default IPTV Button – সবসময় স্ক্রিনে
+  =============================== */
+  .btn-default {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 420px;
+    z-index: 9999;
+
+    padding: 11px;
+    font-size: 16px;
+    border-radius: 14px;
+    background: #007bff;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    border: 2px solid lime; /* ছোট বর্ডার */
+  }
+
+  /* ===============================
+     8️⃣ Footer / Instruction ছোট করা
+  =============================== */
+  .instruction-box {
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.6;
+  }
+
+
+}
+  
+/* ❌ ভিডিওর নিচের ব্যাকগ্রাউন্ বন্ধ */
+/* ভিডিও নিজেই transparent ব্যাকগ্রাউন্ড */
+#mainVideo {
+  background: transparent !important;
+}
+
+/* ভিডিও কন্টেইনারের ব্যাকগ্রাউন্ড সুন্দর রাখা */
+.video-container {
+  background: radial-gradient(circle at center, #111 0%, #000 70%) !important;
+}
+/*  ভিডিওর নিচের সাদা / dummy bar বন্ধ */
+/* buffering / loading spinner এর সময়ও clean থাকবে */
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls {
+  background: transparent !important;
+}
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display {
+  display: none !important;
+}
+  
+  
+  
+  
+/* Firefox / অন্যান্য ব্রাউজারের জন্য */
+video {
+  background-color: transparent !important;
+}
+
+  
+/* 🧾 Playlist নিচের helper text */
+.playlist-hint {
+  height: 100%;
+  padding: 15px 10px;
+  text-align: left; /* center; */
+  font-size: 14px;
+  color: white; 
+ 
+}
+
+
+
+  
+/* প্লেসহোল্ডার টেক্সট (ONLINE VLC) */
+#placeholder {
+    position: absolute;
+    z-index: 1; /* ভিডিওর নিচে থাকবে */
+    color: #333; /*#333; */
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+  
+#urlInput {
+    border: 2px solid #ffffff; /* ✅ 2px white border impot bar*/
+    border-radius: 5px;
+}
+
+  
+  
+/* ইনপুট বক্সের ভেতরের প্লেসহোল্ডার টেক্সট হলুদ করার জন্য */
+#urlInput::placeholder {
+    color: #fff !important; /*  #38bdf8; আপনার প্রিয় নীল রঙ */
+    font-size: 13px;      /* ← এখানে size বদলান */
+   /* font-weight: bold !important; */
+    opacity: 0.3 !important; /* এখানে ০.৫ (সংখ্যা) হবে, ও.৫ নয় */
+}
+    
+     
+
+
+/* অন্যান্য ব্রাউজারের (Firefox, Internet Explorer) জন্য সাপোর্ট */
+#urlInput::-webkit-input-placeholder { color: yellow; opacity: 0.5; }
+#urlInput::-moz-placeholder { color: yellow; opacity: 0.5; }
+#urlInput:-ms-input-placeholder { color: yellow; opacity: 0.5; }
+#urlInput:-moz-placeholder { color: yellow; opacity: 0.5; }
+  
+.btn-import-m3u {
+  background: #9ca3af;/* #28a745;*/
+  color: #444; 
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 7px 7px 7px;
+  border: 4px solid #38bdf8;  /* #38bdf8;  নীল রঙ */
+  border-radius: 10px;
+  width: 70%;
+  margin: 0px auto;
+  display: block;
+  / box-shadow:0 0 10px rgba(156, 163, 175, 0.6); *0 0 15px rgba(255, 0, 0, 0.6); */  /* 0 0 20px rgba(0,255,0,0.35); */ 
+  cursor: pointer;
+}
+
+/* শুরুতে শুধু IMPORT M3U */
+#urlInput,
+.btn-import {
+  display: none;
+}
+
+  
+  
+/* PC Toggle Button Style */
+@media (min-width: 701px) {
+    .sidebar {
+        transition: transform 0.3s ease, width 0.3s ease;
+    }
+    .sidebar.hidden {
+        width: 0 !important;
+        transform: translateX(-220px);
+        overflow: hidden;
+    }
+    .pc-toggle-btn {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.7);
+        color: #38bdf8;
+        border: 1px solid #333;
+        border-radius: 0 10px 10px 0;
+        cursor: pointer;
+        padding: 15px 5px;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .pc-toggle-btn:hover {
+        background: #38bdf8;
+        color: #000;
+    }
+}
+
+/* মোবাইলে বাটনটি লুকানো থাকবে */
+@media (max-width: 700px) {
+    .pc-toggle-btn { display: none !important; }
+  .btn-import-m3u {
+   /*  color: #000; 
+  background: lime;#28a745;*/
+    font-size: 16px;
+    padding: 9px 7px;
+    border: 2px solid #38bdf8; 
+    border-radius: 10px;  
+    width: 90%;
+    white-space: nowrap;   /* টেক্সট এক লাইনে রাখবে */
+    overflow: hidden;     /* বাড়তি অংশ লুকাবে */
+  /*text-overflow: ellipsis;  শেষে ... দেখাবে */
+           }
+  .playlist-hint {
+  padding: 15px;
+  text-align: left; /* center; */
+  font-size: 14px;
+  color: white; 
+    }
+  
+}
+  
+.video-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    border: 5px solid #9ca3af;   /* ✅ Grey 5px border#9ca3af;  */
+    border-radius: 15px;         /* ✅ Rounded corner */
+    overflow: hidden;            /* ✅ কোণা কাটা সুন্দর হবে */
+
+    box-sizing: border-box;      /* ✅ সব সাইড সমান */
+    background: #000;
+}
+
+  </style>
+
+</head>
+  
+<body>
+  
+  
+  
+<div class="page-center">
+
+  <div class="top-header">
+  <span>Online VLC</span>
+</div>
+
+
+<div class="player-wrapper">
+    <div class="sidebar">
+ 
+    <div id="listControls" class="list-controls" style="padding: 10px; background: #1a1a1a;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+            <select id="catFilter" class="cat-select" onchange="applyFilter()" style="flex: 1; padding: 8px; cursor: pointer;"></select>
+            
+            <button onclick="toggleSearch()" id="searchToggleBtn" style=" color: #fff; padding: 6px 10px; border-radius: 8px; margin-top: 4px; cursor: pointer;">
+                🔍
+            </button>
+        </div>
+
+        <div id="searchWrapper" style="display: none;">
+            <input type="text" id="searchInput" class="input-box" placeholder="Search Channel (e.g. Star)..." onkeyup="applyFilter()" style="width: 100%; margin-top: 5px; box-sizing: border-box;">
+        </div>
+    </div>
+    
+    <div id="listArea" class="list-area"></div>
+      
+<!-- 📌 Playlist helper text (default visible) -->
+<div id="playlistHint" class="playlist-hint">
+ 🔵 Click <b> ENTER </b> 
+  🔵 <span  style="color: lime;"> Past / text </span>
+  <br>
+ 🔵 M3U List / GitHub Raw link
+  <br> or  <br> 
+ 🔵 Any video link 
+  
+  🔵 m3u8 / ts
+  🔵  php / mp4 / wabm 
+  🔵any embad link
+  🔵 Audio ( mp3 / wav)
+ <br>
+ <span  style="color: lime;"> & <b> CLICK PLAY </b> </span>
+ <br> or <br> 
+ 🔵 Click  <span style="color: lime;"> <b> Default IPTV ⬇  </b> </span> to play channel list
+  
+  <span  style=""></span>
+  
+</div>
+
+    <button id="userListBtn" class="btn btn-user-list" onclick="toggleUserList()">
+        Imported Playlist <span class="cancel-x" onclick="cancelUserList(event)">X</span>
+    </button>
+
+    <button class="btn btn-default" onclick="toggleDefault()">Play Default IPTv</button>
+
+
+</div>
+
+     <div class="display-panel">
+    <div class="sidebar-header" id="importBox">
+
+    <!-- IMPORT M3U BUTTON -->
+    <button id="importToggleBtn" class="btn btn-import-m3u" onclick="showImport()">
+     <b>  Enter </b>- m3u list or Any video link
+    </button>
+
+    <!-- INPUT + PLAY -->
+    <input type="text" id="urlInput" class="input-box"
+      placeholder="Paste link (M3U, M3U8, MP4, MP3, PHP)...">
+
+    <button class="btn btn-import" onclick="playAndHide()">PLAY</button>
+
+    </div>
+
+        <div class="video-container">
+          
+          <button id="sidebarToggle" class="pc-toggle-btn" onclick="toggleSidebar()">&#10094;</button>
+          
+           <div id="channelOverlay" class="channel-display-overlay"></div> <div class="bg-logo"></div>
+          
+          <div class="video-frame">
+            <video id="mainVideo" controls autoplay playsinline></video>
+            <audio id="mainAudio" controls autoplay></audio>
+            <iframe id="mainIframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+          </div>
+          
+          
+            <div id="placeholder">IPTV HUB</div>
+                  <div class="player-controls">
+            <button class="control-btn" onclick="prevChannel()">◀ Prev</button>
+            <button class="control-btn" onclick="nextChannel()">Next ▶</button>
+        </div>
+          
+        </div>
+    </div>
+  </div>
+  <div class="instruction-box">
+  This player is for educational purpose only.
+</div>
+   <div id="show-link"style="border: none; background: none; color: #444;"></div>
+</div>
+
+<script>
+  let defaultLoaded = false; 
+// 👉 ডিফল্ট লিস্ট একবার লোড হয়েছে কিনা সেটা রাখবে
+
+    const video = document.getElementById('mainVideo');
+    const audio = document.getElementById('mainAudio');
+    const iframe = document.getElementById('mainIframe');
+    const listArea = document.getElementById('listArea');
+    const listControls = document.getElementById('listControls');
+    const catFilter = document.getElementById('catFilter');
+    const urlInput = document.getElementById('urlInput');
+    const userListBtn = document.getElementById('userListBtn');
+
+    // ৬. একাধিক ডিফল্ট লিঙ্ক যোগ করার জায়গা (এখানে যত খুশি লিঙ্ক দিন)
+    const defaultM3UFiles = [
+        "https://iptv-org.github.io/iptv/categories/movies.m3u",
+      
+      "https://iptv-org.github.io/iptv/categories/sports.m3u",
+         "https://raw.githubusercontent.com/subirkumarpaul/Subirmaxpro/refs/heads/main/Subirmaxpro",
+        // "আপনার_লিঙ্ক_4",
+        // "আপনার_লিঙ্ক_5"
+    ];
+
+     // GitHub ডাটা রিড করার জন্য প্রক্সি (এটি ছাড়া কাজ করবে না)
+    //  বিকল্প ১: https://corsproxy.io/?(সবচেয়ে ফাস্ট এবং আধুনিক প্রক্সি)
+    //  বিকল্প ২. https://api.allorigins.win/raw?url= (সবচেয়ে নির্ভরযোগ্য প্রক্সি)
+    // বিকল্প ৩. https://thingproxy.freeboard.io/fetch/ (একটু স্লো প্রক্সি)
+    const proxy = ""; 
+    let allChannels = [];
+    let defaultChannels = [];
+    let userChannels = [];
+    let currentIndex = -1;
+
+   function resetLayers() {
+    // ভিডিও সেটিংস
+    video.style.display = "none"; 
+    video.pause();
+    video.removeAttribute('src'); // এটি সাদা ফ্রেমটি পুরোপুরি ডিলিট করে দেবে
+    video.load();
+
+    // আইফ্রেম সেটিংস
+    iframe.style.display = "none"; 
+    iframe.src = "";
+
+    // প্লেসহোল্ডার দেখানো
+    const placeholder = document.getElementById('placeholder');
+    placeholder.style.display = "flex"; 
+}
+    // স্মার্ট ইম্পোর্ট
+   function smartImport() {
+    const url = urlInput.value.trim();
+    if (!url) return;
+
+    updateShowLink(url);
+    const lowerUrl = url.toLowerCase();
+    resetLayers();
+
+    if (lowerUrl.endsWith(".json")) {
+        fetchJSON(url, false); // ✅ ইউজার JSON লোড
+    } else if ((lowerUrl.includes(".m3u") && !lowerUrl.includes(".m3u8")) || lowerUrl.includes(".txt") || lowerUrl.includes("raw")) {
+        fetchM3U(url, false); // মেইন লিস্টের মতো হ্যান্ডেল
+    } else if (lowerUrl.endsWith(".mp3") || lowerUrl.endsWith(".wav")) {
+        audio.style.display = "block"; audio.src = url;
+    } else if (lowerUrl.includes(".php") || lowerUrl.includes("youtube") || lowerUrl.includes("embed")) {
+        iframe.style.display = "block";
+        let finalUrl = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
+        iframe.src = finalUrl;
+    } else {
+        video.style.display = "block"; playVideo(url);
+    }
+
+    urlInput.value = "";
+}
+
+
+    function playVideo(url) {
+        const source = proxy ? proxy + encodeURIComponent(url) : url;
+        if (Hls.isSupported() && (url.includes('m3u8') || url.includes('ts'))) {
+            const hls = new Hls();
+            hls.loadSource(source); hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else {
+            video.src = source; video.play();
+        }
+    }
+
+    // একাধিক লিঙ্ক থেকে ডেটা লোড করার ফাংশন
+async function loadMultipleDefaults() {
+    // ১. সাইডবারের লিস্ট এরিয়া এবং কন্ট্রোল বাটনগুলো দৃশ্যমান করা
+   listArea.style.display = "block";
+    listControls.style.display = "block";
+    
+    // টেক্সট হাইড করা
+    const hint = document.getElementById('playlistHint');
+    if(hint) hint.style.display = "none";
+
+    listArea.innerHTML = "<p style='padding:15px;'>Loading Playlists...</p>";
+    let combinedChannels = [];
+
+    // আপনার প্রক্সির লিস্ট (এখানে নিজের ক্লাউডফ্লেয়ার লিঙ্কটি যোগ করতে পারবেন)
+    const proxyList = [
+       "",                                     // ১. প্রথমে প্রক্সি ছাড়া চেষ্টা
+        "https://purple-dust-525dproxy.nu01302910955.workers.dev/?url=", 
+        "https://corsproxy.io/?",               // ২. এটি ফাস্ট, তাই শুরুতে রাখা ভালো
+        "https://api.allorigins.win/raw?url=",    // ৩. ব্যাকআপ হিসেবে নির্ভরযোগ্য প্রক্সি
+        "https://thingproxy.freeboard.io/fetch/" // ৪. সব ফেল করলে এটি চেষ্টা করবে
+    ];
+
+    // ৩. প্রতিটি ডিফল্ট লিঙ্কের জন্য লুপ
+   for (let url of defaultM3UFiles) {
+    let handled = false;
+
+    for (let p of proxyList) {
+        try {
+            const finalUrl = p ? p + encodeURIComponent(url) : url;
+            const res = await fetch(finalUrl);
+            if (res.ok) {
+                if (url.endsWith(".json")) {
+                    await fetchJSON(finalUrl, true);
+                } else {
+                    const data = await res.text();
+                    defaultChannels = defaultChannels.concat(parseM3U(data));
+                    allChannels = defaultChannels;
+                }
+                handled = true;
+                break;
+            }
+        } catch (e) {}
+    }
+
+    if (!handled) console.warn("Failed to load:", url);
+}
+
+setupCategories(allChannels);
+renderList(allChannels);
+defaultLoaded = true;
+
+  
+    setupCategories(allChannels);        
+    renderList(allChannels);             
+}
+    async function fetchM3U(url, isDefault) {
+    //listArea.innerHTML = "<p style='padding:15px;'>Loading List...</p>";
+    
+    // ইমপোর্ট করার সাথে সাথে লিস্ট এরিয়া এবং কন্ট্রোল দেখাবে
+    listArea.style.display = "block";
+    listControls.style.display = "block";
+    
+    // মাঝখানের টেক্সট (playlistHint) হাইড করে দেবে
+    const hint = document.getElementById('playlistHint');
+    if(hint) hint.style.display = "none";
+
+    try {
+        const res = await fetch(proxy ? proxy + encodeURIComponent(url) : url);
+        const data = await res.text();
+        const channels = parseM3U(data);
+        
+        if (!isDefault) {
+            userChannels = channels;
+            allChannels = userChannels;
+            // টগল বাটনটি দেখাবে
+            userListBtn.style.display = "block";
+        }
+        
+        setupCategories(allChannels);
+        renderList(allChannels); // সরাসরি চ্যানেল লিস্ট দেখাবে
+        
+    } catch (e) { 
+       //  listArea.innerHTML = "<p style='padding:15px; color:red;'>Error Loading Playlist.</p>"; 
+    // 👇 এখানে আপনার আগের কোডে listArea.innerHTML ছিল, সেটা বদলে এটি দিন
+        console.error("Error Loading Playlist.");
+        const placeholder = document.getElementById('placeholder');
+
+        // ভিডিও হাইড হবে যাতে এরর মেসেজ দেখা যায়
+        video.style.display = "none";
+    }
+}
+function parseM3U(data) {
+    const lines = data.split('\n');
+    let channels = [];
+    let seenUrls = new Set(); // এটি ডুপ্লিকেট লিঙ্ক আটকাবে
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        
+        if (line.startsWith('#EXTINF')) {
+            // ১. ক্যাটাগরি বের করা
+            let group = line.match(/group-title="([^"]+)"/)?.[1] || "Others";
+
+            // ২. চ্যানেলের নাম বের করা 
+  
+            let name = line.split(',').pop().trim() || "Unknown Channel";
+
+            // ৩. লিঙ্ক বের করা (পরের লাইন থেকে)
+            let link = lines[i + 1] ? lines[i + 1].trim() : "";
+            
+            // ডুপ্লিকেট চেক: যদি লিঙ্কটি আগে না এসে থাকে তবেই যোগ হবে
+            if (link && link.startsWith('http') && !seenUrls.has(link)) {
+                channels.push({ name: name, url: link, category: group });
+                seenUrls.add(link); // লিঙ্কটি সেভ করে রাখা হলো
+            }
+        }
+    }
+    return channels;
+}
+  
+  
+  
+    function renderList(channels) {
+        listArea.innerHTML = "";
+        channels.forEach((ch, index) => {
+            const div = document.createElement('div');
+            div.className = 'channel-item';
+            div.innerText = ch.name;
+            div.onclick = () => {
+                currentIndex = index;
+                playDirect(ch.url);
+                //লাইনটি মুছে দিয়ে লিখুন urlInput.value = ch.url;ইনপুট বক্সে লিঙ্ক দেখাবে
+            
+                showChannelName(ch.name); // এই লাইনটি চ্যানেলের নাম দেখাবে
+                document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+            };
+            listArea.appendChild(div);
+        });
+      
+      // লিস্ট রেন্ডার হওয়ার পর বাটন দেখাবে কি না চেক করবে
+    updateControlVisibility();
+    }
+
+    // নেক্সট ফাংশন
+function nextChannel() {
+    // বর্তমানে স্ক্রিনে যে চ্যানেলগুলো দেখা যাচ্ছে সেগুলো ধরা
+    const visibleItems = document.querySelectorAll('.channel-item');
+    if (visibleItems.length === 0) return;
+
+    if (currentIndex < visibleItems.length - 1) {
+        currentIndex++;
+    } else {
+        currentIndex = 0; // লিস্ট শেষ হলে আবার শুরুতে যাবে
+    }
+    
+    // বর্তমান আইটেমটি ক্লিক করা
+    const targetItem = visibleItems[currentIndex];
+    if (targetItem) {
+        targetItem.click();
+        targetItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // সঠিক নাম দেখানোর জন্য
+        showChannelName(targetItem.innerText);
+    }
+}
+
+// প্রিভিয়াস ফাংশন
+function prevChannel() {
+    const visibleItems = document.querySelectorAll('.channel-item');
+    if (visibleItems.length === 0) return;
+
+    if (currentIndex > 0) {
+        currentIndex--;
+    } else {
+        currentIndex = visibleItems.length - 1; // শুরুতে থাকলে শেষে যাবে
+    }
+
+    const targetItem = visibleItems[currentIndex];
+    if (targetItem) {
+        targetItem.click();
+        targetItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // সঠিক নাম দেখানোর জন্য
+        showChannelName(targetItem.innerText);
+    }
+}
+function triggerClick(index) {
+    const items = document.querySelectorAll('.channel-item');
+    if (items[index]) {
+        // ১. এটি চ্যানেলটিকে ক্লিক করে ভিডিও প্লে করবে
+        items[index].click(); 
+        
+        // এটি চ্যানেলটিকে অটোমেটিক স্ক্রল করে সামনে (Visible Area) নিয়ে আসবে।
+        items[index].scrollIntoView({ 
+            behavior: 'smooth', // ধীরে ধীরে স্ক্রল হবে
+            block: 'nearest'    // কাছাকাছি অবস্থানে থামবে
+        });
+    }
+}
+
+    function setupCategories(channels) {
+        const cats = [...new Set(channels.map(c => c.category))];
+        catFilter.innerHTML = '<option value="all">All Categories</option>';
+        cats.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            catFilter.appendChild(opt);
+        });
+    }
+
+    function applyFilter() {
+        const searchVal = document.getElementById('searchInput').value.toLowerCase();
+        const catVal = catFilter.value;
+        const filtered = allChannels.filter(ch => {
+            return ch.name.toLowerCase().includes(searchVal) && (catVal === 'all' || ch.category === catVal);
+        });
+        renderList(filtered);
+    }
+
+    document.getElementById('searchInput').onkeyup = applyFilter;
+
+function toggleDefault() {
+
+    // যদি এখনো ডিফল্ট লিস্ট লোড না হয়
+    if (!defaultLoaded) {
+        loadMultipleDefaults();
+        return;
+    }
+
+    // লিস্ট লুকানো থাকলে → দেখাও
+    if (listArea.style.display === "none") {
+        allChannels = defaultChannels;
+        renderList(allChannels);
+        listArea.style.display = "block";
+        listControls.style.display = "block";
+    } 
+    // লিস্ট দেখা গেলে → লুকাও
+    else {
+        listArea.style.display = "none";
+        listControls.style.display = "none";
+    }
+  
+    updateControlVisibility(); // ⭐ অবশ্যই
+
+}
+
+
+    function toggleUserList() {
+        allChannels = userChannels;
+        renderList(allChannels);
+        listArea.style.display = "block"; listControls.style.display = "block";
+    }
+
+    function cancelUserList(event) {
+        event.stopPropagation();
+        userChannels = []; userListBtn.style.display = "none";
+        listArea.style.display = "none"; listControls.style.display = "none";
+      
+      // লিস্ট বন্ধ হলে বাটন হাইড করবে
+    updateControlVisibility();
+      
+    }
+  
+  
+  function showChannelName(name) {
+    const overlay = document.getElementById('channelOverlay');
+    overlay.innerText = name;
+    overlay.style.display = 'block';
+
+    // 6 সেকেন্ড পর নিজে থেকেই হাইড হবে (CSS অ্যানিমেশনের সাথে মিল রেখে)
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 6000);
+}
+  
+function toggleSearch() {
+    const sw = document.getElementById('searchWrapper');
+    const si = document.getElementById('searchInput');
+
+    // সরাসরি শো এবং হাইড (No Slide)
+    if (sw.style.display === "none") {
+        sw.style.display = "block";
+        si.focus(); // সরাসরি টাইপ করার জন্য ফোকাস করবে
+    } else {
+        sw.style.display = "none";
+        si.value = ""; // সার্চ বক্স বন্ধ করলে লেখা ক্লিয়ার হবে
+        applyFilter(); // সব চ্যানেল আবার দেখাবে
+    }
+}
+  
+  
+  
+  // ✅ Page load এ কিছুই করবে না
+// Default IPTV button ক্লিক না করা পর্যন্ত list load হবে না
+window.onload = function () {
+   updatePlaylistHint();// text
+};
+
+
+/*  // এটি ইনপুট বক্সে লিঙ্ক না দেখিয়ে সরাসরি ভিডিও প্লে করবে | IF U WANT ইনপুট বক্সে লিঙ্ক SEE THEN COMENT FULL function playDirect(url)   AND function renderList(channels)  THER NEED SOME EDIT --- */
+function playDirect(url) {
+    if (!url) return;
+    updateShowLink(url);
+    const lowerUrl = url.toLowerCase();
+
+    // যদি ইউজার সরাসরি কোনো মেইন প্লেলিস্ট ফাইল (.m3u) লোড করতে চায়
+    // সাধারণত চ্যানেলের ভিডিও লিঙ্ক .m3u দিয়ে শেষ হয় না, .m3u8 দিয়ে শেষ হয়।
+    if (lowerUrl.endsWith(".m3u") || (lowerUrl.includes(".txt") && !lowerUrl.includes("m3u8"))) {
+        fetchM3U(url, false);
+        return; 
+    }
+
+    // ভিডিও প্লেয়ার রিসেট হবে কিন্তু সাইডবার লিস্টে হাত দেবে না
+    resetLayers(); 
+
+    if (lowerUrl.endsWith(".mp3") || lowerUrl.endsWith(".wav")) {
+        audio.style.display = "block"; audio.src = url;
+    } else if (lowerUrl.includes(".php") || lowerUrl.includes("youtube.com") || lowerUrl.includes("youtu.be") || lowerUrl.includes("embed")) {
+        iframe.style.display = "block";
+        let finalUrl = url;
+        if (url.includes("watch?v=")) finalUrl = url.replace("watch?v=", "embed/");
+        iframe.src = finalUrl;
+    } else {
+        // সাধারণ ভিডিও বা m3u8 লিঙ্ক
+        video.style.display = "block"; 
+        playVideo(url); 
+    }
+   // ✅ ইউজার লিঙ্ক প্লে করলে ইনপুট খালি হবে (কেবল ইনপুট)
+   // urlInput.value = "";
+}
+   
+  
+</script>
+
+<script>
+function showImport() {
+  // IMPORT M3U hide
+  document.getElementById('importToggleBtn').style.display = 'none';
+
+  // Input + PLAY show
+  document.getElementById('urlInput').style.display = 'block';
+  document.querySelector('.btn-import').style.display = 'block';
+
+  // auto focus
+  document.getElementById('urlInput').focus();
+}
+
+function playAndHide() {
+  // ১. আপনার আগের ইম্পোর্ট ফাংশনটি রান করবে
+  smartImport();
+
+  // ২. সাইডবার যদি হাইড (hidden) থাকে, তবে সেটি শো করার লজিক
+  const sidebar = document.querySelector('.sidebar');
+  const btn = document.getElementById('sidebarToggle');
+  
+  if (sidebar && sidebar.classList.contains('hidden')) {
+      sidebar.classList.remove('hidden');
+      // বাটন আইকনটি আবার বাম দিকে তীরের মতো ( < ) করে দেওয়া
+      if (btn) btn.innerHTML = "&#10094;"; 
+  }
+
+  // ৩. ইনপুট বক্স এবং প্লে বাটন হাইড করা
+  document.getElementById('urlInput').style.display = 'none';
+  document.querySelector('.btn-import').style.display = 'none';
+
+  // ৪. IMPORT M3U বাটনটি আবার দেখানো
+  document.getElementById('importToggleBtn').style.display = 'block';
+
+  // ৫. ইনপুট বক্স খালি করা
+  document.getElementById('urlInput').value = '';
+}
+  
+  
+  
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const btn = document.getElementById('sidebarToggle');
+    
+    if (sidebar.classList.contains('hidden')) {
+        sidebar.classList.remove('hidden');
+        btn.innerHTML = "&#10094;"; // বাম দিকে তীর ( < ) // সাইডবার খোলা থাকলে বাম দিকে তীর
+        btn.style.left = "0px";
+    } else {
+        sidebar.classList.add('hidden');
+        btn.innerHTML = "&#10095;"; // ডান দিকে তীর ( > ) // সাইডবার বন্ধ থাকলে ডান দিকে তীর
+        btn.style.left = "0px";
+    }
+}
+  
+  
+  
+function updateControlVisibility() {
+    const controls = document.querySelector('.player-controls');
+    const items = document.querySelectorAll('.channel-item');
+    const listArea = document.getElementById('listArea');
+    
+    // শর্ত: চ্যানেল থাকতে হবে এবং লিস্ট এরিয়া block (দৃশ্যমান) থাকতে হবে
+    if (items.length > 0 && listArea.style.display === "block") {
+        controls.style.display = 'flex';
+        controls.style.opacity = '1';
+        controls.style.visibility = 'visible';
+    } else {
+        controls.style.display = 'none';
+        controls.style.opacity = '0';
+        controls.style.visibility = 'hidden';
+    }
+}
+  
+  
+  
+</script>
+
+
+
+  
+  
+  <script>
+    
+    
+    // Next button function (শুধু list visible হলে কাজ করবে)
+function nextChannel() {
+    if (listArea.style.display === "none") return; // list hide হলে কাজ করবে না
+
+    const visibleItems = document.querySelectorAll('.channel-item');
+    if (visibleItems.length === 0) return;
+
+    if (currentIndex < visibleItems.length - 1) {
+        currentIndex++;
+    } else {
+        currentIndex = 0;
+    }
+
+    const targetItem = visibleItems[currentIndex];
+    if (targetItem) {
+        targetItem.click();
+        targetItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        showChannelName(targetItem.innerText);
+    }
+}
+
+// Previous button function (শুধু list visible হলে কাজ করবে)
+function prevChannel() {
+    if (listArea.style.display === "none") return; // list hide হলে কাজ করবে না
+
+    const visibleItems = document.querySelectorAll('.channel-item');
+    if (visibleItems.length === 0) return;
+
+    if (currentIndex > 0) {
+        currentIndex--;
+    } else {
+        currentIndex = visibleItems.length - 1;
+    }
+
+    const targetItem = visibleItems[currentIndex];
+    if (targetItem) {
+        targetItem.click();
+        targetItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        showChannelName(targetItem.innerText);
+    }
+}
+
+// Toggle Default List
+function toggleDefault() {
+    if (!defaultLoaded) {
+        loadMultipleDefaults();
+        updatePlaylistHint(); // 👈 add
+        return;
+    }
+
+    if (listArea.style.display === "none") {
+        allChannels = defaultChannels;
+        renderList(allChannels);
+        listArea.style.display = "block";
+        listControls.style.display = "block";
+    } else {
+        listArea.style.display = "none";
+        listControls.style.display = "none";
+    }
+      updatePlaylistHint(); // 👈 add
+  
+  // এই লাইনটি বাটন শো/হাইড কন্ট্রোল করবে
+    updateControlVisibility();
+    updatePlaylistHint();
+  
+}
+
+// Toggle User Imported List
+function toggleUserList() {
+    const hint = document.getElementById('playlistHint');
+    
+    if (listArea.style.display === "none") {
+        allChannels = userChannels;
+        renderList(allChannels);
+        listArea.style.display = "block";
+        listControls.style.display = "block";
+        if(hint) hint.style.display = "none"; // লিস্ট দেখালে টেক্সট লুকাবে
+    } else {
+        listArea.style.display = "none";
+        listControls.style.display = "none";
+        // যদি ইউজার চায় সব খালি রাখতে, তবে টেক্সট ফিরিয়ে আনতে পারেন (ঐচ্ছিক)
+        // if(hint) hint.style.display = "block"; 
+    }
+  
+      updateControlVisibility(); // ⭐ এটা যোগ করুন
+
+}
+// Cancel User List
+function cancelUserList(event) {
+    event.stopPropagation();
+    userChannels = [];
+    userListBtn.style.display = "none";
+    listArea.style.display = "none";
+    listControls.style.display = "none";
+    updatePlaylistHint(); // 👈 add
+  
+  // বাটন এবং হিন্ট আপডেট
+    updateControlVisibility();
+  
+}
+
+// ✅ Page load এ কিছুই করবে না
+window.onload = function () {
+  // intentionally empty
+};
+
+    
+    // ✅ Text animation in input bar
+const placeholderTexts = [
+  "Past .M3U List Link",
+  "Past .TXT List Link",
+  "Past GitHub Raw link ",
+  "Past .M3U8 / .TS Link",
+  "Past .PHP / .MP4 / .WEBM Link",
+  "Past .MP3 / .WAV Link",
+  "Past Any Embed Link ",
+  
+];
+
+let phIndex = 0;
+let charIndex = 0;
+const input = document.getElementById("urlInput");
+
+function typePlaceholder() {
+  if (!input) return;
+
+  input.placeholder = placeholderTexts[phIndex].slice(0, charIndex++);
+  
+  if (charIndex > placeholderTexts[phIndex].length) {
+    setTimeout(() => {
+      charIndex = 0;
+      phIndex = (phIndex + 1) % placeholderTexts.length;
+    }, 1000);
+  }
+}
+
+setInterval(typePlaceholder, 80);
+
+        // ✅ Text animation in input bar
+
+    
+function updatePlaylistHint() {
+  const hint = document.getElementById('playlistHint');
+
+  // যদি list visible থাকে → hint hide
+  if (listArea.style.display === "block") {
+    hint.style.display = "none";
+  } 
+  // list hide থাকলে → hint show
+  else {
+    hint.style.display = "block";
+  }
+}
+    
+  
+    
+// ১. লিঙ্ক দেখানোর জন্য মেইন ফাংশন
+function updateShowLink(url) {
+    const showLinkDiv = document.getElementById('show-link');
+    if (showLinkDiv) {
+        // এই লাইনটি show-link ডিভ-এ বর্তমান প্লে হওয়া লিঙ্কটি বসিয়ে দেবে
+      // showLinkDiv.innerText = "ANY TAXT FOR SHOW " + url; 
+        showLinkDiv.innerText = " " + url; 
+    }
+}
+    
+    
+    // JSON মেইন ফাংশন
+
+async function fetchJSON(url, isDefault) {
+    try {
+        const res = await fetch(proxy ? proxy + encodeURIComponent(url) : url);
+        if (!res.ok) throw new Error("");
+        const data = await res.json();
+        const channels = parseJSONChannels(data);
+
+        if (isDefault) {
+            defaultChannels = defaultChannels.concat(channels);
+            allChannels = defaultChannels;
+        } else {
+            userChannels = channels;
+            allChannels = userChannels;
+            userListBtn.style.display = "block";
+        }
+
+        setupCategories(allChannels);
+        renderList(allChannels);
+    } catch (e) {
+        console.error("", e);
+    }
+}
+
+function parseJSONChannels(json) {
+    const seenUrls = new Set(allChannels.map(c => c.url));
+    const channels = [];
+
+    json.forEach(ch => {
+        if (ch.name && ch.url && !seenUrls.has(ch.url)) {
+            channels.push({
+                name: ch.name,
+                url: ch.url,
+                category: ch.category || "Others"
+            });
+            seenUrls.add(ch.url);
+        }
+    });
+
+    return channels;
+}
+  </script>
+  
+  
+<!------- ডুপ্লিকেট চেক করে ৩টি লিঙ্ক একসাথে লোড করার ফাংশন 
+  //৩টি লিঙ্ক একটি অ্যারেতে রাখুন।
+  const defaultM3UFiles = [
+    "https://github.com/subirkumarpaul/Subirmaxpro/raw/refs/heads/main/Subirmaxpro", // লিঙ্ক ১
+    "https://iptv-org.github.io/iptv/index.m3u",                                  // লিঙ্ক ২
+    "https://example.com/another-list.m3u"                                         // লিঙ্ক ৩
+];
+  
+  
+  //"যদি লিঙ্কটি GitHub-এর হয়, তবে প্রক্সি ব্যবহার করো; অন্যথায় সরাসরি লোড করো।"
+  async function loadMultipleDefaults() {
+    listArea.innerHTML = "<p style='padding:15px;'>Loading All Lists...</p>";
+    let combinedChannels = [];
+    
+    for (let url of defaultM3UFiles) {
+        try {
+            let finalUrl = url;
+            // শুধু GitHub লিঙ্কের জন্য প্রক্সি যোগ করা হবে
+            if (url.includes("github.com")) {
+                finalUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+            }
+
+            const res = await fetch(finalUrl);
+            const data = await res.text();
+            const parsed = parseM3U(data);
+            combinedChannels = [...combinedChannels, ...parsed];
+        } catch (e) { 
+            console.error("Error loading: " + url); 
+        }
+    }
+    
+    defaultChannels = combinedChannels;
+    allChannels = defaultChannels;
+    
+    // বাকি রেন্ডার লজিক আগের মতোই থাকবে...
+    renderList(allChannels);
+    listArea.style.display = "block";
+    listControls.style.display = "block";
+}
+  //ইম্পোর্ট বক্সের জন্যও এই নিয়মটি করতে হবে:
+  
+  async function fetchM3U(url) {
+    try {
+        let finalUrl = url;
+        // যদি ইউজার GitHub লিঙ্ক দেয় তবে অটোমেটিক প্রক্সি যোগ হবে
+        if (url.includes("github.com")) {
+            finalUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
+        }
+        
+        const res = await fetch(finalUrl);
+        const data = await res.text();
+        allChannels = parseM3U(data);
+        renderList(allChannels);
+        listArea.style.display = "block";
+        listControls.style.display = "block";
+    } catch (e) { 
+        alert("Error loading list."); 
+    }
+}
+  
+  
+  --- */
+  
+  
+  
+  /* --- প্রক্সি স্লো হলে বিকল্প প্রক্সি ব্যবহারের ফাংশন 
+async function fetchWithBackupProxy(url) {
+    const proxies = [
+        "https://corsproxy.io/?",
+        "https://api.allorigins.win/raw?url=",
+        "https://thingproxy.freeboard.io/fetch/"
+    ];
+
+    for (let proxyPrefix of proxies) {
+        try {
+            const res = await fetch(proxyPrefix + encodeURIComponent(url));
+            if (res.ok) return await res.text(); // যদি সফল হয় তবে ডাটা রিটার্ন করবে
+        } catch (e) {
+            console.log("Proxy failed, trying next...");
+        }
+    }
+    throw new Error("All proxies failed");
+}
+  
+  --->
+  
+  
+</body>
+</html>
