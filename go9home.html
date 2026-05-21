@@ -471,7 +471,7 @@ color: lime;
 <!-- TOP BAR -->
 <div class='header-top'>
 <div class='menu-toggle' onclick='toggleMenu()'>&#9776;</div>
-<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE 1</span>
+<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE 2  </span>
 </a>
 <nav id='mainNav'>
 <ul class='menu'>
@@ -683,7 +683,7 @@ color: lime;
 (function () {
 
   // Only homepage
-  var isHome = location.pathname === "https://nu013.github.io/player/go9home.html" || location.pathname === "https://nu013.github.io/player/go9home.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("movie-today-list-unique");
@@ -726,8 +726,16 @@ color: lime;
             const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
             const year = m.release_date ? m.release_date.split('-')[0] : "N/A";
 
+
+             
+const poster = m.poster_path
+  ? "https://image.tmdb.org/t/p/w500" + m.poster_path
+  : "https://via.placeholder.com/500x750?text=No+Poster";
+
+             
             html += `
               <div class="movie-card">
+<div class="movie-card">
   <a href="/player/go9watch.html?id=${m.id}&type=movie">
 
     <div class="poster-top-bar">
@@ -735,13 +743,7 @@ color: lime;
       <span class="date-label">${year}</span>
     </div>
 
-    <img
-      src="${m.poster_path
-        ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
-        : 'https://via.placeholder.com/500x750?text=No+Poster'}"
-      alt="${m.title}"
-      loading="lazy"
-    >
+    <img src="${poster}" alt="${m.title}" loading="lazy">
 
     <span>${m.title}</span>
 
