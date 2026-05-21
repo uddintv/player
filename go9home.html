@@ -543,7 +543,7 @@ color: lime;
 //======LATEST NEW
 
 
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "https://nu013.github.io/player/go9home.html" || location.pathname === "https://nu013.github.io/player/go9home.html";
   if (!isHome) return;
 
   var box = document.getElementById("trending-today-list");
@@ -683,7 +683,7 @@ color: lime;
 (function () {
 
   // Only homepage
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "https://nu013.github.io/player/go9home.html" || location.pathname === "https://nu013.github.io/player/go9home.html";
   if (!isHome) return;
 
   var box = document.getElementById("movie-today-list-unique");
@@ -728,17 +728,24 @@ color: lime;
 
             html += `
               <div class="movie-card">
-                <a href="/player/go9watch.html?id=${m.id}&type=movie">
+  <a href="/player/go9watch.html?id=${m.id}&type=movie">
 
-                  <div class="poster-top-bar">
-                    <span class="rating-label">&#11088; ${rating}</span>
-                    <span class="date-label">${year}</span>
-                  </div>
+    <div class="poster-top-bar">
+      <span class="rating-label">⭐ ${rating}</span>
+      <span class="date-label">${year}</span>
+    </div>
 
-                  <img src="https://image.tmdb.org/t/p/w185${m.poster_path}">
-                  <span>${m.title}</span>
+    <img
+      src="${m.poster_path
+        ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+        : 'https://via.placeholder.com/500x750?text=No+Poster'}"
+      alt="${m.title}"
+      loading="lazy"
+    >
 
-                </a>
+    <span>${m.title}</span>
+
+  </a>
               </div>`;
           });
 
