@@ -471,7 +471,7 @@ color: lime;
 <!-- TOP BAR -->
 <div class='header-top'>
 <div class='menu-toggle' onclick='toggleMenu()'>&#9776;</div>
-<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE 2  </span>
+<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE 3  </span>
 </a>
 <nav id='mainNav'>
 <ul class='menu'>
@@ -792,7 +792,7 @@ const poster = m.poster_path
 (function () {
 
   // Only homepage
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("tv-today-list-unique");
