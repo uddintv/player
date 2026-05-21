@@ -471,7 +471,7 @@ color: lime;
 <!-- TOP BAR -->
 <div class='header-top'>
 <div class='menu-toggle' onclick='toggleMenu()'>&#9776;</div>
-<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE 3  </span>
+<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE </span>
 </a>
 <nav id='mainNav'>
 <ul class='menu'>
@@ -725,29 +725,20 @@ color: lime;
 
             const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
             const year = m.release_date ? m.release_date.split('-')[0] : "N/A";
-
-
-             
-const poster = m.poster_path
-  ? "https://image.tmdb.org/t/p/w500" + m.poster_path
-  : "https://via.placeholder.com/500x750?text=No+Poster";
-
              
             html += `
               <div class="movie-card">
-<div class="movie-card">
-  <a href="/player/go9watch.html?id=${m.id}&type=movie">
+                <a href="/player/go9watch.html?id=${m.id}&type=movie">
 
-    <div class="poster-top-bar">
-      <span class="rating-label">⭐ ${rating}</span>
-      <span class="date-label">${year}</span>
-    </div>
+                  <div class="poster-top-bar">
+                    <span class="rating-label">&#11088; ${rating}</span>
+                    <span class="date-label">${year}</span>
+                  </div>
 
-    <img src="${poster}" alt="${m.title}" loading="lazy">
+                  <img src="https://image.tmdb.org/t/p/w185${m.poster_path}">
+                  <span>${m.title}</span>
 
-    <span>${m.title}</span>
-
-  </a>
+                </a>
               </div>`;
           });
 
@@ -910,7 +901,7 @@ const poster = m.poster_path
 <script>
 (function () {
 
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("movie-2026-list");
@@ -1038,8 +1029,8 @@ const poster = m.poster_path
 <script>
 (function () {
 
-  // শ&#2497;ধ&#2497;ম&#2494;ত&#2509;র হ&#2507;ম প&#2503;জ&#2503; দ&#2503;খ&#2494;ব&#2503;
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
+
   if (!isHome) return;
 
   var box = document.getElementById("tv-hindi-list");
@@ -1150,7 +1141,7 @@ const poster = m.poster_path
 <script>
 (function () {
 
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("tamil-movies-list");
@@ -1271,7 +1262,7 @@ const poster = m.poster_path
 <script>
 (function () {
 
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("malayalam-movies-list");
@@ -1400,7 +1391,7 @@ fetchTrendingMalayalamMovies();
 <script>
 (function () {
 
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("telugu-movies-list");
@@ -1528,8 +1519,7 @@ fetchTrendingMalayalamMovies();
 <script>
 (function () {
 
-  // শ&#2497;ধ&#2497;ম&#2494;ত&#2509;র homepage-এ show হব&#2503;
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("movie-top-rated-list");
@@ -1627,7 +1617,7 @@ fetchTrendingMalayalamMovies();
 (function () {
 
   // only homepage
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
   if (!isHome) return;
 
   var box = document.getElementById("tv-series-top-rated-list");
@@ -1744,9 +1734,9 @@ fetchTrendingMalayalamMovies();
 
 <script>
 (function () {
-  // শ&#2497;ধ&#2497;ম&#2494;ত&#2509;র homepage-এ show হব&#2503;
-  var isHome = location.pathname === "/" || location.pathname === "/index.html";
-  if (!isHome) return;
+   
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
+ if (!isHome) return;
 
   var box = document.getElementById("today-movie-list");
   if (!box) return;
