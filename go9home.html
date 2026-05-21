@@ -2314,7 +2314,7 @@ if(tmdbURL){
   fetch(tmdbURL)
     .then(r=>r.json())
     .then(d=>{
-      var box = document.getElementById('tmdb-result');
+      var box = document.getElementById('tmdb-result-page');
       if(!box) return;
 
       let html='';
@@ -2332,7 +2332,7 @@ d.results.forEach(m => {
       </div>`;
         }
       });
-      document.getElementById('tmdb-result').innerHTML = html;
+      document.getElementById('tmdb-result-page').innerHTML = html;
     });
 }
 
