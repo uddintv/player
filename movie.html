@@ -1,564 +1,264 @@
-<script type="text/javascript">
-//<![CDATA[
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GO9MOVIE 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-const API_KEY = '844dba0bfd8f3a4f3799f6130ef9e335';
-
-// =========================
-// URL PARAMS
-// =========================
-const params = new URLSearchParams(window.location.search);
-
-const query     = params.get('q');
-const label     = params.get('label');
-const genre     = params.get('with_genres');
-const year      = params.get('primary_release_year') || params.get('first_air_date_year');
-const provider  = params.get('with_watch_providers');
-
-const type      = params.get('type') || 'movie';
-
-const lang      = params.get('with_original_language');
-
-const dateGte   = params.get('primary_release_date.gte');
-const dateLte   = params.get('primary_release_date.lte');
-
-const sortBy    = params.get('sort_by');
-
-// =========================
-// BUILD TMDB URL
-// =========================
-let tmdbURL = '';
-
-
-// =========================
-// SEARCH
-// =========================
-if(query){
-
-  if(type === 'movie'){
-
-    tmdbURL =
-      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
-
-  }
-
-  else if(type === 'tv'){
-
-    tmdbURL =
-      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
-
-  }
-
-  else if(type === 'multi'){
-
-    tmdbURL =
-      `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
-
-  }
-
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:#fff;
 }
 
-
-// =========================
-// LABEL SYSTEM
-// =========================
-if(label){
-
-  // MOVIE
-  if(type === 'movie'){
-
-    if(label === 'Popular'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'Trending'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'Latest'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'Upcoming'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'top_rated'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`;
-
-    }
-
-  }
-
-
-  // TV
-  else if(type === 'tv'){
-
-    if(label === 'Popular'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'Trending'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/trending/tv/week?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'Latest'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/tv/airing_today?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'Upcoming'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}`;
-
-    }
-
-    if(label === 'top_rated'){
-
-      tmdbURL =
-        `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}`;
-
-    }
-
-  }
-
+/* HEADER */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background:#111827;
+position:sticky;
+top:0;
+z-index:999;
 }
 
-
-// =========================
-// DISCOVER SYSTEM
-// =========================
-if(!tmdbURL){
-
-  // MOVIE
-  if(type === 'movie'){
-
-    tmdbURL =
-      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}`;
-
-    if(year){
-
-      tmdbURL +=
-        `&primary_release_year=${year}`;
-
-    }
-
-    if(genre){
-
-      tmdbURL +=
-        `&with_genres=${genre}`;
-
-    }
-
-    if(provider){
-
-      tmdbURL +=
-        `&with_watch_providers=${provider}&watch_region=US`;
-
-    }
-
-    if(lang){
-
-      tmdbURL +=
-        `&with_original_language=${lang}`;
-
-    }
-
-    if(dateGte){
-
-      tmdbURL +=
-        `&primary_release_date.gte=${dateGte}`;
-
-    }
-
-    if(dateLte){
-
-      tmdbURL +=
-        `&primary_release_date.lte=${dateLte}`;
-
-    }
-
-    if(sortBy){
-
-      tmdbURL +=
-        `&sort_by=${sortBy}`;
-
-    }
-
-  }
-
-
-  // TV
-  else if(type === 'tv'){
-
-    tmdbURL =
-      `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}`;
-
-    if(year){
-
-      tmdbURL +=
-        `&first_air_date_year=${year}`;
-
-    }
-
-    if(genre){
-
-      tmdbURL +=
-        `&with_genres=${genre}`;
-
-    }
-
-    if(provider){
-
-      tmdbURL +=
-        `&with_watch_providers=${provider}&watch_region=US`;
-
-    }
-
-    if(lang){
-
-      tmdbURL +=
-        `&with_original_language=${lang}`;
-
-    }
-
-    if(dateGte){
-
-      tmdbURL +=
-        `&first_air_date.gte=${dateGte}`;
-
-    }
-
-    if(dateLte){
-
-      tmdbURL +=
-        `&first_air_date.lte=${dateLte}`;
-
-    }
-
-    if(sortBy){
-
-      tmdbURL +=
-        `&sort_by=${sortBy}`;
-
-    }
-
-  }
-
+.logo{
+font-size:20px;
+font-weight:bold;
+color:#38bdf8;
 }
 
-
-// =========================
-// FETCH DATA
-// =========================
-if(tmdbURL){
-
-  fetch(tmdbURL)
-
-    .then(r => r.json())
-
-    .then(d => {
-
-      const box = document.getElementById('tmdb-result-page');
-
-      if(!box) return;
-
-      let html = '';
-
-      if(!d.results || d.results.length === 0){
-
-        box.innerHTML =
-          `<p style="color:#fff;text-align:center;">No Result Found</p>`;
-
-        return;
-
-      }
-
-
-      d.results.forEach(m => {
-
-        if(!m.poster_path) return;
-
-
-        // TYPE DETECT
-        let mType = 'movie';
-
-        if(m.media_type){
-
-          if(m.media_type === 'tv'){
-
-            mType = 'tv';
-
-          }
-
-          if(m.media_type === 'movie'){
-
-            mType = 'movie';
-
-          }
-
-        }
-
-        else{
-
-          if(m.name){
-
-            mType = 'tv';
-
-          }
-
-        }
-
-
-        const title =
-          m.title || m.name || 'No Title';
-
-        const year =
-          (m.release_date || m.first_air_date || '')
-          .split('-')[0] || 'N/A';
-
-        const rating =
-          m.vote_average
-          ? m.vote_average.toFixed(1)
-          : 'N/A';
-
-
-        html += `
-
-        <div class="movie-card">
-
-          <a href="/player/go9movie.html?id=${m.id}&type=${mType}">
-
-            <div class="poster-top-bar">
-
-              <span class="rating-label">
-                ? ${rating}
-              </span>
-
-              <span class="date-label">
-                ${year}
-              </span>
-
-            </div>
-
-            <img
-              src="https://image.tmdb.org/t/p/w342${m.poster_path}"
-              alt="${title}"
-            >
-
-            <span>${title}</span>
-
-          </a>
-
-        </div>
-
-        `;
-
-      });
-
-
-      box.innerHTML = html;
-
-    })
-
-    .catch(err => {
-
-      console.log(err);
-
-      const box = document.getElementById('tmdb-result-page');
-
-      if(box){
-
-        box.innerHTML =
-          `<p style="color:red;text-align:center;">Failed To Load</p>`;
-
-      }
-
-    });
-
+.search-box input{
+padding:8px;
+width:200px;
+border-radius:6px;
+border:none;
+outline:none;
 }
 
-
-// =========================
-// RESULT HEADER
-// =========================
-let headerText = 'Movies';
-
-if(type === 'tv'){
-
-  headerText = 'TV Series';
-
+/* GRID */
+.section-title{
+padding:10px 15px;
+color:#38bdf8;
+font-size:18px;
+margin-top:10px;
 }
 
-if(type === 'multi'){
-
-  headerText = 'Search Result';
-
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+gap:10px;
+padding:10px;
 }
 
-if(label){
-
-  headerText += ' - ' + label;
-
+.card{
+background:#1e293b;
+border-radius:8px;
+overflow:hidden;
+cursor:pointer;
+transition:0.3s;
 }
 
-if(year){
-
-  headerText += ' (' + year + ')';
-
+.card:hover{
+transform:scale(1.05);
 }
 
-if(lang){
-
-  headerText += ' - ' + lang.toUpperCase();
-
+.card img{
+width:100%;
+height:200px;
+object-fit:cover;
 }
 
-const headerBox =
-  document.getElementById('result-header');
-
-if(headerBox){
-
-  headerBox.innerText = headerText;
-
+.card span{
+display:block;
+padding:5px;
+font-size:13px;
+text-align:center;
 }
 
-
-// =========================
-// SEARCH BOX
-// =========================
-function toggleSearch(){
-
-  const box =
-    document.getElementById("searchBox");
-
-  box.classList.toggle("active");
-
-  document
-    .getElementById("searchInput")
-    .focus();
-
+/* PLAYER */
+#playerSection{
+display:none;
+padding:10px;
 }
 
+iframe{
+width:100%;
+height:220px;
+border:none;
+border-radius:10px;
+background:#000;
+}
 
-document.addEventListener("click", function(e){
+.buttons{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+margin-top:10px;
+}
 
-  const searchBox =
-    document.getElementById("searchBox");
+.buttons button{
+padding:10px;
+border:none;
+background:#38bdf8;
+color:#000;
+font-weight:bold;
+border-radius:6px;
+cursor:pointer;
+}
 
-  const searchBtn =
-    document.getElementById("searchBtn");
+.details{
+margin-top:10px;
+background:#1e293b;
+padding:10px;
+border-radius:8px;
+}
 
-  if(
+.poster{
+width:120px;
+border-radius:6px;
+}
 
-    searchBox.classList.contains("active") &&
+.flex{
+display:flex;
+gap:10px;
+}
 
-    !searchBox.contains(e.target) &&
+.similar{
+margin-top:10px;
+}
+</style>
+</head>
 
-    !searchBtn.contains(e.target)
+<body>
 
-  ){
+<header>
+<div class="logo">GO9MOVIE</div>
+<div class="search-box">
+<input type="text" id="search" placeholder="Search movie...">
+</div>
+</header>
 
-    searchBox.classList.remove("active");
+<!-- MOVIE GRID -->
+<div id="home">
 
-  }
+<div class="section-title">🎬 Trending Movies</div>
+<div class="grid" id="movies"></div>
 
+</div>
+
+<!-- PLAYER -->
+<div id="playerSection">
+
+<iframe id="video" src=""></iframe>
+
+<div class="buttons">
+<button onclick="server(1)">Server 1</button>
+<button onclick="server(2)">Server 2</button>
+<button onclick="server(3)">Server 3</button>
+<button onclick="server(4)">Server 4</button>
+</div>
+
+<div class="details">
+<div class="flex">
+<img id="poster" class="poster">
+<div>
+<h3 id="title"></h3>
+<p id="desc"></p>
+</div>
+</div>
+</div>
+
+<div class="similar">
+<h3>Similar Movies</h3>
+<div class="grid" id="similar"></div>
+</div>
+
+</div>
+
+<script>
+const API="https://api.themoviedb.org/3";
+const KEY="844dba0bfd8f3a4f3799f6130ef9e335";
+
+let currentId=null;
+
+/* LOAD MOVIES */
+async function loadMovies(){
+let res=await fetch(API+"/trending/movie/week?api_key="+KEY);
+let data=await res.json();
+
+document.getElementById("movies").innerHTML=
+data.results.map(m=>`
+<div class="card" onclick="openMovie(${m.id})">
+<img src="https://image.tmdb.org/t/p/w300${m.poster_path}">
+<span>${m.title}</span>
+</div>
+`).join("");
+}
+loadMovies();
+
+/* OPEN MOVIE */
+async function openMovie(id){
+currentId=id;
+
+let res=await fetch(API+"/movie/"+id+"?api_key="+KEY);
+let m=await res.json();
+
+document.getElementById("home").style.display="none";
+document.getElementById("playerSection").style.display="block";
+
+document.getElementById("title").innerText=m.title;
+document.getElementById("desc").innerText=m.overview;
+document.getElementById("poster").src="https://image.tmdb.org/t/p/w300"+m.poster_path;
+
+/* default video */
+server(1);
+
+/* similar */
+let sim=await fetch(API+"/movie/"+id+"/similar?api_key="+KEY);
+let s=await sim.json();
+
+document.getElementById("similar").innerHTML=
+s.results.map(x=>`
+<div class="card" onclick="openMovie(${x.id})">
+<img src="https://image.tmdb.org/t/p/w300${x.poster_path}">
+<span>${x.title}</span>
+</div>
+`).join("");
+}
+
+/* SERVER SWITCH (DUMMY LINKS) */
+function server(n){
+let url="";
+
+if(n==1) url="https://www.youtube.com/embed/dQw4w9WgXcQ";
+if(n==2) url="https://www.youtube.com/embed/jNQXAC9IVRw";
+if(n==3) url="https://www.youtube.com/embed/M7lc1UVf-VE";
+if(n==4) url="https://www.youtube.com/embed/ysz5S6PUM-U";
+
+document.getElementById("video").src=url;
+}
+
+/* SEARCH */
+document.getElementById("search").addEventListener("input",async function(){
+let q=this.value;
+if(q.length<2) return loadMovies();
+
+let res=await fetch(API+"/search/movie?api_key="+KEY+"&query="+q);
+let data=await res.json();
+
+document.getElementById("movies").innerHTML=
+data.results.map(m=>`
+<div class="card" onclick="openMovie(${m.id})">
+<img src="https://image.tmdb.org/t/p/w300${m.poster_path}">
+<span>${m.title}</span>
+</div>
+`).join("");
 });
-
-
-function doSearch(){
-
-  var q =
-    document.getElementById("searchInput").value;
-
-  if(q.trim() !== ""){
-
-    window.location.href =
-      "https://nu013.github.io/player/go9movie.html?type=multi&q="
-      + encodeURIComponent(q);
-
-  }
-
-}
-
-
-function handleKeyPress(e){
-
-  if(e.key === "Enter"){
-
-    doSearch();
-
-  }
-
-}
-
-
-// =========================
-// MENU
-// =========================
-function toggleMenu(){
-
-  var nav =
-    document.getElementById("mainNav");
-
-  nav.classList.toggle("active");
-
-}
-
-
-document.addEventListener('click', function(event) {
-
-  var nav =
-    document.getElementById("mainNav");
-
-  var burger =
-    document.querySelector(".menu-toggle");
-
-  if (
-
-    nav &&
-    burger &&
-    nav.classList.contains("active")
-
-  ) {
-
-    if (
-
-      !nav.contains(event.target) &&
-      !burger.contains(event.target)
-
-    ) {
-
-      nav.classList.remove("active");
-
-    }
-
-  }
-
-});
-
-
-//]]>
 </script>
+
+</body>
+</html>
