@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Go9Movie Pro</title>
+<title>Go9Movie 2026</title>
 
 <style>
 body{
@@ -27,6 +27,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 flex-wrap:wrap;
+gap:10px;
 }
 
 .logo{
@@ -39,7 +40,6 @@ cursor:pointer;
 /* DROPDOWN */
 .dropdown{
 position:relative;
-display:inline-block;
 }
 
 .dropbtn{
@@ -56,16 +56,17 @@ display:none;
 position:absolute;
 background:#111827;
 min-width:160px;
-z-index:1;
 border-radius:6px;
 overflow:hidden;
+z-index:1000;
 }
 
 .dropdown-content a{
-color:#fff;
-padding:10px;
 display:block;
+padding:10px;
+color:#fff;
 text-decoration:none;
+cursor:pointer;
 }
 
 .dropdown-content a:hover{
@@ -73,30 +74,38 @@ background:#38bdf8;
 color:#000;
 }
 
-.dropdown:hover .dropdown-content{
-display:block;
+/* SEARCH */
+.search{
+padding:10px;
 }
 
-/* GRID */
+.search input{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:none;
+}
+
+/* SECTION */
 .section{
 padding:10px;
 }
 
 .section h2{
-font-size:16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+font-size:16px;
 color:#38bdf8;
 }
 
 .seeall{
 font-size:12px;
-color:#fff;
 cursor:pointer;
 text-decoration:underline;
 }
 
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
@@ -108,24 +117,19 @@ background:#1e293b;
 border-radius:10px;
 overflow:hidden;
 cursor:pointer;
-transition:0.3s;
-}
-
-.card:hover{
-transform:scale(1.05);
 }
 
 .card img{
 width:100%;
-height:180px;
+height:170px;
 object-fit:cover;
 }
 
 .card span{
 display:block;
 font-size:12px;
-text-align:center;
 padding:5px;
+text-align:center;
 }
 
 /* PLAYER */
@@ -154,6 +158,7 @@ border:none;
 border-radius:6px;
 background:#1e293b;
 color:#fff;
+cursor:pointer;
 }
 
 .server button.active{
@@ -174,10 +179,8 @@ border-radius:8px;
 
 .small{font-size:12px;color:#94a3b8}
 
-/* MOBILE */
 @media(max-width:600px){
-.card img{height:150px;}
-iframe{height:200px;}
+.card img{height:140px;}
 }
 </style>
 </head>
@@ -189,11 +192,9 @@ iframe{height:200px;}
 
 <div class="logo" onclick="home()">🎬 GO9MOVIE</div>
 
-<!-- MOVIES -->
 <div class="dropdown">
-<button class="dropbtn">Movies ▼</button>
-<div class="dropdown-content">
-<a onclick="load('movie/popular')">Popular</a>
+<button class="dropbtn" onclick="toggleMenu('m1')">Movies ▼</button>
+<div id="m1" class="dropdown-content">
 <a onclick="load('trending/movie/week')">Trending</a>
 <a onclick="load('movie/top_rated')">Top Rated</a>
 <a onclick="loadLang('ml')">Malayalam</a>
@@ -201,15 +202,18 @@ iframe{height:200px;}
 </div>
 </div>
 
-<!-- TV -->
 <div class="dropdown">
-<button class="dropbtn">TV Series ▼</button>
-<div class="dropdown-content">
-<a onclick="loadTV('tv/popular')">Popular</a>
+<button class="dropbtn" onclick="toggleMenu('m2')">TV ▼</button>
+<div id="m2" class="dropdown-content">
 <a onclick="loadTV('tv/top_rated')">Top Rated</a>
+<a onclick="loadTV('tv/popular')">Popular</a>
 </div>
 </div>
 
+</div>
+
+<div class="search">
+<input id="searchBox" placeholder="Search movies..." onkeypress="if(event.key==='Enter')search()">
 </div>
 </header>
 
@@ -248,92 +252,81 @@ const KEY="844dba0bfd8f3a4f3799f6130ef9e335";
 let id=null;
 let type="movie";
 
-/* HOME SECTIONS */
-window.onload=()=>{
-homePage();
-};
+/* INIT */
+window.onload=home;
 
+/* HOME */
 function home(){
-homePage();
-}
-
-function homePage(){
 document.getElementById("player").style.display="none";
 document.getElementById("home").style.display="block";
+loadHome();
+}
 
-document.getElementById("home").innerHTML=`
-${section("Trending Movies","trending/movie/week")}
-${section("Top Rated Movies","movie/top_rated")}
-${section("Today Release","movie/now_playing")}
-${sectionLang("Malayalam Movies","ml")}
-${sectionLang("Telugu Movies","te")}
-${sectionTV("Top Rated Series","tv/top_rated")}
-`;
+/* HOME SECTIONS */
+function loadHome(){
+document.getElementById("home").innerHTML="";
+
+loadSection("Trending Movies","trending/movie/week");
+loadSection("Top Rated Movies","movie/top_rated");
+loadSection("Today Release","movie/now_playing");
+loadLangSection("Malayalam Movies","ml");
+loadLangSection("Telugu Movies","te");
+loadTVSection("Top Rated Series","tv/top_rated");
 }
 
 /* SECTION */
-function section(title,path){
-loadSection(path,title);
-return `<div id="${path}"></div>`;
-}
-
-function sectionLang(title,lang){
-loadLangSection(lang,title);
-return `<div id="lang_${lang}"></div>`;
-}
-
-function sectionTV(title,path){
-loadTVSection(path,title);
-return `<div id="${path}"></div>`;
-}
-
-/* LOAD MOVIE SECTION */
-function loadSection(path,title){
+function loadSection(title,path){
 fetch(`${API}/${path}?api_key=${KEY}`)
 .then(r=>r.json())
 .then(d=>{
-renderGrid(path,d.results,title);
+render(title,d.results);
 });
 }
 
-/* LANGUAGE */
 function loadLang(lang){
 fetch(`${API}/discover/movie?api_key=${KEY}&with_original_language=${lang}`)
 .then(r=>r.json())
 .then(d=>{
-renderGrid("lang_"+lang,d.results,lang.toUpperCase());
+render(lang.toUpperCase(),d.results);
 });
 }
 
-/* TV */
+function loadLangSection(title,lang){
+fetch(`${API}/discover/movie?api_key=${KEY}&with_original_language=${lang}`)
+.then(r=>r.json())
+.then(d=>{
+render(title,d.results);
+});
+}
+
 function loadTV(path){
 fetch(`${API}/${path}?api_key=${KEY}`)
 .then(r=>r.json())
 .then(d=>{
-renderGrid(path,d.results,"TV");
+render("TV Series",d.results);
 });
 }
 
-/* TV SECTION */
-function loadTVSection(path,title){
+function loadTVSection(title,path){
 fetch(`${API}/${path}?api_key=${KEY}`)
 .then(r=>r.json())
 .then(d=>{
-renderGrid(path,d.results,title);
+render(title,d.results);
 });
 }
 
 /* RENDER */
-function renderGrid(idName,data,title){
-let html=`<div class="section">
-<h2>${title} <span class="seeall">SEE ALL</span></h2>
+function render(title,data){
+let html=`
+<div class="section">
+<h2>${title} <span class="seeall" onclick="home()">SEE ALL</span></h2>
 <div class="grid">`;
 
 data.slice(0,8).forEach(m=>{
 if(!m.poster_path) return;
 
 html+=`
-<div class="card" onclick="open(${m.id},'${m.title||m.name?'tv':'movie'}')">
+<div class="card" onclick="openMovie(${m.id},'${m.title?'movie':'tv'}')">
 <img src="https://image.tmdb.org/t/p/w342${m.poster_path}">
 <span>${m.title||m.name}</span>
 </div>`;
@@ -341,14 +334,13 @@ html+=`
 
 html+=`</div></div>`;
 
-let el=document.getElementById("home");
-el.innerHTML+=html;
+document.getElementById("home").innerHTML+=html;
 }
 
-/* OPEN PLAYER */
-function open(movieId,mType){
-id=movieId;
-type=mType;
+/* OPEN */
+function openMovie(mid,mtype){
+id=mid;
+type=mtype;
 
 document.getElementById("home").style.display="none";
 document.getElementById("player").style.display="block";
@@ -365,9 +357,17 @@ server(1);
 similar();
 }
 
-/* SERVER */
+/* SERVER (CHANGE HERE) */
 function server(n){
-let url="https://example.com/"+id+"?server="+n;
+
+let baseURL="https://YOUR-LINK-HERE.com/watch/"; 
+
+let url="";
+if(n==1) url=baseURL+id+"?s=1";
+if(n==2) url=baseURL+id+"?s=2";
+if(n==3) url=baseURL+id+"?s=3";
+if(n==4) url=baseURL+id+"?s=4";
+
 document.getElementById("frame").src=url;
 
 document.querySelectorAll(".server button").forEach((b,i)=>{
@@ -387,12 +387,31 @@ d.results.slice(0,10).forEach(m=>{
 if(!m.poster_path) return;
 
 box.innerHTML+=`
-<div class="card" onclick="open(${m.id},'${type}')">
+<div class="card" onclick="openMovie(${m.id},'${type}')">
 <img src="https://image.tmdb.org/t/p/w342${m.poster_path}">
 <span>${m.title||m.name}</span>
 </div>`;
 });
 });
+}
+
+/* SEARCH */
+function search(){
+let q=document.getElementById("searchBox").value;
+if(!q) return;
+
+fetch(`${API}/search/multi?api_key=${KEY}&query=${q}`)
+.then(r=>r.json())
+.then(d=>{
+document.getElementById("home").innerHTML="";
+render("Search Results",d.results);
+});
+}
+
+/* DROPDOWN */
+function toggleMenu(id){
+let el=document.getElementById(id);
+el.style.display = (el.style.display==="block") ? "none" : "block";
 }
 </script>
 
