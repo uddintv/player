@@ -1,0 +1,564 @@
+<script type="text/javascript">
+//<![CDATA[
+
+const API_KEY = '844dba0bfd8f3a4f3799f6130ef9e335';
+
+// =========================
+// URL PARAMS
+// =========================
+const params = new URLSearchParams(window.location.search);
+
+const query     = params.get('q');
+const label     = params.get('label');
+const genre     = params.get('with_genres');
+const year      = params.get('primary_release_year') || params.get('first_air_date_year');
+const provider  = params.get('with_watch_providers');
+
+const type      = params.get('type') || 'movie';
+
+const lang      = params.get('with_original_language');
+
+const dateGte   = params.get('primary_release_date.gte');
+const dateLte   = params.get('primary_release_date.lte');
+
+const sortBy    = params.get('sort_by');
+
+// =========================
+// BUILD TMDB URL
+// =========================
+let tmdbURL = '';
+
+
+// =========================
+// SEARCH
+// =========================
+if(query){
+
+  if(type === 'movie'){
+
+    tmdbURL =
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+
+  }
+
+  else if(type === 'tv'){
+
+    tmdbURL =
+      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+
+  }
+
+  else if(type === 'multi'){
+
+    tmdbURL =
+      `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+
+  }
+
+}
+
+
+// =========================
+// LABEL SYSTEM
+// =========================
+if(label){
+
+  // MOVIE
+  if(type === 'movie'){
+
+    if(label === 'Popular'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'Trending'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'Latest'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'Upcoming'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'top_rated'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`;
+
+    }
+
+  }
+
+
+  // TV
+  else if(type === 'tv'){
+
+    if(label === 'Popular'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'Trending'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/trending/tv/week?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'Latest'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/tv/airing_today?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'Upcoming'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/tv/on_the_air?api_key=${API_KEY}`;
+
+    }
+
+    if(label === 'top_rated'){
+
+      tmdbURL =
+        `https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}`;
+
+    }
+
+  }
+
+}
+
+
+// =========================
+// DISCOVER SYSTEM
+// =========================
+if(!tmdbURL){
+
+  // MOVIE
+  if(type === 'movie'){
+
+    tmdbURL =
+      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}`;
+
+    if(year){
+
+      tmdbURL +=
+        `&primary_release_year=${year}`;
+
+    }
+
+    if(genre){
+
+      tmdbURL +=
+        `&with_genres=${genre}`;
+
+    }
+
+    if(provider){
+
+      tmdbURL +=
+        `&with_watch_providers=${provider}&watch_region=US`;
+
+    }
+
+    if(lang){
+
+      tmdbURL +=
+        `&with_original_language=${lang}`;
+
+    }
+
+    if(dateGte){
+
+      tmdbURL +=
+        `&primary_release_date.gte=${dateGte}`;
+
+    }
+
+    if(dateLte){
+
+      tmdbURL +=
+        `&primary_release_date.lte=${dateLte}`;
+
+    }
+
+    if(sortBy){
+
+      tmdbURL +=
+        `&sort_by=${sortBy}`;
+
+    }
+
+  }
+
+
+  // TV
+  else if(type === 'tv'){
+
+    tmdbURL =
+      `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}`;
+
+    if(year){
+
+      tmdbURL +=
+        `&first_air_date_year=${year}`;
+
+    }
+
+    if(genre){
+
+      tmdbURL +=
+        `&with_genres=${genre}`;
+
+    }
+
+    if(provider){
+
+      tmdbURL +=
+        `&with_watch_providers=${provider}&watch_region=US`;
+
+    }
+
+    if(lang){
+
+      tmdbURL +=
+        `&with_original_language=${lang}`;
+
+    }
+
+    if(dateGte){
+
+      tmdbURL +=
+        `&first_air_date.gte=${dateGte}`;
+
+    }
+
+    if(dateLte){
+
+      tmdbURL +=
+        `&first_air_date.lte=${dateLte}`;
+
+    }
+
+    if(sortBy){
+
+      tmdbURL +=
+        `&sort_by=${sortBy}`;
+
+    }
+
+  }
+
+}
+
+
+// =========================
+// FETCH DATA
+// =========================
+if(tmdbURL){
+
+  fetch(tmdbURL)
+
+    .then(r => r.json())
+
+    .then(d => {
+
+      const box = document.getElementById('tmdb-result-page');
+
+      if(!box) return;
+
+      let html = '';
+
+      if(!d.results || d.results.length === 0){
+
+        box.innerHTML =
+          `<p style="color:#fff;text-align:center;">No Result Found</p>`;
+
+        return;
+
+      }
+
+
+      d.results.forEach(m => {
+
+        if(!m.poster_path) return;
+
+
+        // TYPE DETECT
+        let mType = 'movie';
+
+        if(m.media_type){
+
+          if(m.media_type === 'tv'){
+
+            mType = 'tv';
+
+          }
+
+          if(m.media_type === 'movie'){
+
+            mType = 'movie';
+
+          }
+
+        }
+
+        else{
+
+          if(m.name){
+
+            mType = 'tv';
+
+          }
+
+        }
+
+
+        const title =
+          m.title || m.name || 'No Title';
+
+        const year =
+          (m.release_date || m.first_air_date || '')
+          .split('-')[0] || 'N/A';
+
+        const rating =
+          m.vote_average
+          ? m.vote_average.toFixed(1)
+          : 'N/A';
+
+
+        html += `
+
+        <div class="movie-card">
+
+          <a href="/player/go9movie.html?id=${m.id}&type=${mType}">
+
+            <div class="poster-top-bar">
+
+              <span class="rating-label">
+                ? ${rating}
+              </span>
+
+              <span class="date-label">
+                ${year}
+              </span>
+
+            </div>
+
+            <img
+              src="https://image.tmdb.org/t/p/w342${m.poster_path}"
+              alt="${title}"
+            >
+
+            <span>${title}</span>
+
+          </a>
+
+        </div>
+
+        `;
+
+      });
+
+
+      box.innerHTML = html;
+
+    })
+
+    .catch(err => {
+
+      console.log(err);
+
+      const box = document.getElementById('tmdb-result-page');
+
+      if(box){
+
+        box.innerHTML =
+          `<p style="color:red;text-align:center;">Failed To Load</p>`;
+
+      }
+
+    });
+
+}
+
+
+// =========================
+// RESULT HEADER
+// =========================
+let headerText = 'Movies';
+
+if(type === 'tv'){
+
+  headerText = 'TV Series';
+
+}
+
+if(type === 'multi'){
+
+  headerText = 'Search Result';
+
+}
+
+if(label){
+
+  headerText += ' - ' + label;
+
+}
+
+if(year){
+
+  headerText += ' (' + year + ')';
+
+}
+
+if(lang){
+
+  headerText += ' - ' + lang.toUpperCase();
+
+}
+
+const headerBox =
+  document.getElementById('result-header');
+
+if(headerBox){
+
+  headerBox.innerText = headerText;
+
+}
+
+
+// =========================
+// SEARCH BOX
+// =========================
+function toggleSearch(){
+
+  const box =
+    document.getElementById("searchBox");
+
+  box.classList.toggle("active");
+
+  document
+    .getElementById("searchInput")
+    .focus();
+
+}
+
+
+document.addEventListener("click", function(e){
+
+  const searchBox =
+    document.getElementById("searchBox");
+
+  const searchBtn =
+    document.getElementById("searchBtn");
+
+  if(
+
+    searchBox.classList.contains("active") &&
+
+    !searchBox.contains(e.target) &&
+
+    !searchBtn.contains(e.target)
+
+  ){
+
+    searchBox.classList.remove("active");
+
+  }
+
+});
+
+
+function doSearch(){
+
+  var q =
+    document.getElementById("searchInput").value;
+
+  if(q.trim() !== ""){
+
+    window.location.href =
+      "https://nu013.github.io/player/go9movie.html?type=multi&q="
+      + encodeURIComponent(q);
+
+  }
+
+}
+
+
+function handleKeyPress(e){
+
+  if(e.key === "Enter"){
+
+    doSearch();
+
+  }
+
+}
+
+
+// =========================
+// MENU
+// =========================
+function toggleMenu(){
+
+  var nav =
+    document.getElementById("mainNav");
+
+  nav.classList.toggle("active");
+
+}
+
+
+document.addEventListener('click', function(event) {
+
+  var nav =
+    document.getElementById("mainNav");
+
+  var burger =
+    document.querySelector(".menu-toggle");
+
+  if (
+
+    nav &&
+    burger &&
+    nav.classList.contains("active")
+
+  ) {
+
+    if (
+
+      !nav.contains(event.target) &&
+      !burger.contains(event.target)
+
+    ) {
+
+      nav.classList.remove("active");
+
+    }
+
+  }
+
+});
+
+
+//]]>
+</script>
