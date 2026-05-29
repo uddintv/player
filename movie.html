@@ -2,133 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>GO9MOVIE 2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go9Movie 2026</title>
 
 <style>
 body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:#fff;
+  margin:0;
+  font-family: Arial;
+  background:#0f172a;
+  color:#fff;
 }
 
 /* HEADER */
 header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-background:#111827;
-position:sticky;
-top:0;
-z-index:999;
+  position:sticky;
+  top:0;
+  background:#111827;
+  padding:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:999;
 }
 
 .logo{
-font-size:20px;
-font-weight:bold;
-color:#38bdf8;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+  color:#38bdf8;
 }
 
-.search-box input{
-padding:8px;
-width:200px;
-border-radius:6px;
-border:none;
-outline:none;
+/* MENU */
+.menu{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.menu button{
+  background:#1f2937;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.menu button:hover{
+  background:#38bdf8;
+  color:black;
+}
+
+/* SEARCH */
+.search{
+  margin:10px;
+  display:flex;
+}
+.search input{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:6px;
 }
 
 /* GRID */
-.section-title{
-padding:10px 15px;
-color:#38bdf8;
-font-size:18px;
-margin-top:10px;
-}
-
 .grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-gap:10px;
-padding:10px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+  padding:10px;
 }
 
 .card{
-background:#1e293b;
-border-radius:8px;
-overflow:hidden;
-cursor:pointer;
-transition:0.3s;
-}
-
-.card:hover{
-transform:scale(1.05);
+  background:#1e293b;
+  border-radius:10px;
+  overflow:hidden;
+  cursor:pointer;
 }
 
 .card img{
-width:100%;
-height:200px;
-object-fit:cover;
+  width:100%;
+  height:200px;
+  object-fit:cover;
 }
 
 .card span{
-display:block;
-padding:5px;
-font-size:13px;
-text-align:center;
+  display:block;
+  padding:5px;
+  font-size:12px;
+  text-align:center;
 }
 
 /* PLAYER */
-#playerSection{
-display:none;
-padding:10px;
+#playerPage{
+  display:none;
+  padding:10px;
 }
 
 iframe{
-width:100%;
-height:220px;
-border:none;
-border-radius:10px;
-background:#000;
+  width:100%;
+  height:220px;
+  border:none;
+  border-radius:10px;
 }
 
-.buttons{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:8px;
-margin-top:10px;
+.server{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:10px;
 }
 
-.buttons button{
-padding:10px;
-border:none;
-background:#38bdf8;
-color:#000;
-font-weight:bold;
-border-radius:6px;
-cursor:pointer;
+.server button{
+  padding:10px;
+  background:#1f2937;
+  border:none;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
 }
 
+.server button.active{
+  background:#38bdf8;
+  color:black;
+}
+
+/* DETAILS */
 .details{
-margin-top:10px;
-background:#1e293b;
-padding:10px;
-border-radius:8px;
+  display:flex;
+  gap:10px;
+  margin-top:10px;
 }
 
-.poster{
-width:120px;
-border-radius:6px;
+.details img{
+  width:120px;
+  border-radius:10px;
 }
 
-.flex{
-display:flex;
-gap:10px;
+.small{
+  font-size:12px;
+  color:#94a3b8;
 }
 
-.similar{
-margin-top:10px;
+/* MOBILE */
+@media(max-width:600px){
+  iframe{height:200px;}
 }
 </style>
 </head>
@@ -136,128 +154,184 @@ margin-top:10px;
 <body>
 
 <header>
-<div class="logo">GO9MOVIE</div>
-<div class="search-box">
-<input type="text" id="search" placeholder="Search movie...">
-</div>
+  <div class="logo" onclick="goHome()">🎬 GO9MOVIE</div>
+
+  <div class="menu">
+    <button onclick="loadCategory('trending/movie/week')">Trending</button>
+    <button onclick="loadCategory('movie/now_playing')">Latest</button>
+    <button onclick="loadCategory('movie/top_rated')">Top Rated</button>
+    <button onclick="loadTV()">TV Series</button>
+  </div>
 </header>
 
-<!-- MOVIE GRID -->
-<div id="home">
+<div class="search">
+  <input id="searchInput" placeholder="Search movie or tv..." onkeyup="if(event.key==='Enter')search()">
+</div>
 
-<div class="section-title">🎬 Trending Movies</div>
-<div class="grid" id="movies"></div>
-
+<!-- HOME -->
+<div id="homePage">
+  <div id="grid" class="grid"></div>
 </div>
 
 <!-- PLAYER -->
-<div id="playerSection">
+<div id="playerPage">
 
-<iframe id="video" src=""></iframe>
+  <iframe id="frame"></iframe>
 
-<div class="buttons">
-<button onclick="server(1)">Server 1</button>
-<button onclick="server(2)">Server 2</button>
-<button onclick="server(3)">Server 3</button>
-<button onclick="server(4)">Server 4</button>
-</div>
+  <div class="server">
+    <button class="active" onclick="server(1)">Server 1</button>
+    <button onclick="server(2)">Server 2</button>
+    <button onclick="server(3)">Server 3</button>
+    <button onclick="server(4)">Server 4</button>
+  </div>
 
-<div class="details">
-<div class="flex">
-<img id="poster" class="poster">
-<div>
-<h3 id="title"></h3>
-<p id="desc"></p>
-</div>
-</div>
-</div>
+  <div class="details">
+    <img id="poster">
+    <div>
+      <h3 id="title"></h3>
+      <p id="desc" class="small"></p>
+    </div>
+  </div>
 
-<div class="similar">
-<h3>Similar Movies</h3>
-<div class="grid" id="similar"></div>
-</div>
+  <h3 style="margin-top:15px;">Similar</h3>
+  <div id="similar" class="grid"></div>
 
 </div>
 
 <script>
-const API="https://api.themoviedb.org/3";
-const KEY="844dba0bfd8f3a4f3799f6130ef9e335";
+const API = "https://api.themoviedb.org/3";
+const KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
 
-let currentId=null;
+let currentId = null;
+let currentType = "movie";
 
-/* LOAD MOVIES */
-async function loadMovies(){
-let res=await fetch(API+"/trending/movie/week?api_key="+KEY);
-let data=await res.json();
+/* HOME LOAD */
+window.onload = () => {
+  loadCategory("movie/popular");
+};
 
-document.getElementById("movies").innerHTML=
-data.results.map(m=>`
-<div class="card" onclick="openMovie(${m.id})">
-<img src="https://image.tmdb.org/t/p/w300${m.poster_path}">
-<span>${m.title}</span>
-</div>
-`).join("");
-}
-loadMovies();
-
-/* OPEN MOVIE */
-async function openMovie(id){
-currentId=id;
-
-let res=await fetch(API+"/movie/"+id+"?api_key="+KEY);
-let m=await res.json();
-
-document.getElementById("home").style.display="none";
-document.getElementById("playerSection").style.display="block";
-
-document.getElementById("title").innerText=m.title;
-document.getElementById("desc").innerText=m.overview;
-document.getElementById("poster").src="https://image.tmdb.org/t/p/w300"+m.poster_path;
-
-/* default video */
-server(1);
-
-/* similar */
-let sim=await fetch(API+"/movie/"+id+"/similar?api_key="+KEY);
-let s=await sim.json();
-
-document.getElementById("similar").innerHTML=
-s.results.map(x=>`
-<div class="card" onclick="openMovie(${x.id})">
-<img src="https://image.tmdb.org/t/p/w300${x.poster_path}">
-<span>${x.title}</span>
-</div>
-`).join("");
+function goHome(){
+  document.getElementById("homePage").style.display="block";
+  document.getElementById("playerPage").style.display="none";
+  loadCategory("movie/popular");
 }
 
-/* SERVER SWITCH (DUMMY LINKS) */
-function server(n){
-let url="";
+/* CATEGORY */
+function loadCategory(path){
+  fetch(`${API}/${path}?api_key=${KEY}`)
+  .then(r=>r.json())
+  .then(d=>{
+    showGrid(d.results, "movie");
+  });
+}
 
-if(n==1) url="https://www.youtube.com/embed/dQw4w9WgXcQ";
-if(n==2) url="https://www.youtube.com/embed/jNQXAC9IVRw";
-if(n==3) url="https://www.youtube.com/embed/M7lc1UVf-VE";
-if(n==4) url="https://www.youtube.com/embed/ysz5S6PUM-U";
+/* TV */
+function loadTV(){
+  fetch(`${API}/tv/popular?api_key=${KEY}`)
+  .then(r=>r.json())
+  .then(d=>{
+    showGrid(d.results, "tv");
+  });
+}
 
-document.getElementById("video").src=url;
+/* GRID */
+function showGrid(data,type){
+  currentType = type;
+  let box = document.getElementById("grid");
+  box.innerHTML = "";
+
+  data.forEach(m=>{
+    if(!m.poster_path) return;
+
+    box.innerHTML += `
+      <div class="card" onclick="openPlayer(${m.id},'${type}')">
+        <img src="https://image.tmdb.org/t/p/w342${m.poster_path}">
+        <span>${m.title || m.name}</span>
+      </div>
+    `;
+  });
+
+  document.getElementById("homePage").style.display="block";
+  document.getElementById("playerPage").style.display="none";
 }
 
 /* SEARCH */
-document.getElementById("search").addEventListener("input",async function(){
-let q=this.value;
-if(q.length<2) return loadMovies();
+function search(){
+  let q = document.getElementById("searchInput").value;
+  if(!q) return;
 
-let res=await fetch(API+"/search/movie?api_key="+KEY+"&query="+q);
-let data=await res.json();
+  fetch(`${API}/search/multi?api_key=${KEY}&query=${q}`)
+  .then(r=>r.json())
+  .then(d=>{
+    showGrid(d.results,"movie");
+  });
+}
 
-document.getElementById("movies").innerHTML=
-data.results.map(m=>`
-<div class="card" onclick="openMovie(${m.id})">
-<img src="https://image.tmdb.org/t/p/w300${m.poster_path}">
-<span>${m.title}</span>
-</div>
-`).join("");
-});
+/* OPEN PLAYER */
+function openPlayer(id,type){
+  currentId = id;
+  currentType = type;
+
+  document.getElementById("homePage").style.display="none";
+  document.getElementById("playerPage").style.display="block";
+
+  loadDetails(id,type);
+  server(1);
+  loadSimilar(id,type);
+}
+
+/* DETAILS */
+function loadDetails(id,type){
+  fetch(`${API}/${type}/${id}?api_key=${KEY}`)
+  .then(r=>r.json())
+  .then(d=>{
+    document.getElementById("title").innerText = d.title || d.name;
+    document.getElementById("desc").innerText = d.overview;
+    document.getElementById("poster").src = "https://image.tmdb.org/t/p/w342"+d.poster_path;
+  });
+}
+
+/* SERVER (DUMMY) */
+function server(n){
+  let url = "";
+
+  if(n==1) url = "https://example.com/player/"+currentId;
+  if(n==2) url = "https://example.com/player2/"+currentId;
+  if(n==3) url = "https://example.com/player3/"+currentId;
+  if(n==4) url = "https://example.com/player4/"+currentId;
+
+  document.getElementById("frame").src = url;
+
+  document.querySelectorAll(".server button").forEach((b,i)=>{
+    b.classList.toggle("active", i==n-1);
+  });
+}
+
+/* SIMILAR */
+function loadSimilar(id,type){
+  fetch(`${API}/${type}/${id}/similar?api_key=${KEY}`)
+  .then(r=>r.json())
+  .then(d=>{
+    let box = document.getElementById("similar");
+    box.innerHTML = "";
+
+    d.results.slice(0,12).forEach(m=>{
+      if(!m.poster_path) return;
+
+      box.innerHTML += `
+        <div class="card" onclick="openPlayer(${m.id},'${type}')">
+          <img src="https://image.tmdb.org/t/p/w342${m.poster_path}">
+          <span>${m.title || m.name}</span>
+        </div>
+      `;
+    });
+  });
+}
+
+/* BACK BUTTON */
+window.onpopstate = function(){
+  goHome();
+};
 </script>
 
 </body>
