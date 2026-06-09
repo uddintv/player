@@ -8,402 +8,514 @@
 /* জ&#2503;ন&#2494;র&#2503;ল ক&#2509;ল&#2495;ন স&#2509;ট&#2494;ইল */
 body { background:#0f172a; color:#f1f5f9; font-family:'Inter', sans-serif; margin:0; padding:0; }
 a { text-decoration:none; color:inherit; }
-/* হ&#2503;ড&#2494;র */
-/* হ&#2507;মপ&#2503;জ ম&#2497;ভ&#2495; গ&#2509;র&#2495;ড */
-.main-wrapper { padding:20px 5%; }
+
+/* হোমপেজ মুভি গ্রিড */
+.main-wrapper { padding:10px 5%; }
 .movie-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:15px; }
 .movie-card { background:#1e293b; border-radius:10px; overflow:hidden; transition:0.3s; border:1px solid #334155; position:relative; }
-.movie-card:hover { border-color:#38bdf8; }
+.movie-card:hover { /* border-color:#38bdf8;  */ box-shadow: 0 0 8px #38bdf8,  0 0 16px rgba(56, 189, 248, .6);}
 .poster-img { width:100%; height:230px; object-fit:cover; display:block; }
 .movie-info-overlay { padding:8px; background:#1e293b; }
 .m-title-home { font-size:13px; font-weight:600; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-/* আপন&#2494;র ন&#2495;র&#2509;দ&#2495;ষ&#2509;ট কর&#2494; ক&#2509;ল&#2494;স (এট&#2495; হ&#2494;ইড থ&#2494;কব&#2503;) */
+
+/* আপনার নির্দিষ্ট করা ক্লাস (এটি হাইড থাকবে) */
 .tmdb-id-store { display:none !important; }
-/* প&#2507;স&#2509;ট&#2503;র ভ&#2503;তর&#2503;র কন&#2509;ট&#2503;ন&#2509;ট (আপন&#2495; আপন&#2494;র ট&#2503;মপ&#2509;ল&#2503;ট দ&#2495;য়&#2503; কন&#2509;ট&#2509;র&#2507;ল করব&#2503;ন) */
+
+/* পোস্টের ভেতরের কন্টেন্ট (আপনি আপনার টেমপ্লেট দিয়ে কন্ট্রোল করবেন) */
 .post-body { width: 100%; margin: 0 auto; }
+
+  
+  
 /* Responsive Ad */
 .ad-container {
-width: 100%;           /* ম&#2507;ব&#2494;ইল স&#2509;ক&#2509;র&#2495;ন&#2503;র প&#2497;র&#2507; width */
-max-width: 728px;      /* desktop এর max width */
-margin: 0 auto;        /* centered */
-height: 90px;         /* height fixed */
-overflow: hidden;      /* য&#2494;ত&#2503; iframe overflow ন&#2494; কর&#2503; */
+    width: 100%;           /* মোবাইল স্ক্রিনের পুরো width */
+    max-width: 728px;      /* desktop এর max width */
+    margin: 0 auto;        /* centered */
+    height: 90px;         /* height fixed */
+    overflow: hidden;      /* যাতে iframe overflow না করে */
 }
+
 .ad-container iframe {
-width: 100% !important;   /* container width অন&#2497;য&#2494;য&#2492;&#2496; */
-height: 100% !important;  /* container height অন&#2497;য&#2494;য&#2492;&#2496; */
-display: block;
-border: 0;
+    width: 100% !important;   /* container width অনুযায়ী */
+    height: 100% !important;  /* container height অনুযায়ী */
+    display: block;
+    border: 0;
 }
+  
+  
+
+
 /* Header Layout */
 .home-header-wrap {
-display: flex;
-justify-content: space-between; /* এট&#2495; ট&#2494;ইট&#2503;ল ব&#2494;ম&#2503; এব&#2434; ল&#2495;ঙ&#2509;ক ড&#2494;ন&#2503; প&#2494;ঠ&#2494;ব&#2503; */
-align-items: center;
-padding: 10px 15px 5px;
+  margin-bottom: -10px; /* */
+  display: flex;
+  justify-content: space-between; /* এটি টাইটেল বামে এবং লিঙ্ক ডানে পাঠাবে */
+  align-items: center;
+  padding:   15px 15px 0px  ; 
 }
+
 .see-all-link {
-font-size: 14px;
-font-weight: 600; /* */
-/* text-decoration: underline !important;   */
-background: #38bdf8; /* আপন&#2494;র ল&#2507;গ&#2507;র ন&#2496;ল ক&#2494;ল&#2494;র */
-text-decoration: none;
-transition: 0.3s;
-border-radius: 10px;
-padding: 0px 5px ;
-color:  #013a73 ;
+  font-size: 14px;
+  font-weight: 600; /* */
+ /* text-decoration: underline !important;   */
+  background: #38bdf8; /* আপনার লোগোর নীল কালার */
+  text-decoration: none;
+  transition: 0.3s;
+  border-radius: 10px;
+  padding: 0px 5px ;
+  color:  #013a73 ; 
 }
+
 .see-all-link:hover {
-color:  #000;
-/* opacity: 0.8;*/
+  color:  #000; 
+  /* opacity: 0.8;*/
 }
+
 /* Round Spinner Design */
 .loader-box {
-height: 200px;
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-background: #0f172a; /* ড&#2494;র&#2509;ক ফ&#2509;র&#2503;ম */
-border-radius: 10px;
-/*margin-bottom: 8px;  this plase show dame text bar*/
+  height: 200px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f172a; /* ডার্ক ফ্রেম */
+  border-radius: 10px;
+  /*margin-bottom: 8px;  this plase show dame text bar*/
 }
+
 .spinner {
-width: 40px;
-height: 40px;
-border: 0px solid #1e293b;
-border-top: 9px solid #38bdf8; /* Spinner Color স&#2509;প&#2495;ন&#2494;র&#2503;র ন&#2496;ল ক&#2494;ল&#2494;র*/
-border-radius: 50%;
-animation: spin 1s linear infinite;
+  width: 40px;
+  height: 40px;
+  border: 0px solid #1e293b;
+  border-top: 9px solid #38bdf8; /* Spinner Color স্পিনারের নীল কালার*/
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-.home-title{
-padding: 0;
-font-size:18px;
-font-weight:700;
-color:#38bdf8;
+
+  
+
+
+
+
+  
+  .home-title{
+  padding: 0;
+  font-size:20px; /* 18px;*/
+  font-weight:700;
+  color:#38bdf8;
 }
+
 .movie-grid{
-display:grid;
-grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-gap:12px;
-padding:1px 15px 15px;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap:20px;   /* 12px; */
+  padding:1px 15px 15px;
 }
+
 .movie-card{
 position: relative;
-background:#020617;
-border-radius:10px;
-overflow:hidden;
-opacity: 0;
-animation: posterScaleIn 0.45s ease-out forwards;
+  background:#020617;
+  border-radius:10px;
+  overflow:hidden;
+
+  height:230px;   /* 205px; */
+
+  opacity: 0;
+  animation: posterScaleIn 0.45s ease-out forwards;
 }
 @keyframes posterScaleIn {
-0% {
-opacity: 0;
-transform: scale(0.85);
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
-100% {
-opacity: 1;
-transform: scale(1);
-}
-}
+
 .movie-card img{
-width:100%;
-height:160px;
-object-fit:cover;
+  width:100%;
+  height:100%;  /* 160px; */
+  object-fit:cover;  
+  display:block;   /* */
+
 }
-.movie-card span{
-display:block;
-padding:6px;
-font-size:13px;
-text-align:center;
+
+
+/* নিচের 10px রঙের জন্য */
+.movie-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  background:linear-gradient(transparent,rgba(0,0,0,0.95));
+  z-index: 1;             /* span এর নিচে রাখতে হবে */
 }
+
+/* text  */
+.movie-card span {
+  position: relative;     /* */
+  z-index: 2;         /* */
+  display:block;
+  text-align:center;
+  height: 31px;      /* 34px; */
+  overflow: hidden;       /* পুরোটা hide */
+  font-size: 13px;
+  line-height: 17px;      /* 17px × 2 = 34px */
+  color: #fff;
+  padding: 6px 6px 0; /* 6px; */
+  margin-top: -24px;  /*  */
+
+}
+
 .movie-card:hover{
-transform:scale(1.05);
-transition:.2s ease;
+  transform:scale(1.05);
+  transition:.2s ease;
 }
-.movie-card span{
-display: block;
-height: 34px;           /* exact 2 line height */
-overflow: hidden;       /* প&#2497;র&#2507;ট&#2494; hide */
-font-size: 13px;
-line-height: 17px;      /* 17px &#215; 2 = 34px */
-color: #e5e7eb;
-padding: 6px 6px 0;
+
+/* প্লে বাটন pseudo-element */
+.movie-card::before {
+  content:  "\25B7" ;  /* "\25B6" Play icon "▶";  */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 90px;  /* P50px;  */
+  color: #fff;  /* #38bdf8;  */
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+  z-index: 3;
+  text-shadow: 0 0 10px rgba(56, 189, 248, .0);  /* 0 0 10px rgba(56, 189, 248, .7); */
 }
-/* ম&#2503;ইন কন&#2509;ট&#2503;ইন&#2494;র য&#2494; র&#2503;ট&#2495;&#2434; ও ড&#2503;টক&#2503; ধর&#2503; র&#2494;খব&#2503; */
+/* hover-এ দেখানো */
+.movie-card:hover::before {
+  opacity: 1;
+}
+
+
+/* মেইন কন্টেইনার যা রেটিং ও ডেটকে ধরে রাখবে */
 .poster-top-bar {
-position: absolute;
-bottom:20px;
-color: yellow ;
-left: 0;
-right: 0;
-padding: 0 ; /* দ&#2497;ই প&#2494;শ থ&#2503;ক&#2503; ৮ প&#2495;ক&#2509;স&#2503;ল গ&#2509;য&#2494;প র&#2494;খব&#2503; */
-display: flex;
-justify-content: space-between; /* এট&#2495;ই র&#2503;ট&#2495;&#2434;ক&#2503; ব&#2494;ম&#2503; এব&#2434; ড&#2503;টক&#2503; ড&#2494;ন&#2503; প&#2494;ঠ&#2494;ব&#2503; */
-align-items: center;
-z-index: 10;
+  position: absolute;
+  bottom:0px; /* 20px;  */
+  color: yellow ;
+  left: 0;
+  right: 0;
+  padding: 0 ; /* দুই পাশ থেকে ৮ পিক্সেল গ্যাপ রাখবে */
+  display: flex;
+  justify-content: space-between; /* এটিই রেটিংকে বামে এবং ডেটকে ডানে পাঠাবে */
+  align-items: center;
+  z-index: 10;
 }
-/* ড&#2503;ট স&#2509;ট&#2494;ইল */
+/* ডেট স্টাইল */
 .date-label {
-background: rgba(255, 255, 255, 0.0);
-color: yellow !important;
-font-size: 11px !important;
-/*font-weight: bold;*/
-padding: 0px 0px 0px 6px;
-border-radius: 4px;
+  background: rgba(255, 255, 255, 0.0);
+  color: yellow !important;
+  font-size: 11px !important;
+  /*font-weight: bold;*/
+  padding: 0px 0px 0px 6px;
+  border-radius: 4px;
 }
-/* র&#2503;ট&#2495;&#2434; স&#2509;ট&#2494;ইল */
+
+/* রেটিং স্টাইল */
 .rating-label {
-background: rgba(0, 0, 0, 0.0);
-color: #ffc107 !important;
-font-size: 12px !important;
-font-weight: bold;
-padding: 0px 6px 0px 0px ;
-border-radius: 4px;
+  background: rgba(0, 0, 0, 0.0);
+  color: #ffc107 !important;
+  font-size: 12px !important;
+  font-weight: bold;
+  padding: 0px 6px 0px 0px ;
+  border-radius: 4px;
 }
-/* র&#2503;ট&#2495;&#2434; স&#2509;ট&#2494;ইল for hubar with postar */
+/* রেটিং স্টাইল for hubar with postar */
 .rating-label {
-opacity: 0;
-visibility: hidden;
-transform: translateY(-5px);
-transition: all 0.3s ease;
+  opacity: 1;  /* 0; */
+  visibility: visible; /* hidden; */
+  transform: translateY(0);  /* (-5px); */
+  transition: all 0.3s ease;
 }
 .movie-card:hover .rating-label {
-opacity: 1;
-visibility: visible;
-transform: translateY(0);
+    opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
-/* ড&#2503;ট onle show in hover in poster .....
+
+/* ডেট onle show in hover in poster ..... 
 .poster-top-bar {
-opacity: 0;
-visibility: hidden;
-transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .movie-card:hover .poster-top-bar {
-opacity: 1;
-visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 */
 /* ===== HEADER BASE ===== */
-.logo { font-size: 24px; font-weight: 800; color: #38bdf8;
-/* white-space: nowrap; */
+.logo { font-size: 24px; font-weight: 800; color: #38bdf8; 
+ /* white-space: nowrap; */
 text-decoration: none;  padding: 0px 50px 10px 0px ;
 }
+
 .site-header{
-background:#020617;
-border-bottom:5px solid #38bdf8;
-position:sticky;
-top:0;
-z-index:999;
+  background:#020617;
+  border-bottom:5px solid #38bdf8;
+  position:sticky;
+  top:0;
+  z-index:999;
 }
+
 /* TOP ROW */
 .header-top{
-display:flex;
-/* justify-content:space-between;*/
-align-items:center;
-justify-content: space-between; /* left, center, right */
-padding:20px 15px 0px 15px ;
+  display:flex;
+  /* justify-content:space-between;*/
+  align-items:center;
+  justify-content: space-between; /* left, center, right */
+  padding:20px 15px 0px 15px ;
 }
+
 /* Logo */
 .logo-wrap{
-flex:0 0 auto;
+  flex:0 0 auto;
 }
+
 /* search wrapper */
 .search-wrap{
-/* position:relative;*/
-margin-left: auto; /* এট&#2495; ব&#2494;ক&#2495; জ&#2494;য়গ&#2494; ন&#2495;য়&#2503; search icon right এ ঠ&#2503;ল&#2503; দ&#2503;য় */
+  /* position:relative;*/
+  margin-left: auto; /* এটি বাকি জায়গা নিয়ে search icon right এ ঠেলে দেয় */
+
 }
+
 /* only icon visible */
 .search-icon{
-background:none;
-border:none;
-font-size:20px;
-cursor:pointer;
-color:#38bdf8;
+  background: none; /* none;  */
+  border:none;
+  font-size:20px;
+  cursor:pointer;
+  color: #38bdf8 ;/* #38bdf8;  */
 }
+
 /* search box hidden by default */
 .search-box{
-display:none;
-position:absolute;
-right:0;
-top:100%;
-margin-top:8px;
-background:#020617;
-border:1px solid #1e293b;
-border-radius:5px;
-padding:5px 10px;
+  display:none;
+  position:absolute;
+  right:0;
+  top:100%;
+  margin-top:8px;
+  background:#020617;
+  border:1px solid #1e293b;
+  border-radius:5px;
+  padding:5px 10px;
 }
+
 /* input */
 .search-box input{
-background:none;
-border:none;
-outline:none;
-color:white;
-width:280px;
-border-radius:5px;
+  background:none;
+  border:none;
+  outline:none;
+  color:white;
+  width:280px;
+  border-radius:5px;
+
 }
+
 /* show when active */
 .search-box.active{
-display:flex;
-align-items:center;
+  display:flex;
+  align-items:center;
 }
-/*
+
+/* 
 .search-box button{
-background:none;
-border:none;
-color:#38bdf8;
-cursor:pointer;
+  background:none;
+  border:none;
+  color:#38bdf8;
+  cursor:pointer;
 }show when active */
+
 /* BOTTOM MENU ROW */
 .header-bottom{
-display:flex;
-align-items:center;
-justify-content:center;
-padding-bottom:5px; /* bottom 5px feel */
-position:relative;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-bottom:5px; /* bottom 5px feel */
+  position:relative;
 }
+
 /* Menu........ THIS IS MENUBAR SIMBOL // TV Series &#9662; */
 .menu {
-display: flex;
-list-style: none;
-margin: 0;
-padding: 0;
-gap: 28px;               /* spacing between menu items */
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0; 
+  gap: 28px;               /* spacing between menu items */
 }
+
 .menu :hover {
 color: #38bdf8;
 }
+
 .menu li{
-position:relative;
-font-size:14px;
-font-weight:600;
-margin-bottom: -25px;
+  position:relative;
+  font-size:14px;
+  font-weight:600;
+  margin-bottom: -25px;
 }
-.menu a{
-text-decoration: none;
+.menu a{ 
+  text-decoration: none;
 color:#e5e7eb;
 }
+
 /* Dropdown */
 .menu li:hover .dropdown{display:block}
 .dropdown{
-display:none;
-position:absolute;
-top:100%;
-left:0;
-background:#020617; /*#020617;*/
-border-radius:;
-min-width:160px;
-z-index:99999;
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  background:#020617; /*#020617;*/
+  border-radius:;
+  min-width:160px;
+ z-index:99999;
 }
 .dropdown a{
-display:block;
-padding:8px 12px;
-font-size:13px;
+  display:block;
+  padding:8px 12px;
+  font-size:13px;
 }
+
 /* Hamburger */
 .menu-toggle{
-display:none;
-font-size:28px;
-color:  #38bdf8;
-position:absolute;
-left:15px;
-cursor:pointer;
+  display:none;
+  font-size:28px;
+  color:  #38bdf8;
+  position:absolute;
+  left:15px;
+  cursor:pointer;
 }
+
+
 /* MOBILE */
 @media(max-width:600px){
-body{
-overflow-x:hidden;   /* page left-right scroll বন&#2509;ধ */
+.home-header-wrap {
+  display: flex;
+  justify-content: space-between; /* এটি টাইটেল বামে এবং লিঙ্ক ডানে পাঠাবে */
+  align-items: center;
+  padding: 15px 0px 0px 0px;/*  10px 15px 5px; */
 }
-.header-top{
-justify-content:center;
+
+ body{
+    overflow-x:hidden;   /* page left-right scroll বন্ধ */
+  }
+  .header-top{
+    justify-content:center;
+  }
+  .logo{
+     padding:5px 5px 5px 0px ;
+     font-size: 28px;
+  }
+  .menu-toggle{    
+    left:15px;
+    display:block;
+  }
+  .search-wrap{
+    position:absolute;
+    right:15px;
+  }
+  .search-box{
+    position:fixed;
+    top:60px;            /* header নিচে */
+    left:0;
+    right:0;
+    width:90%;
+   border-radius:30px;
+    margin-top:0;
+    z-index:1000;
+  }
+  .search-box input{
+    width:90%;
+  }
+.search-icon{
+  background: rgb(56, 189, 248, 0.8); /* lime; #38bdf8; */
+  border:none;
+  font-size:20px;
+  cursor:pointer;
+  color:  ;/* #38bdf8;  */
+  border-radius:5px; /*   */
 }
-.logo{
-padding:5px 5px 5px 0px ;
-font-size: 28px;
-}
-.menu-toggle{
-left:15px;
-display:block;
-}
-.search-wrap{
-position:absolute;
-right:15px;
-}
-.search-box{
-position:fixed;
-top:60px;            /* header ন&#2495;চ&#2503; */
-left:0;
-right:0;
-width:90%;
-border-radius:30px;
-margin-top:0;
-z-index:1000;
-}
-.search-box input{
-width:90%;
-}
-#mainNav{
-display:none;
-width:100%;
-}
-#mainNav.active{display:block}
-.menu{
-flex-direction:column;
-align-items: left;/*center;*/
-padding: 5px 20px ;
-}
-#mainNav{
-position:fixed;
-top:60px;
-left:0;
-width:100%;
-background:#020617;
-display:none;
-padding: 5px ;
-}
-#mainNav.active{ display:block; }
+
+  #mainNav{
+    display:none;
+    width:100%;
+  }
+  #mainNav.active{display:block}
+
+  .menu{
+    flex-direction:column;
+    align-items: left;/*center;*/
+    padding: 5px 20px ;
+  }
+  #mainNav{
+    position:fixed;
+    top:60px;
+    left:0;
+    width:100%;
+    background:#020617;
+    display:none;
+    padding: 5px ;
+
+  }
+  #mainNav.active{ display:block; }
 .movie-grid{
-display:grid;
-grid-template-columns: repeat(2, 1fr);
-gap:12px;
-padding:0;
-margin:0;
-}
-/* ম&#2503;ন&#2497; যখন একট&#2495;ভ হব&#2503; */
-#mainNav.active {
-display: block !important;
-position: fixed;
-left: -20;
-width: 150px;       /* প&#2497;র&#2507; স&#2509;ক&#2509;র&#2495;ন ব&#2509;লক ন&#2494; কর&#2503; ম&#2494;ত&#2509;র ২৬০ প&#2495;ক&#2509;স&#2503;ল জ&#2494;য়গ&#2494; ন&#2495;ব&#2503; */
-height: auto !important; /* ৭০ শত&#2494;&#2434;শ&#2503;র বদল&#2503; ম&#2503;ন&#2497;র স&#2494;ইজ অন&#2497;য&#2494;য়&#2496; ছ&#2507;ট হব&#2503; */
-max-height: 70vh; /* খ&#2497;ব ব&#2503;শ&#2495; বড় হল&#2503; স&#2509;ক&#2509;রল হব&#2503; */
-padding-bottom: 20px;
-z-index: 1000;
-color: lime;
-overflow-x:hidden;
-overflow-y: auto;  /* উপর&#2503;-ন&#2495;চ&#2503; স&#2509;ক&#2509;রল হব&#2503; */
-scroll-behavior: smooth;
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:12px;
+  padding:0;
+ margin:0;
+ }
+
+
+  /* মেনু যখন একটিভ হবে */
+  #mainNav.active {
+    display: block !important;
+    position: fixed;
+    left: -20;
+    width: 150px;       /* পুরো স্ক্রিন ব্লক না করে মাত্র ২৬০ পিক্সেল জায়গা নিবে */
+    height: auto !important; /* ৭০ শতাংশের বদলে মেনুর সাইজ অনুযায়ী ছোট হবে */
+    max-height: 70vh; /* খুব বেশি বড় হলে স্ক্রল হবে */
+    padding-bottom: 20px;
+    z-index: 1000;
+    color: lime;
+    overflow-x:hidden; 
+    overflow-y: auto;  /* উপরে-নিচে স্ক্রল হবে */
+    scroll-behavior: smooth;
 border: 1px solid black;;
-}
-/* গ&#2509;র&#2495;ড স&#2509;ক&#2509;রলব&#2494;রট&#2495; স&#2497;ন&#2509;দর দ&#2503;খ&#2494;ন&#2507;র জন&#2509;য */
+  }
+/* গ্রিড স্ক্রলবারটি সুন্দর দেখানোর জন্য */
 #mainNav.active::-webkit-scrollbar {
-width: 5px;
+    width: 5px;
 }
 #mainNav.active::-webkit-scrollbar-thumb {
-background: #999;
-border-radius: 10px;
+    background: #999;
+    border-radius: 10px;
 }
-/* ড&#2509;রপড&#2494;উন অট&#2507; ওপ&#2503;ন র&#2494;খ&#2494; */
-#mainNav.active .dropdown {
-display: block !important;
-position: relative;
-}
+
+  /* ড্রপডাউন অটো ওপেন রাখা */
+  #mainNav.active .dropdown {
+    display: block !important;
+    position: relative;
+  }
 .menu{
-color: lime;
+  color: lime;
+
 }
 }
 
