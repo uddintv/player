@@ -10,10 +10,10 @@ body { background:#0f172a; color:#f1f5f9; font-family:'Inter', sans-serif; margi
 a { text-decoration:none; color:inherit; }
 /* হ&#2503;ড&#2494;র */
 /* হ&#2507;মপ&#2503;জ ম&#2497;ভ&#2495; গ&#2509;র&#2495;ড */
-.main-wrapper { padding:20px 5%; }
+.main-wrapper { padding:10px 5%; }
 .movie-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:15px; }
 .movie-card { background:#1e293b; border-radius:10px; overflow:hidden; transition:0.3s; border:1px solid #334155; position:relative; }
-.movie-card:hover { border-color:#38bdf8; }
+.movie-card:hover { /* border-color:#38bdf8;  */ box-shadow: 0 0 8px #38bdf8,  0 0 16px rgba(56, 189, 248, .6);}
 .poster-img { width:100%; height:230px; object-fit:cover; display:block; }
 .movie-info-overlay { padding:8px; background:#1e293b; }
 .m-title-home { font-size:13px; font-weight:600; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -80,103 +80,151 @@ animation: spin 1s linear infinite;
 0% { transform: rotate(0deg); }
 100% { transform: rotate(360deg); }
 }
-.home-title{
-padding: 0;
-font-size:18px;
-font-weight:700;
-color:#38bdf8;
+  
+  .home-title{
+  padding: 0;
+  font-size:20px; /* 18px;*/
+  font-weight:700;
+  color:#38bdf8;
 }
+
 .movie-grid{
-display:grid;
-grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-gap:12px;
-padding:1px 15px 15px;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap:20px;   /* 12px; */
+  padding:1px 15px 15px;
 }
+
 .movie-card{
 position: relative;
-background:#020617;
-border-radius:10px;
-overflow:hidden;
-opacity: 0;
-animation: posterScaleIn 0.45s ease-out forwards;
+  background:#020617;
+  border-radius:10px;
+  overflow:hidden;
+
+  height:230px;   /* 205px; */
+
+  opacity: 0;
+  animation: posterScaleIn 0.45s ease-out forwards;
 }
 @keyframes posterScaleIn {
-0% {
-opacity: 0;
-transform: scale(0.85);
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
-100% {
-opacity: 1;
-transform: scale(1);
-}
-}
+
 .movie-card img{
-width:100%;
-height:160px;
-object-fit:cover;
+  width:100%;
+  height:100%;  /* 160px; */
+  object-fit:cover;  
+  display:block;   /* */
+
 }
-.movie-card span{
-display:block;
-padding:6px;
-font-size:13px;
-text-align:center;
+
+
+/* নিচের 10px রঙের জন্য */
+.movie-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  background:linear-gradient(transparent,rgba(0,0,0,0.95));
+  z-index: 1;             /* span এর নিচে রাখতে হবে */
 }
+
+/* text  */
+.movie-card span {
+  position: relative;     /* */
+  z-index: 2;         /* */
+  display:block;
+  text-align:center;
+  height: 31px;      /* 34px; */
+  overflow: hidden;       /* পুরোটা hide */
+  font-size: 13px;
+  line-height: 17px;      /* 17px × 2 = 34px */
+  color: #fff;
+  padding: 6px 6px 0; /* 6px; */
+  margin-top: -24px;  /*  */
+
+}
+
 .movie-card:hover{
-transform:scale(1.05);
-transition:.2s ease;
+  transform:scale(1.05);
+  transition:.2s ease;
 }
-.movie-card span{
-display: block;
-height: 34px;           /* exact 2 line height */
-overflow: hidden;       /* প&#2497;র&#2507;ট&#2494; hide */
-font-size: 13px;
-line-height: 17px;      /* 17px &#215; 2 = 34px */
-color: #e5e7eb;
-padding: 6px 6px 0;
+
+/* প্লে বাটন pseudo-element */
+.movie-card::before {
+  content:  "\25B7" ;  /* "\25B6" Play icon "▶";  */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 90px;  /* P50px;  */
+  color: #fff;  /* #38bdf8;  */
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+  z-index: 3;
+  text-shadow: 0 0 10px rgba(56, 189, 248, .0);  /* 0 0 10px rgba(56, 189, 248, .7); */
 }
-/* ম&#2503;ইন কন&#2509;ট&#2503;ইন&#2494;র য&#2494; র&#2503;ট&#2495;&#2434; ও ড&#2503;টক&#2503; ধর&#2503; র&#2494;খব&#2503; */
+/* hover-এ দেখানো */
+.movie-card:hover::before {
+  opacity: 1;
+}
+
+
+/* মেইন কন্টেইনার যা রেটিং ও ডেটকে ধরে রাখবে */
 .poster-top-bar {
-position: absolute;
-bottom:20px;
-color: yellow ;
-left: 0;
-right: 0;
-padding: 0 ; /* দ&#2497;ই প&#2494;শ থ&#2503;ক&#2503; ৮ প&#2495;ক&#2509;স&#2503;ল গ&#2509;য&#2494;প র&#2494;খব&#2503; */
-display: flex;
-justify-content: space-between; /* এট&#2495;ই র&#2503;ট&#2495;&#2434;ক&#2503; ব&#2494;ম&#2503; এব&#2434; ড&#2503;টক&#2503; ড&#2494;ন&#2503; প&#2494;ঠ&#2494;ব&#2503; */
-align-items: center;
-z-index: 10;
+  position: absolute;
+  bottom:0px; /* 20px;  */
+  color: yellow ;
+  left: 0;
+  right: 0;
+  padding: 0 ; /* দুই পাশ থেকে ৮ পিক্সেল গ্যাপ রাখবে */
+  display: flex;
+  justify-content: space-between; /* এটিই রেটিংকে বামে এবং ডেটকে ডানে পাঠাবে */
+  align-items: center;
+  z-index: 10;
 }
-/* ড&#2503;ট স&#2509;ট&#2494;ইল */
+/* ডেট স্টাইল */
 .date-label {
-background: rgba(255, 255, 255, 0.0);
-color: yellow !important;
-font-size: 11px !important;
-/*font-weight: bold;*/
-padding: 0px 0px 0px 6px;
-border-radius: 4px;
+  background: rgba(255, 255, 255, 0.0);
+  color: yellow !important;
+  font-size: 11px !important;
+  /*font-weight: bold;*/
+  padding: 0px 0px 0px 6px;
+  border-radius: 4px;
 }
-/* র&#2503;ট&#2495;&#2434; স&#2509;ট&#2494;ইল */
+
+/* রেটিং স্টাইল */
 .rating-label {
-background: rgba(0, 0, 0, 0.0);
-color: #ffc107 !important;
-font-size: 12px !important;
-font-weight: bold;
-padding: 0px 6px 0px 0px ;
-border-radius: 4px;
+  background: rgba(0, 0, 0, 0.0);
+  color: #ffc107 !important;
+  font-size: 12px !important;
+  font-weight: bold;
+  padding: 0px 6px 0px 0px ;
+  border-radius: 4px;
 }
-/* র&#2503;ট&#2495;&#2434; স&#2509;ট&#2494;ইল for hubar with postar */
+/* রেটিং স্টাইল for hubar with postar */
 .rating-label {
-opacity: 0;
-visibility: hidden;
-transform: translateY(-5px);
-transition: all 0.3s ease;
+  opacity: 1;  /* 0; */
+  visibility: visible; /* hidden; */
+  transform: translateY(0);  /* (-5px); */
+  transition: all 0.3s ease;
 }
 .movie-card:hover .rating-label {
-opacity: 1;
-visibility: visible;
-transform: translateY(0);
+    opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
+
 /* ড&#2503;ট onle show in hover in poster .....
 .poster-top-bar {
 opacity: 0;
@@ -346,6 +394,16 @@ z-index:1000;
 .search-box input{
 width:90%;
 }
+.search-icon{
+  background: rgb(56, 189, 248, 0.8); /* lime; #38bdf8; */
+  border:none;
+  font-size:20px;
+  cursor:pointer;
+  color:  ;/* #38bdf8;  */
+  border-radius:5px; /*   */
+}
+
+   
 #mainNav{
 display:none;
 width:100%;
@@ -471,45 +529,45 @@ color: lime;
 <!-- TOP BAR -->
 <div class='header-top'>
 <div class='menu-toggle' onclick='toggleMenu()'>&#9776;</div>
-<a class='logo' href='https://nu013.github.io/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE </span>
+<a class='logo' href='/player/go9home.html'> 🎬 GO9<span style=' color:white;'>MOViE </span>
 </a>
 <nav id='mainNav'>
 <ul class='menu'>
-<li><a href='https://nu013.github.io/player/go9home.html'>Home</a></li>
-<!-- <li> <a href='https://nu013.github.io/player/go9explore.html?with_genres=16'><b>ANIME</b></a></li> -->
+<li><a href='https://uddintv.github.io/player/go9home.html'>Home</a></li>
+<!-- <li> <a href='/player/go9explore.html?with_genres=16'><b>ANIME</b></a></li> -->
 <li>Movies
   <div class='dropdown'>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&with_genres=16&sort_by=first_air_date.desc&with_original_language=en'>Anime </a>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&sort_by=primary_release_date.desc'>NEW Release</a>
-<a href='https://nu013.github.io/player/go9explore.html?label=Popular&with_original_language=en'>Popular</a>
-<a href='https://nu013.github.io/player/go9explore.html?label=Trending&with_original_language=en'>Trending</a>
-<a href='https://nu013.github.io/player/go9explore.html?with_genres=878&with_original_language=en'>Sci-Fi</a>
-<a href='https://nu013.github.io/player/go9explore.html?with_genres=10752&with_original_language=en'>War</a>
-<a href='https://nu013.github.io/player/go9explore.html?with_genres=28&with_original_language=en'>Action </a>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc'>Hindi New</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=ta&sort_by=primary_release_date.desc'>Tamil New</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=te&sort_by=primary_release_date.desc'>Telugu New</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=ml&sort_by=primary_release_date.desc'>Malayalam</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=hi'>Hindi Popular</a>
-<a href='https://nu013.github.io/player/go9explore.html?primary_release_year=2026&with_original_language=en'>2026</a>
-<a href='https://nu013.github.io/player/go9explore.html?primary_release_year=2025&with_original_language=en'>2025</a>
+<a href='/player/go9explore.html?type=movie&with_genres=16&sort_by=first_air_date.desc&with_original_language=en'>Anime </a>
+<a href='/player/go9explore.html?type=movie&sort_by=primary_release_date.desc'>NEW Release</a>
+<a href='/player/go9explore.html?label=Popular&with_original_language=en'>Popular</a>
+<a href='/player/go9explore.html?label=Trending&with_original_language=en'>Trending</a>
+<a href='/player/go9explore.html?with_genres=878&with_original_language=en'>Sci-Fi</a>
+<a href='/player/go9explore.html?with_genres=10752&with_original_language=en'>War</a>
+<a href='/player/go9explore.html?with_genres=28&with_original_language=en'>Action </a>
+<a href='/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc'>Hindi New</a>
+<a href='/player/go9explore.html?type=movie&with_original_language=ta&sort_by=primary_release_date.desc'>Tamil New</a>
+<a href='/player/go9explore.html?type=movie&with_original_language=te&sort_by=primary_release_date.desc'>Telugu New</a>
+<a href='/player/go9explore.html?type=movie&with_original_language=ml&sort_by=primary_release_date.desc'>Malayalam</a>
+<a href='/player/go9explore.html?type=movie&with_original_language=hi'>Hindi Popular</a>
+<a href='/player/go9explore.html?primary_release_year=2026&with_original_language=en'>2026</a>
+<a href='/player/go9explore.html?primary_release_year=2025&with_original_language=en'>2025</a>
 </div>
 </li>
 <li>TV Series
   <div class='dropdown'>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_genres=16&with_original_language=en'>Anim Series</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&sort_by=first_air_date.desc'>NEW Release</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&label=Popular&with_original_language=en'>Popular</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&label=Trending&with_original_language=en'>Trending</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_genres=10768&with_original_language=en'>War</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_genres=10765&with_original_language=en'>Sci-Fi</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_genres=10759&sort_by=first_air_date.desc&with_original_language=en'>Action </a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_original_language=hi&sort_by=first_air_date.desc'>Hindi Series</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_original_language=ta&sort_by=first_air_date.desc'>Tamil Series</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_original_language=te&sort_by=first_air_date.desc'>Telugu Series</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&with_original_language=ml&sort_by=first_air_date.desc'>Malayalam</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&first_air_date_year=2026&with_original_language=en'>2026</a>
-<a href='https://nu013.github.io/player/go9explore.html?type=tv&first_air_date_year=2025&with_original_language=en'>2025</a>
+<a href='/player/go9explore.html?type=tv&with_genres=16&with_original_language=en'>Anim Series</a>
+<a href='/player/go9explore.html?type=tv&sort_by=first_air_date.desc'>NEW Release</a>
+<a href='/player/go9explore.html?type=tv&label=Popular&with_original_language=en'>Popular</a>
+<a href='/player/go9explore.html?type=tv&label=Trending&with_original_language=en'>Trending</a>
+<a href='/player/go9explore.html?type=tv&with_genres=10768&with_original_language=en'>War</a>
+<a href='/player/go9explore.html?type=tv&with_genres=10765&with_original_language=en'>Sci-Fi</a>
+<a href='/player/go9explore.html?type=tv&with_genres=10759&sort_by=first_air_date.desc&with_original_language=en'>Action </a>
+<a href='/player/go9explore.html?type=tv&with_original_language=hi&sort_by=first_air_date.desc'>Hindi Series</a>
+<a href='/player/go9explore.html?type=tv&with_original_language=ta&sort_by=first_air_date.desc'>Tamil Series</a>
+<a href='/player/go9explore.html?type=tv&with_original_language=te&sort_by=first_air_date.desc'>Telugu Series</a>
+<a href='/player/go9explore.html?type=tv&with_original_language=ml&sort_by=first_air_date.desc'>Malayalam</a>
+<a href='/player/go9explore.html?type=tv&first_air_date_year=2026&with_original_language=en'>2026</a>
+<a href='/player/go9explore.html?type=tv&first_air_date_year=2025&with_original_language=en'>2025</a>
 </div>
 </li>
 </ul>
@@ -543,7 +601,7 @@ color: lime;
 //======LATEST NEW
 
 
-  var isHome = location.pathname === "https://nu013.github.io/player/go9home.html" || location.pathname === "https://nu013.github.io/player/go9home.html";
+  var isHome = location.pathname === "https://uddintv.github.io/player/go9home.html" || location.pathname === "https://uddintv/player/go9home.html";
   if (!isHome) return;
 
   var box = document.getElementById("trending-today-list");
@@ -666,11 +724,11 @@ color: lime;
 <div id="home-movie-today-unique" style="display:none;">
   
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?label=TrendingToday">
-      <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;"> TRENDING MOVIES </span> </h2>
+    <a href="/player/go9explore.html?label=TrendingToday">
+      <h2 class="home-title"> 🎬  <span style="border-bottom: 0px solid #38bdf8; color: #fff; "> TRENDING </span> MOVIES </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?label=TrendingToday" class="see-all-link">
+    <a href="/player/go9explore.html?label=TrendingToday" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -723,15 +781,18 @@ color: lime;
 
             if (!m.poster_path) return;
 
-            const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
-            const year = m.release_date ? m.release_date.split('-')[0] : "N/A";
+           // const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
+           // const year = m.release_date ? m.release_date.split('-')[0] : "N/A";
+
+            const rating = m.vote_average ?  "⭐ " +  m.vote_average.toFixed(1) : ""; //&#11088;
+            const year = m.release_date ? m.release_date.split('-')[0] : "";
              
             html += `
               <div class="movie-card">
                 <a href="/player/go9watch.html?id=${m.id}&type=movie">
 
                   <div class="poster-top-bar">
-                    <span class="rating-label">&#11088; ${rating}</span>
+                    <span class="rating-label">${rating}</span>
                     <span class="date-label">${year}</span>
                   </div>
 
@@ -766,11 +827,11 @@ color: lime;
 <div id="home-tv-today-unique" style="display:none;">
   
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=tv&label=TrendingToday">
-      <h2 class="home-title"> 📺 <span style="border-bottom: 3px solid #38bdf8;"> TRENDING SERIES  </span> </h2>
+    <a href="/player/go9explore.html?type=tv&label=TrendingToday">
+      <h2 class="home-title"> 모  <span style="border-bottom: 0px solid #38bdf8; color: #fff; "> TRENDING </span> SERIES  </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=tv&label=TrendingToday" class="see-all-link">
+    <a href="/player/go9explore.html?type=tv&label=TrendingToday" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -823,8 +884,11 @@ color: lime;
 
             if (!m.poster_path) return;
 
-            const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
+           // const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
 
+            const rating = m.vote_average ?  "⭐" +  m.vote_average.toFixed(1) : ""; //&#11088; 
+
+             
             const uniqueId = "tv-ep-" + m.id;
 
             html += `
@@ -832,7 +896,7 @@ color: lime;
                 <a href="/player/go9watch.html?id=${m.id}&type=tv">
 
                   <div class="poster-top-bar">
-                    <span class="rating-label">&#11088; ${rating}</span>
+                    <span class="rating-label">${rating}</span>
                     <span class="date-label" id="${uniqueId}">ALL EP</span>
                   </div>
 
@@ -847,7 +911,8 @@ color: lime;
               .then(r => r.json())
               .then(tv => {
 
-                const ep = tv.number_of_episodes || "N/A";
+                //const ep = tv.number_of_episodes || "N/A";
+                const ep = tv.number_of_episodes || "";
 
                 const el = document.getElementById(uniqueId);
                 if (el) {
@@ -886,11 +951,11 @@ color: lime;
 <div class='widget-content'>
 <div id="home-movie-2026" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc">
+    <a href="/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc">
       <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;">  HINDI MOVIES </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc" class="see-all-link">
+    <a href="/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1014,11 +1079,11 @@ color: lime;
 <div class='widget-content'>
 <div id="home-tv-hindi" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=tv&with_original_language=hi&sort_by=first_air_date.desc">
+    <a href="/player/go9explore.html?type=tv&with_original_language=hi&sort_by=first_air_date.desc">
       <h2 class="home-title"> 📺 <span style="border-bottom: 3px solid #38bdf8;"> HINDI SERIES </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=tv&with_original_language=hi&sort_by=first_air_date.desc" class="see-all-link">
+    <a href="/player/go9explore.html?type=tv&with_original_language=hi&sort_by=first_air_date.desc" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1126,11 +1191,11 @@ color: lime;
 <div class='widget-content'>
 <div id="tamil-movies" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=ta&sort_by=primary_release_date.desc">
+    <a href="/player/go9explore.html?type=movie&with_original_language=ta&sort_by=primary_release_date.desc">
       <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;"> TAMIL MOVIES </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=ta&sort_by=primary_release_date.desc" class="see-all-link">
+    <a href="/player/go9explore.html?type=movie&with_original_language=ta&sort_by=primary_release_date.desc" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1247,11 +1312,11 @@ color: lime;
 <div class='widget-content'>
 <div id="malayalam-movies" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=ml&sort_by=primary_release_date.desc">
+    <a href="/player/go9explore.html?type=movie&with_original_language=ml&sort_by=primary_release_date.desc">
       <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;">  MALAYALAM </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=ml&sort_by=primary_release_date.desc" class="see-all-link">
+    <a href="/player/go9explore.html?type=movie&with_original_language=ml&sort_by=primary_release_date.desc" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1376,11 +1441,11 @@ fetchTrendingMalayalamMovies();
 <div class='widget-content'>
 <div id="telugu-movies" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=te&sort_by=primary_release_date.desc">
+    <a href="/player/go9explore.html?type=movie&with_original_language=te&sort_by=primary_release_date.desc">
       <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;">  TELUGU MOVIES </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&with_original_language=te&sort_by=primary_release_date.desc" class="see-all-link">
+    <a href="/player/go9explore.html?type=movie&with_original_language=te&sort_by=primary_release_date.desc" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1504,11 +1569,11 @@ fetchTrendingMalayalamMovies();
 <div class='widget-content'>
 <div id="home-movie-top-rated" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?label=top_rated&amp;with_original_language=en">
+    <a href="/player/go9explore.html?label=top_rated&amp;with_original_language=en">
       <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;">   TOP RATED MOVIES  </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?label=top_rated&amp;with_original_language=en" class="see-all-link">
+    <a href="/player/go9explore.html?label=top_rated&amp;with_original_language=en" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1601,11 +1666,11 @@ fetchTrendingMalayalamMovies();
 <div class='widget-content'>
 <div id="home-tv-series-top-rated" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=tv&label=top_rated">
+    <a href="/player/go9explore.html?type=tv&label=top_rated">
       <h2 class="home-title"> 📺 <span style="border-bottom: 3px solid #38bdf8;">   TOP RATED SERIES  </span> </h2>
     </a>
 
-    <a href="https://nu013.github.io/player/go9explore.html?type=tv&label=top_rated&amp;with_original_language=en" class="see-all-link">
+    <a href="/player/go9explore.html?type=tv&label=top_rated&amp;with_original_language=en" class="see-all-link">
       <u>SEE ALL</u> &#9654;
     </a>
   </div>
@@ -1720,11 +1785,11 @@ fetchTrendingMalayalamMovies();
 <div class='widget-content'>
 <div id="home-today-movies" style="display:none;">
   <div class="home-header-wrap">
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&sort_by=primary_release_date.desc">
+    <a href="/player/go9explore.html?type=movie&sort_by=primary_release_date.desc">
       <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;">   TODAY RELEASE </span> </h2>
 
     </a>
-    <a href="https://nu013.github.io/player/go9explore.html?type=movie&sort_by=primary_release_date.desc" class="see-all-link">
+    <a href="/player/go9explore.html?type=movie&sort_by=primary_release_date.desc" class="see-all-link">
       <u>SEE ALL</u> &#9654;
       </a>
   </div>
@@ -2189,10 +2254,10 @@ function switchDynamicS(n) {
 <div class='widget-content'>
 <div style='color: orange; margin: 20px;  text-align: center; '>
       <span style='color: orange;font-size: 12px; '>
-           <a href='https://nu013.github.io/player/go9home.html' style='color: yellow; '>Go9movie Disclaimer </a> :- Watch full movies online  full free in go9movie comjust index those links which are already available in internet. All img or link or contents hosted on third party websites. Go9movie does not host any files on it&#39;s servers. We does not accept responsibility for contents hosted on third party websites.
+           <a href='https://uddintv.github.io/player/go9home.html' style='color: yellow; '>Go9movie Disclaimer </a> :- Watch full movies online  full free in go9movie comjust index those links which are already available in internet. All img or link or contents hosted on third party websites. Go9movie does not host any files on it&#39;s servers. We does not accept responsibility for contents hosted on third party websites.
       </span>
 <br/>
-<a href='https://nu013.github.io/player/go9home.html' style='color: yellow; '>
+<a href='https://uddintv.github.io/player/go9home.html' style='color: yellow; '>
 <h3 style='color: yellow; '> <u>www.go9movie.com</u>
   </h3>
 </a>
@@ -2428,7 +2493,7 @@ document.addEventListener("click", function(e){
 function doSearch(){
   var q = document.getElementById("searchInput").value;
   if(q.trim() !== ""){
-    window.location.href = "https://nu013.github.io/player/go9explore.html?type=multi&q=" + encodeURIComponent(q);
+    window.location.href = "/player/go9explore.html?type=multi&q=" + encodeURIComponent(q);
   }
 }
 
@@ -2541,8 +2606,8 @@ window.addEventListener('appinstalled', () => {
 
 <script type="text/javascript" src="https://www.blogger.com/static/v1/widgets/654365252-widgets.js"></script>
 <script type='text/javascript'>
-window['__wavt'] = 'AAVkm1tJv83WB4upGSIsFD91W4NR:1779347839431';_WidgetManager._Init('//www.blogger.com/rearrange?blogID\x3d9083679675851552220','//nu013.github.io/player/go9explore.html','9083679675851552220');
-_WidgetManager._SetDataContext([{'name': 'blog', 'data': {'blogId': '9083679675851552220', 'title': 'Go9movie', 'url': 'https://nu013.github.io/player/go9explore.html', 'canonicalUrl': 'https://nu013.github.io/player/go9explore.html', 'homepageUrl': 'https://nu013.github.io/player/go9home.html', 'searchUrl': 'https://nu013.github.io/player/go9home.html/search', 'canonicalHomepageUrl': 'https://nu013.github.io/player/go9home.html', 'blogspotFaviconUrl': 'https://go9movie.blogspot.com/favicon.ico', 'bloggerUrl': 'https://nu013.github.io/player/go9home.html', 'hasCustomDomain': false, 'httpsEnabled': true, 'enabledCommentProfileImages': true, 'gPlusViewType': 'FILTERED_POSTMOD', 'adultContent': false, 'analyticsAccountNumber': '', 'encoding': 'UTF-8', 'locale': 'en-GB', 'localeUnderscoreDelimited': 'en_gb', 'languageDirection': 'ltr', 'isPrivate': false, 'isMobile': false, 'isMobileRequest': false, 'mobileClass': '', 'isPrivateBlog': false, 'isDynamicViewsAvailable': true, 'feedLinks': '\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Go9movie - Atom\x22 href\x3d\x22https://go9movie.blogspot.com/feeds/posts/default\x22 /\x3e\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/rss+xml\x22 title\x3d\x22Go9movie - RSS\x22 href\x3d\x22https://go9movie.blogspot.com/feeds/posts/default?alt\x3drss\x22 /\x3e\n\x3clink rel\x3d\x22service.post\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Go9movie - Atom\x22 href\x3d\x22https://www.blogger.com/feeds/9083679675851552220/posts/default\x22 /\x3e\n', 'meTag': '', 'adsenseHostId': 'ca-host-pub-1556223355139109', 'adsenseHasAds': false, 'adsenseAutoAds': false, 'boqCommentIframeForm': true, 'loginRedirectParam': '', 'view': '', 'dynamicViewsCommentsSrc': '//www.blogblog.com/dynamicviews/4224c15c4e7c9321/js/comments.js', 'dynamicViewsScriptSrc': '//www.blogblog.com/dynamicviews/66f339c43d4ec606', 'plusOneApiSrc': 'https://apis.google.com/js/platform.js', 'disableGComments': true, 'interstitialAccepted': false, 'sharing': {'platforms': [{'name': 'Get link', 'key': 'link', 'shareMessage': 'Get link', 'target': ''}, {'name': 'Facebook', 'key': 'facebook', 'shareMessage': 'Share to Facebook', 'target': 'facebook'}, {'name': 'BlogThis!', 'key': 'blogThis', 'shareMessage': 'BlogThis!', 'target': 'blog'}, {'name': 'X', 'key': 'twitter', 'shareMessage': 'Share to X', 'target': 'twitter'}, {'name': 'Pinterest', 'key': 'pinterest', 'shareMessage': 'Share to Pinterest', 'target': 'pinterest'}, {'name': 'Email', 'key': 'email', 'shareMessage': 'Email', 'target': 'email'}], 'disableGooglePlus': true, 'googlePlusShareButtonWidth': 0, 'googlePlusBootstrap': '\x3cscript type\x3d\x22text/javascript\x22\x3ewindow.___gcfg \x3d {\x27lang\x27: \x27en_GB\x27};\x3c/script\x3e'}, 'hasCustomJumpLinkMessage': false, 'jumpLinkMessage': 'Read more', 'pageType': 'static_page', 'pageId': '1404665707427096211', 'pageName': 'explore', 'pageTitle': 'Go9movie: explore'}}, {'name': 'features', 'data': {}}, {'name': 'messages', 'data': {'edit': 'Edit', 'linkCopiedToClipboard': 'Link copied to clipboard', 'ok': 'Ok', 'postLink': 'Post link'}}, {'name': 'template', 'data': {'name': 'custom', 'localizedName': 'Custom', 'isResponsive': false, 'isAlternateRendering': false, 'isCustom': true}}, {'name': 'view', 'data': {'classic': {'name': 'classic', 'url': '?view\x3dclassic'}, 'flipcard': {'name': 'flipcard', 'url': '?view\x3dflipcard'}, 'magazine': {'name': 'magazine', 'url': '?view\x3dmagazine'}, 'mosaic': {'name': 'mosaic', 'url': '?view\x3dmosaic'}, 'sidebar': {'name': 'sidebar', 'url': '?view\x3dsidebar'}, 'snapshot': {'name': 'snapshot', 'url': '?view\x3dsnapshot'}, 'timeslide': {'name': 'timeslide', 'url': '?view\x3dtimeslide'}, 'isMobile': false, 'title': 'explore', 'description': '         Movies                         \u23ee Back    Page 1     \u23ed Load More                 ', 'featuredImage': 'https://lh3.googleusercontent.com/blogger_img_proxy/AEn0k_v8GtKz-mQfsuyR2vuQiJ0k-SfudbtWtqG0rarn_DjFDpHXNgqDLHY15MS9w2nJKsbt2pxcuUOFB5bojBHwumz3gG0mWyYtsRLO1swxh_6O3aQ', 'url': 'https://go9movie.blogspot.com/p/explore.html', 'type': 'item', 'isSingleItem': true, 'isMultipleItems': false, 'isError': false, 'isPage': true, 'isPost': false, 'isHomepage': false, 'isArchive': false, 'isLabelSearch': false, 'pageId': 1404665707427096211}}]);
+window['__wavt'] = 'AAVkm1tJv83WB4upGSIsFD91W4NR:1779347839431';_WidgetManager._Init('//www.blogger.com/rearrange?blogID\x3d9083679675851552220','//uddintv.github.io/player/go9explore.html','9083679675851552220');
+_WidgetManager._SetDataContext([{'name': 'blog', 'data': {'blogId': '9083679675851552220', 'title': 'Go9movie', 'url': '/player/go9explore.html', 'canonicalUrl': '/player/go9explore.html', 'homepageUrl': 'https://uddintv.github.io/player/go9home.html', 'searchUrl': 'https://uddintv.github.io/player/go9home.html/search', 'canonicalHomepageUrl': 'https://uddintv.github.io/player/go9home.html', 'blogspotFaviconUrl': 'https://go9movie.blogspot.com/favicon.ico', 'bloggerUrl': 'https://uddintv.github.io/player/go9home.html', 'hasCustomDomain': false, 'httpsEnabled': true, 'enabledCommentProfileImages': true, 'gPlusViewType': 'FILTERED_POSTMOD', 'adultContent': false, 'analyticsAccountNumber': '', 'encoding': 'UTF-8', 'locale': 'en-GB', 'localeUnderscoreDelimited': 'en_gb', 'languageDirection': 'ltr', 'isPrivate': false, 'isMobile': false, 'isMobileRequest': false, 'mobileClass': '', 'isPrivateBlog': false, 'isDynamicViewsAvailable': true, 'feedLinks': '\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Go9movie - Atom\x22 href\x3d\x22https://go9movie.blogspot.com/feeds/posts/default\x22 /\x3e\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/rss+xml\x22 title\x3d\x22Go9movie - RSS\x22 href\x3d\x22https://go9movie.blogspot.com/feeds/posts/default?alt\x3drss\x22 /\x3e\n\x3clink rel\x3d\x22service.post\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Go9movie - Atom\x22 href\x3d\x22https://www.blogger.com/feeds/9083679675851552220/posts/default\x22 /\x3e\n', 'meTag': '', 'adsenseHostId': 'ca-host-pub-1556223355139109', 'adsenseHasAds': false, 'adsenseAutoAds': false, 'boqCommentIframeForm': true, 'loginRedirectParam': '', 'view': '', 'dynamicViewsCommentsSrc': '//www.blogblog.com/dynamicviews/4224c15c4e7c9321/js/comments.js', 'dynamicViewsScriptSrc': '//www.blogblog.com/dynamicviews/66f339c43d4ec606', 'plusOneApiSrc': 'https://apis.google.com/js/platform.js', 'disableGComments': true, 'interstitialAccepted': false, 'sharing': {'platforms': [{'name': 'Get link', 'key': 'link', 'shareMessage': 'Get link', 'target': ''}, {'name': 'Facebook', 'key': 'facebook', 'shareMessage': 'Share to Facebook', 'target': 'facebook'}, {'name': 'BlogThis!', 'key': 'blogThis', 'shareMessage': 'BlogThis!', 'target': 'blog'}, {'name': 'X', 'key': 'twitter', 'shareMessage': 'Share to X', 'target': 'twitter'}, {'name': 'Pinterest', 'key': 'pinterest', 'shareMessage': 'Share to Pinterest', 'target': 'pinterest'}, {'name': 'Email', 'key': 'email', 'shareMessage': 'Email', 'target': 'email'}], 'disableGooglePlus': true, 'googlePlusShareButtonWidth': 0, 'googlePlusBootstrap': '\x3cscript type\x3d\x22text/javascript\x22\x3ewindow.___gcfg \x3d {\x27lang\x27: \x27en_GB\x27};\x3c/script\x3e'}, 'hasCustomJumpLinkMessage': false, 'jumpLinkMessage': 'Read more', 'pageType': 'static_page', 'pageId': '1404665707427096211', 'pageName': 'explore', 'pageTitle': 'Go9movie: explore'}}, {'name': 'features', 'data': {}}, {'name': 'messages', 'data': {'edit': 'Edit', 'linkCopiedToClipboard': 'Link copied to clipboard', 'ok': 'Ok', 'postLink': 'Post link'}}, {'name': 'template', 'data': {'name': 'custom', 'localizedName': 'Custom', 'isResponsive': false, 'isAlternateRendering': false, 'isCustom': true}}, {'name': 'view', 'data': {'classic': {'name': 'classic', 'url': '?view\x3dclassic'}, 'flipcard': {'name': 'flipcard', 'url': '?view\x3dflipcard'}, 'magazine': {'name': 'magazine', 'url': '?view\x3dmagazine'}, 'mosaic': {'name': 'mosaic', 'url': '?view\x3dmosaic'}, 'sidebar': {'name': 'sidebar', 'url': '?view\x3dsidebar'}, 'snapshot': {'name': 'snapshot', 'url': '?view\x3dsnapshot'}, 'timeslide': {'name': 'timeslide', 'url': '?view\x3dtimeslide'}, 'isMobile': false, 'title': 'explore', 'description': '         Movies                         \u23ee Back    Page 1     \u23ed Load More                 ', 'featuredImage': 'https://lh3.googleusercontent.com/blogger_img_proxy/AEn0k_v8GtKz-mQfsuyR2vuQiJ0k-SfudbtWtqG0rarn_DjFDpHXNgqDLHY15MS9w2nJKsbt2pxcuUOFB5bojBHwumz3gG0mWyYtsRLO1swxh_6O3aQ', 'url': 'https://go9movie.blogspot.com/p/explore.html', 'type': 'item', 'isSingleItem': true, 'isMultipleItems': false, 'isError': false, 'isPage': true, 'isPost': false, 'isHomepage': false, 'isArchive': false, 'isLabelSearch': false, 'pageId': 1404665707427096211}}]);
 _WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML4', 'main', document.getElementById('HTML4'), {}, 'displayModeFull'));
 _WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML11', 'main', document.getElementById('HTML11'), {}, 'displayModeFull'));
 _WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML14', 'main', document.getElementById('HTML14'), {}, 'displayModeFull'));
