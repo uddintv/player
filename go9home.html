@@ -655,7 +655,7 @@ color: lime;
               const year = m.release_date ? m.release_date.split('-')[0] : "N/A";
               rightLabel = year;
             } else {
-              rightLabel = "ALL EP";
+              rightLabel = "EP";
             }
 
             html += `
@@ -691,7 +691,7 @@ color: lime;
                 .catch(() => {
                   const el = document.getElementById(uniqueId);
                   if (el) {
-                    el.innerText = "ALL EP";
+                    el.innerText = "EP";
                   }
                 });
 
@@ -898,7 +898,7 @@ color: lime;
 
                   <div class="poster-top-bar">
                     <span class="rating-label">${rating}</span>
-                    <span class="date-label" id="${uniqueId}">ALL EP</span>
+                    <span class="date-label" id="${uniqueId}">EP</span>
                   </div>
 
                   <img src="https://image.tmdb.org/t/p/w185${m.poster_path}">
@@ -924,7 +924,7 @@ color: lime;
               .catch(() => {
                 const el = document.getElementById(uniqueId);
                 if (el) {
-                  el.innerText = "ALL EP";
+                  el.innerText = "EP";
                 }
               });
 
@@ -1022,7 +1022,7 @@ color: lime;
           });
 
           // সর&#2509;ব&#2507;চ&#2509;চ ৭ট&#2495; movie দ&#2503;খ&#2494;ব&#2503;
-          validMovies.slice(0, 7).forEach(m => {
+          validMovies.slice(0, 6).forEach(m => {
 
             const rating = m.vote_average
               ? m.vote_average.toFixed(1)
@@ -1135,7 +1135,7 @@ color: lime;
           let validShows = data.results.filter(m => m.poster_path);
 
           // সর&#2509;ব&#2494;ধ&#2495;ক ৭ট&#2495; শ&#2507; দ&#2503;খ&#2494;ব&#2503;
-          validShows.slice(0, 7).forEach(m => {
+          validShows.slice(0, 6).forEach(m => {
 
             const rating = m.vote_average ? m.vote_average.toFixed(1) : "N/A";
             const uniqueId = "tv-ep-" + m.id;
@@ -1146,7 +1146,7 @@ color: lime;
 
                   <div class="poster-top-bar">
                     <span class="rating-label">&#11088; ${rating}</span>
-                    <span class="date-label" id="${uniqueId}">ALL EP</span>
+                    <span class="date-label" id="${uniqueId}">EP</span>
                   </div>
 
                   <img src="https://image.tmdb.org/t/p/w185${m.poster_path}">
@@ -1165,7 +1165,7 @@ color: lime;
               })
               .catch(() => {
                 const el = document.getElementById(uniqueId);
-                if (el) el.innerText = "ALL EP";
+                if (el) el.innerText = "EP";
               });
 
           });
@@ -1188,7 +1188,140 @@ color: lime;
 })();
 </script>
 </div>
-</div><div class='widget HTML' data-version='2' id='HTML2'>
+</div>
+  
+<div class='widget HTML' data-version='2' id='HTML5'>
+<div class='widget-content'>
+<div id="bangla-movie" style="display:none;">
+  <div class="home-header-wrap">
+    <a href="/player/go9explore.html?type=movie&with_original_language=bn">
+      <h2 class="home-title"> 🎬 <span style="border-bottom: 3px solid #38bdf8;">  BANGLA MOVIES </span> </h2>
+    </a>
+
+    <a href="/player/go9explore.html?type=movie&with_original_language=hi&sort_by=primary_release_date.desc" class="see-all-link">
+      <u>SEE ALL</u> &#9654;
+    </a>
+  </div>
+
+  <div id="movie-bangla" class="movie-grid"></div>
+</div>
+
+<script>
+(function () {
+
+  var isHome = location.pathname === "/player/go9home.html" || location.pathname.includes("go9home.html");
+  if (!isHome) return;
+
+  var box = document.getElementById("movie-bangla");
+  if (!box) return;
+
+  document.getElementById("bangla-movie").style.display = "block";
+
+  // LOADER
+  var loader = "";
+  for (var i = 0; i < 6; i++) {
+    loader += `
+      <div class="movie-card">
+        <div class="loader-box">
+          <div class="spinner"></div>
+        </div>
+      </div>`;
+  }
+  box.innerHTML = loader;
+
+  // Function to fetch trending Hindi movies and sort by release date (descending order)
+  function fetchTrendingHindiMovies() {
+
+    const API_KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
+
+    // 👉 Fetching trending Hindi movies
+//let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi`;
+
+//let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&sort_by=primary_release_date.desc&vote_count.gte=1`;
+
+    
+    const today = new Date().toISOString().split("T")[0]; // আজক&#2503;র ত&#2494;র&#2495;খ
+
+    // TV API মত&#2507; URL logic ব&#2509;যবহ&#2494;র কর&#2503;
+    let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&sort_by=primary_release_date.desc&primary_release_date.lte=${today}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+
+        let html = "";
+
+        if (data.results && data.results.length > 0) {
+
+          // শ&#2497;ধ&#2497;ম&#2494;ত&#2509;র poster থ&#2494;ক&#2494; movie র&#2494;খব&#2503;
+          let validMovies = data.results.filter(m => m.poster_path);
+
+          // Release date অন&#2497;য&#2494;য়&#2496; sort
+          validMovies.sort((a, b) => {
+            let dateA = new Date(a.release_date);
+            let dateB = new Date(b.release_date);
+            return dateB - dateA;
+          });
+
+          // সর&#2509;ব&#2507;চ&#2509;চ ৭ট&#2495; movie দ&#2503;খ&#2494;ব&#2503;
+          validMovies.slice(0, 6).forEach(m => {
+
+            const rating = m.vote_average
+              ? m.vote_average.toFixed(1)
+              : "N/A";
+
+            const year = m.release_date
+              ? m.release_date.split('-')[0]
+              : "N/A";
+
+            html += `
+              <div class="movie-card">
+                <a href="/player/go9watch.html?id=${m.id}&type=movie">
+
+                  <div class="poster-top-bar">
+                    <span class="rating-label">&#11088; ${rating}</span>
+                    <span class="date-label">${year}</span>
+                  </div>
+
+                  <img src="https://image.tmdb.org/t/p/w185${m.poster_path}">
+                  <span>${m.title}</span>
+
+                </a>
+              </div>`;
+          });
+
+        } else {
+
+          html = `
+            <p style="color:#fff;text-align:center;">
+              No Movies Found
+            </p>`;
+
+        }
+
+        box.innerHTML = html;
+
+      })
+      .catch(err => {
+
+        console.log("Error:", err);
+
+        box.innerHTML = `
+          <p style="color:red;text-align:center;">
+            Failed to load
+          </p>`;
+      });
+  }
+
+  fetchTrendingHindiMovies();
+
+})();
+</script>
+</div>
+</div>
+  
+  
+  <div class='widget HTML' data-version='2' id='HTML2'>
 <div class='widget-content'>
 <div id="tamil-movies" style="display:none;">
   <div class="home-header-wrap">
@@ -1255,7 +1388,7 @@ color: lime;
           });
 
           // সর&#2509;ব&#2507;চ&#2509;চ ৭ট&#2495; movie দ&#2503;খ&#2494;ব&#2503;
-          validMovies.slice(0, 7).forEach(m => {
+          validMovies.slice(0, 6).forEach(m => {
 
             const rating = m.vote_average
               ? m.vote_average.toFixed(1)
@@ -1383,7 +1516,7 @@ color: lime;
           });
 
           // সর&#2509;ব&#2507;চ&#2509;চ ৭ট&#2495; movie দ&#2503;খ&#2494;ব&#2503;
-          validMovies.slice(0, 7).forEach(m => {
+          validMovies.slice(0, 6).forEach(m => {
 
             const rating = m.vote_average
               ? m.vote_average.toFixed(1)
@@ -1512,7 +1645,7 @@ fetchTrendingMalayalamMovies();
           });
 
           // সর&#2509;ব&#2507;চ&#2509;চ ৭ট&#2495; movie দ&#2503;খ&#2494;ব&#2503;
-          validMovies.slice(0, 7).forEach(m => {
+          validMovies.slice(0, 6).forEach(m => {
 
             const rating = m.vote_average
               ? m.vote_average.toFixed(1)
@@ -1728,7 +1861,7 @@ fetchTrendingMalayalamMovies();
 
                   <div class="poster-top-bar">
                     <span class="rating-label">&#11088; ${rating}</span>
-                    <span class="date-label" id="ep-${m.id}"  style=" line-height:3;" >ALL EP</span>
+                    <span class="date-label" id="ep-${m.id}"  style=" line-height:3;" >EP</span>
                   </div>
 
                   <img src="https://image.tmdb.org/t/p/w185${m.poster_path}">
@@ -1762,7 +1895,7 @@ fetchTrendingMalayalamMovies();
               .catch(() => {
                 const el = document.getElementById(`ep-${m.id}`);
                 if (el) {
-                  el.innerText = "ALL EP";
+                  el.innerText = "EP";
                 }
               });
 
@@ -1850,7 +1983,7 @@ fetchTrendingMalayalamMovies();
           });
 
           // ৬ট&#2495; প&#2507;স&#2509;ট&#2494;র চ&#2494;ই, প&#2509;রথম ২০ট&#2495; থ&#2503;ক&#2503;
-          let finalPosters = posters.slice(0, 7);
+          let finalPosters = posters.slice(0, 6);
 
           // প&#2507;স&#2509;ট&#2494;রগ&#2497;ল&#2507; HTML এ য&#2507;গ কর&#2494; হচ&#2509;ছ&#2503;
           finalPosters.forEach(m => {
