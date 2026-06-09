@@ -2308,9 +2308,10 @@ function generateFinalUrl(n) {
         if (n === 10) url = `https://autoembed.co/movie/tmdb/${currentId}`; 
         if (n === 11) url = `https://vidsrc.vip/embed/movie/${currentId}`;
         if (n === 12) url = `https://play.xpass.top/e/movie/${currentId}`;
-        if (n === 3) url = `https://vidsrc.vip/embed/movie/${currentId}`;
+        if (n === 3) url = `https://autoembed.co/movie/tmdb/${currentId}`; 
         if (n === 1) url = `https://aman007power.blogspot.com/p/sendbox.html?url=https://vidsrc.cc/v2/embed/movie/${currentId}`;
         if (n === 3) url = `https://multiembed.mov/?video_id=${currentId}&tmdb=1`;
+        if (n === 2) url = `https://vidsrc.wtf/api/3/movie/?id=${currentId}`;
         if (n === 1) url = `https://autoembed.co/movie/tmdb/${currentId}`; 
         
     } else {
@@ -2328,25 +2329,26 @@ function generateFinalUrl(n) {
         if (n === 9) url = `https://multiembed.mov/?video_id=${currentId}&tmdb=1&s=${s}&e=${e}`;
         if (n === 10) url = `https://autoembed.co/tv/tmdb/${currentId}-${s}-${e}`;
         if (n === 11) url = `https://vidsrc.vip/embed/tv/${currentId}/${s}/${e}`;
-        if (n === 3) url = `https://vidsrc.vip/embed/tv/${currentId}/${s}/${e}`;
+        if (n === 3) url = `https://autoembed.co/tv/tmdb/${currentId}-${s}-${e}`;
         if (n === 1) url = `https://aman007power.blogspot.com/p/sendbox.html?url=https://vidsrc.cc/v2/embed/tv/${currentId}/${s}/${e}`;
         if (n === 3) url = `https://multiembed.mov/?video_id=${currentId}&tmdb=1&s=${s}&e=${e}`;
+        if (n === 2) url = `https://vidsrc.wtf/api/3/tv/?id=${currentId}&s=${s}&e=${e}`;
         if (n === 1) url = `https://autoembed.co/tv/tmdb/${currentId}-${s}-${e}`;
         
     }
 */
   
     if (type === 'movie') {
-        if (n === 1) url = `https://player.videasy.net/movie/${currentId}`;
-        if (n === 2) url = `https://vidsrc.wtf/api/3/movie/?id=${currentId}`;
-        if (n === 3) url = `https://vidnest.fun/movie/${currentId}`; 
+        if (n === 1) url = `https://vidnest.fun/movie/${currentId}`; 
+        if (n === 2) url = `https://player.videasy.net/movie/${currentId}`;
+        if (n === 3) url = `https://vidsrc-embed.ru/embed/movie/${currentId}`;
         if (n === 4) url = `https://vidsrc.wtf/api/2/movie/?id=${currentId}`;
       
      } else {
         // TV Series URLs
-        if (n === 1) url = `https://player.videasy.net/tv/${currentId}/${s}/${e}`;
-        if (n === 2) url = `https://vidsrc.wtf/api/3/tv/?id=${currentId}&s=${s}&e=${e}`;
-        if (n === 3) url = `https://vidnest.fun/tv/${currentId}/${s}/${e}`;
+        if (n === 1) url = `https://vidnest.fun/tv/${currentId}/${s}/${e}`;
+        if (n === 2) url = `https://player.videasy.net/tv/${currentId}/${s}/${e}`;
+        if (n === 3) url = `https://vidsrc-embed.ru/embed/tv/${currentId}/${s}/${e}`;
         if (n === 4) url = `https://vidsrc.wtf/api/2/tv/?id=${currentId}&s=${s}&e=${e}`;
      }
   
