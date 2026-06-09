@@ -37,6 +37,7 @@ border: 0;
 }
 /* Header Layout */
 .home-header-wrap {
+margin-bottom: -10px; /* */
 display: flex;
 justify-content: space-between; /* এট&#2495; ট&#2494;ইট&#2503;ল ব&#2494;ম&#2503; এব&#2434; ল&#2495;ঙ&#2509;ক ড&#2494;ন&#2503; প&#2494;ঠ&#2494;ব&#2503; */
 align-items: center;
@@ -1234,16 +1235,12 @@ color: lime;
 
     const API_KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
 
-    // 👉 Fetching trending Hindi movies
-//let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi`;
-
-//let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&sort_by=primary_release_date.desc&vote_count.gte=1`;
 
     
     const today = new Date().toISOString().split("T")[0]; // আজক&#2503;র ত&#2494;র&#2495;খ
 
     // TV API মত&#2507; URL logic ব&#2509;যবহ&#2494;র কর&#2503;
-    let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=hi&sort_by=primary_release_date.desc&primary_release_date.lte=${today}`;
+    let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_original_language=bn`;
 
     fetch(url)
       .then(res => res.json())
