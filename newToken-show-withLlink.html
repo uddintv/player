@@ -2,20 +2,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>M3U8 API</title>
+<title>Live Player</title>
 </head>
 
-<body style="background:#000;color:#fff;">
+<body style="background:#000;color:#fff;font-family:Arial;">
 
-<pre id="out">Loading...</pre>
+<h3>LIVE STREAM</h3>
+
+<video id="video" controls autoplay style="width:100%;max-width:800px;background:#000;"></video>
+
+<p style="margin-top:10px;">Stream URL:</p>
+
+<!-- 🔥 IMPORTANT: link stays in DOM so page source can see it -->
+<pre id="link" style="background:#111;padding:10px;word-break:break-all;"></pre>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <script>
 
-var url =
+var api =
 "https://purple-dust-525dproxy.nu01302910955.workers.dev/?url=" +
 encodeURIComponent("https://streamtpday1.xyz/global2.php?stream=dsportsplus");
 
-fetch(url)
+fetch(api)
 .then(res => res.text())
 .then(html => {
 
@@ -23,22 +32,33 @@ fetch(url)
 
     if(match){
 
-        let playbackURL = match[1].replace(/\\\//g,"/");
+        let url = match[1].replace(/\\\//g,"/");
 
-        // 🔥 ONLY RAW LINK OUTPUT (API STYLE)
-        document.body.innerText = playbackURL;
+        // 🔥 show link (visible + in source)
+        document.getElementById("link").innerText = url;
 
-        console.log(playbackURL);
+        // 🔥 play video
+        let video = document.getElementById("video");
+
+        if(Hls.isSupported()){
+            let hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+        }
+        else if(video.canPlayType("application/vnd.apple.mpegurl")){
+            video.src = url;
+        }
+
+        console.log(url);
 
     } else {
 
-        document.body.innerText = "ERROR: NO LINK FOUND";
+        document.getElementById("link").innerText = "No link found";
     }
 
 })
 .catch(err => {
-
-    document.body.innerText = "ERROR: " + err;
+    document.getElementById("link").innerText = "Error: " + err;
 });
 
 </script>
