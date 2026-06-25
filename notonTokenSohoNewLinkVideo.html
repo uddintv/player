@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Live M3U8 Player</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+body {
+    margin:0;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+video {
+    width: 90%;
+    max-width: 900px;
+}
+</style>
+</head>
+
+<body>
+
+<video id="video" controls autoplay></video>
+
+<script>
+// তোমার token page URL
+const tokenPage = "https://uddintv.github.io/player/newToken-show-withLlink.html";
+
+fetch(tokenPage)
+.then(res => res.text())
+.then(html => {
+
+    // m3u8 link extract
+    let match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
+
+    if(!match){
+        alert("M3U8 link not found!");
+        return;
+    }
+
+    let streamURL = match[0];
+
+    console.log("Stream URL:", streamURL);
+
+    let video = document.getElementById('video');
+
+    if (Hls.isSupported()) {
+        let hls = new Hls();
+        hls.loadSource(streamURL);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            video.play();
+        });
+    }
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamURL;
+        video.play();
+    }
+
+})
+.catch(err => {
+    console.error(err);
+    alert("Error loading stream");
+});
+</script>
+
+</body>
+</html>
