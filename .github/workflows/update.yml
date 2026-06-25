@@ -1,0 +1,27 @@
+name: Update Token Page
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # প্রতিদিন 00:00 UTC
+    - cron: "0 12 * * *"  # প্রতিদিন 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Update file timestamp (example)
+        run: |
+          echo "Updated at $(date)" >> newToken-show-withLlink.html
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Auto update twice daily" || exit 0
+          git push
