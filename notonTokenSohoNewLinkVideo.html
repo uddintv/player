@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Token Extract</title>
+<title>Token Extract FIX</title>
 </head>
 
 <body style="background:#000;color:#fff;font-family:Arial;">
 
-<h3>FINAL M3U8 TOKEN LINK</h3>
+<h3>FINAL TOKEN LINK</h3>
 
 <div id="out">Loading...</div>
 
@@ -20,31 +20,42 @@ async function loadToken(){
         let res = await fetch("https://uddintv.github.io/player/newToken-show-withLlink.html");
         let html = await res.text();
 
-        // extract m3u8 link
-        let match = html.match(/https:\/\/sa\.streamtpday1\.xyz:[0-9]+\/global\/[^"]+\.m3u8[^"]*/);
+        // convert HTML string → DOM
+        let doc = new DOMParser().parseFromString(html, "text/html");
 
-        if(match){
+        // try textarea first
+        let ta = doc.querySelector("textarea");
 
-            let link = match[0];
+        let link = "";
+
+        if(ta && ta.value.includes("m3u8")){
+            link = ta.value.trim();
+        } 
+        else {
+
+            // fallback regex (escaped + normal)
+            let match = html.match(/https?:\/\/[^"' ]+\.m3u8[^"' ]*/);
+
+            if(match){
+                link = match[0].replace(/\\\//g,"/");
+            }
+        }
+
+        if(link){
 
             document.getElementById("out").innerHTML = `
-                <textarea style="width:100%;height:120px;">
-${link}
-                </textarea>
+                <textarea style="width:100%;height:120px;">${link}</textarea>
             `;
 
-            console.log("TOKEN LINK:", link);
+            console.log("FOUND:", link);
 
         } else {
-
             document.getElementById("out").innerHTML = "No token found";
-
         }
 
     } catch(err){
         document.getElementById("out").innerHTML = "Error: " + err;
     }
-
 }
 
 loadToken();
