@@ -18,31 +18,35 @@ async function loadStream(){
     try {
 
         let res = await fetch("https://uddintv.github.io/player/newToken-show-withLlink.html");
-        let data = await res.json();
+        let text = await res.text();  // ✅ FIX HERE
+
+        // extract JSON from HTML (important)
+        let jsonStart = text.indexOf("{");
+        let jsonEnd = text.lastIndexOf("}") + 1;
+
+        let jsonString = text.slice(jsonStart, jsonEnd);
+
+        let data = JSON.parse(jsonString);  // now safe
 
         if(data.status === "success"){
 
             document.getElementById("out").innerHTML = `
-                <p style="color:lime">LIVE LINK FOUND</p>
                 <textarea style="width:100%;height:120px;">
 ${data.url}
                 </textarea>
             `;
 
-            console.log("STREAM:", data.url);
+            console.log(data.url);
 
         } else {
 
-            document.getElementById("out").innerHTML =
-                "No stream found";
-
+            document.getElementById("out").innerHTML = "No stream found";
         }
 
     } catch(err){
 
         document.getElementById("out").innerHTML =
             "Error: " + err;
-
     }
 }
 
