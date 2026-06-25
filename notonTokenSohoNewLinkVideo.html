@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>M3U8 Player with Link</title>
+<title>Live M3U8 Player</title>
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
@@ -18,6 +19,7 @@ video {
     width:90%;
     max-width:900px;
     margin-top:20px;
+    background:black;
 }
 
 #linkBox {
@@ -25,8 +27,8 @@ video {
     padding:10px;
     word-break:break-all;
     background:#111;
+    font-size:13px;
     border-top:1px solid #333;
-    font-size:14px;
 }
 </style>
 </head>
@@ -37,43 +39,44 @@ video {
 
 <video id="video" controls autoplay></video>
 
-<div id="linkBox">Loading stream link...</div>
+<div id="linkBox">Loading stream...</div>
 
 <script>
 
-const tokenPage = "https://uddintv.github.io/player/newToken-show-withLlink.html";
+const sourcePage =
+"https://uddintv.github.io/player/newToken-show-withLlink.html";
 
-fetch(tokenPage)
+fetch(sourcePage)
 .then(res => res.text())
 .then(html => {
 
-    // বেশি flexible regex (সব m3u8 ধরবে)
-    let match = html.match(/(https?:\/\/[^\s"'<>]+\.m3u8[^"'<>]*)/);
+    let match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
 
     if(!match){
-        document.getElementById("linkBox").innerHTML = "❌ M3U8 link not found";
+        document.getElementById("linkBox").innerHTML =
+        "❌  not found";
         return;
     }
 
-    let streamURL = match[1];
+    let streamURL = match[0];
 
-    // 👉 নিচে লিংক দেখাও
+    // show link
     document.getElementById("linkBox").innerHTML =
-        "🔗 Stream URL:<br><br>" + streamURL;
+    "🔗 Stream URL:<br><br>" + streamURL;
 
-    console.log("Stream URL:", streamURL);
-
-    let video = document.getElementById('video');
+    let video = document.getElementById("video");
 
     if (Hls.isSupported()) {
+
         let hls = new Hls();
         hls.loadSource(streamURL);
         hls.attachMedia(video);
+
         hls.on(Hls.Events.MANIFEST_PARSED, function() {
             video.play();
         });
-    }
-    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
         video.src = streamURL;
         video.play();
     }
@@ -81,7 +84,7 @@ fetch(tokenPage)
 })
 .catch(err => {
     document.getElementById("linkBox").innerHTML =
-        "❌ Error loading page: " + err;
+    "❌ not: " + err;
 });
 
 </script>
