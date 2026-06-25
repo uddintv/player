@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Show Stream</title>
+<title>Show Stream FIX</title>
 </head>
 
 <body style="background:#000;color:#fff;font-family:Arial;">
@@ -20,21 +20,36 @@ async function load(){
         let res = await fetch("https://uddintv.github.io/player/newToken-show-withLlink.html");
         let text = await res.text();
 
-        // extract m3u8 link
-        let match = text.match(/https:\/\/sa\.streamtpday1\.xyz:[0-9]+\/global\/[^"'\s]+\.m3u8[^"'\s]*/);
+        let link = null;
 
-        if(match){
+        // 🔥 1st try: normal m3u8
+        let match1 = text.match(/https:\/\/sa\.streamtpday1\.xyz:[0-9]+\/global\/[^"'\s]+\.m3u8[^"'\s]*/);
 
-            let link = match[0].replace(/\\\//g,"/");
+        // 🔥 2nd try: escaped version
+        let match2 = text.match(/https:\\\/\\\/sa\.streamtpday1\.xyz[^"'\s]+m3u8[^"'\s]*/);
 
-            // show ONLY link
+        // 🔥 3rd try: generic m3u8
+        let match3 = text.match(/https?:\/\/[^"'\s]+\.m3u8[^"'\s]*/);
+
+        if(match1){
+            link = match1[0];
+        }
+        else if(match2){
+            link = match2[0].replace(/\\\//g,"/");
+        }
+        else if(match3){
+            link = match3[0];
+        }
+
+        if(link){
+
             document.getElementById("out").innerText = link;
-
-            console.log(link);
+            console.log("FOUND:", link);
 
         } else {
 
-            document.getElementById("out").innerText = "No link found";
+            document.getElementById("out").innerText =
+                "No link found (page format changed)";
         }
 
     } catch(err){
