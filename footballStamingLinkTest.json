@@ -1,0 +1,49 @@
+const proxy =
+"https://purple-dust-525dproxy.nu01302910955.workers.dev/?url=";
+
+const source =
+"https://streamtpday1.xyz/";
+
+async function getChannels(){
+
+    let res = await fetch(proxy + encodeURIComponent(source));
+    let html = await res.text();
+
+    // match BOTH domains
+    let regex = /(https:\/\/(streamtpday1\.xyz|streamtp-x-y-z\.ws)\/global1\.php\?stream=([a-zA-Z0-9_]+))/g;
+
+    let match;
+    let list = [];
+
+    while((match = regex.exec(html)) !== null){
+
+        let fullUrl = match[1];
+        let streamName = match[3];
+
+        // replace old domain
+        let fixedUrl = fullUrl.replaceAll(
+            "streamtp-x-y-z.ws",
+            "streamtpday1.xyz"
+        );
+
+        list.push({
+            name: streamName,
+            url: fixedUrl
+        });
+    }
+
+    // remove duplicates
+    let unique = {};
+    list.forEach(item => {
+        unique[item.url] = item;
+    });
+
+    let finalData = Object.values(unique);
+
+    // OUTPUT JSON
+    console.log(JSON.stringify(finalData, null, 2));
+
+    return finalData;
+}
+
+getChannels();
