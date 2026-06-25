@@ -5,7 +5,7 @@
 <title>M3U8 API</title>
 </head>
 
-<body style="background:#000;color:#fff;font-family:Arial;">
+<body style="background:#000;color:#fff;">
 
 <pre id="out">Loading...</pre>
 
@@ -21,43 +21,24 @@ fetch(url)
 
     let match = html.match(/playbackURL\s*=\s*"([^"]+)"/);
 
-    let result;
-
     if(match){
 
         let playbackURL = match[1].replace(/\\\//g,"/");
 
-        result = {
-            status: "success",
-            stream: "dsportsplus",
-            url: playbackURL
-        };
+        // 🔥 ONLY RAW LINK OUTPUT (API STYLE)
+        document.body.innerText = playbackURL;
+
+        console.log(playbackURL);
 
     } else {
 
-        result = {
-            status: "error",
-            message: "playbackURL not found"
-        };
+        document.body.innerText = "ERROR: NO LINK FOUND";
     }
-
-    // show JSON
-    document.getElementById("out").innerText =
-        JSON.stringify(result, null, 2);
-
-    console.log(result);
 
 })
 .catch(err => {
 
-    let errorResult = {
-        status: "error",
-        message: err.toString()
-    };
-
-    document.getElementById("out").innerText =
-        JSON.stringify(errorResult, null, 2);
-
+    document.body.innerText = "ERROR: " + err;
 });
 
 </script>
