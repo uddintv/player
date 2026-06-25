@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>M3U8 Extractor</title>
+<title>zast Extractor</title>
 </head>
 <body style="background:#000;color:#fff;">
 
@@ -20,24 +20,27 @@ fetch(url)
 .then(response => response.text())
 .then(html => {
 
-    let match = html.match(/playbackURL\s*=\s*"([^"]+)"/);
+    console.log(html); // DEBUG
+
+    let match = html.match(/playbackURL\s*=\s*["']([^"']+)["']/i);
 
     if(match){
 
         let playbackURL = match[1]
-            .replace(/\\\//g, "/");
+            .replace(/\\\//g, "/")
+            .replace(/\\u0026/g, "&");
 
         document.getElementById("result").innerHTML =
             '<textarea style="width:100%;height:150px;">'
             + playbackURL +
             '</textarea>';
 
-        console.log(playbackURL);
+        console.log("PLAYBACK:", playbackURL);
 
     }else{
 
         document.getElementById("result").innerHTML =
-            "playbackURL not found";
+            "❌ playbackURL not found";
 
     }
 
