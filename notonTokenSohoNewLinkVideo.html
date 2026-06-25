@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Live M3U8 Player</title>
+<title>M3U8 Player</title>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -19,15 +19,15 @@ video {
     width:90%;
     max-width:900px;
     margin-top:20px;
-    background:black;
+    background:#000;
 }
 
 #linkBox {
     margin-top:15px;
-    padding:10px;
+    padding:12px;
     word-break:break-all;
     background:#111;
-    font-size:13px;
+    font-size:14px;
     border-top:1px solid #333;
 }
 </style>
@@ -35,11 +35,11 @@ video {
 
 <body>
 
-<h3>Live Stream Player</h3>
+<h3>Live Stream</h3>
 
-<video id="video" controls autoplay></video>
+<video id="video" controls></video>
 
-<div id="linkBox">Loading stream...</div>
+<div id="linkBox">Loading stream link...</div>
 
 <script>
 
@@ -50,41 +50,45 @@ fetch(sourcePage)
 .then(res => res.text())
 .then(html => {
 
+    // m3u8 extract
     let match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
 
     if(!match){
         document.getElementById("linkBox").innerHTML =
-        "❌  not found";
+        "❌ Stream link not found";
         return;
     }
 
     let streamURL = match[0];
 
-    // show link
+    // 🔥 ALWAYS SHOW LINK (even if video fails)
     document.getElementById("linkBox").innerHTML =
-    "🔗 Stream URL:<br><br>" + streamURL;
+    "🔗 STREAM LINK:<br><br>" + streamURL;
 
     let video = document.getElementById("video");
 
-    if (Hls.isSupported()) {
+    try {
+        if (Hls.isSupported()) {
 
-        let hls = new Hls();
-        hls.loadSource(streamURL);
-        hls.attachMedia(video);
+            let hls = new Hls();
+            hls.loadSource(streamURL);
+            hls.attachMedia(video);
 
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
-            video.play();
-        });
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                console.log("HLS error:", data);
+            });
 
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = streamURL;
-        video.play();
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = streamURL;
+        }
+    } catch(e) {
+        console.log("Video error:", e);
     }
 
 })
 .catch(err => {
     document.getElementById("linkBox").innerHTML =
-    "❌ not: " + err;
+    "❌ Error loading page: " + err;
 });
 
 </script>
