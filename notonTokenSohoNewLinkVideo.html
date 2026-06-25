@@ -2,45 +2,64 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Live M3U8 Player</title>
+<title>M3U8 Player with Link</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
 <style>
 body {
     margin:0;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+    background:#000;
+    color:#fff;
+    font-family:Arial;
+    text-align:center;
 }
+
 video {
-    width: 90%;
-    max-width: 900px;
+    width:90%;
+    max-width:900px;
+    margin-top:20px;
+}
+
+#linkBox {
+    margin-top:15px;
+    padding:10px;
+    word-break:break-all;
+    background:#111;
+    border-top:1px solid #333;
+    font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
+<h3>Live Stream Player</h3>
+
 <video id="video" controls autoplay></video>
 
+<div id="linkBox">Loading stream link...</div>
+
 <script>
-// তোমার token page URL
+
 const tokenPage = "https://uddintv.github.io/player/newToken-show-withLlink.html";
 
 fetch(tokenPage)
 .then(res => res.text())
 .then(html => {
 
-    // m3u8 link extract
-    let match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
+    // বেশি flexible regex (সব m3u8 ধরবে)
+    let match = html.match(/(https?:\/\/[^\s"'<>]+\.m3u8[^"'<>]*)/);
 
     if(!match){
-        alert("M3U8 link not found!");
+        document.getElementById("linkBox").innerHTML = "❌ M3U8 link not found";
         return;
     }
 
-    let streamURL = match[0];
+    let streamURL = match[1];
+
+    // 👉 নিচে লিংক দেখাও
+    document.getElementById("linkBox").innerHTML =
+        "🔗 Stream URL:<br><br>" + streamURL;
 
     console.log("Stream URL:", streamURL);
 
@@ -61,9 +80,10 @@ fetch(tokenPage)
 
 })
 .catch(err => {
-    console.error(err);
-    alert("Error loading stream");
+    document.getElementById("linkBox").innerHTML =
+        "❌ Error loading page: " + err;
 });
+
 </script>
 
 </body>
