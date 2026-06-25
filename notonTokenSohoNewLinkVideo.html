@@ -2,63 +2,51 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>DDDDDDD</title>
+<title>Player Page</title>
 </head>
 
 <body style="background:#000;color:#fff;font-family:Arial;">
 
-<h3>FINAL TOKEN LINK</h3>
+<h3>LIVE STREAM LINK</h3>
 
 <div id="out">Loading...</div>
 
 <script>
 
-async function loadToken(){
+async function loadStream(){
 
     try {
 
-        let res = await fetch("/player/newToken-show-withLlink.html");
-        let html = await res.text();
+        let res = await fetch("https://uddintv.github.io/player/newToken-show-withLlink.html");
+        let data = await res.json();
 
-        // convert HTML string → DOM
-        let doc = new DOMParser().parseFromString(html, "text/html");
-
-        // try textarea first
-        let ta = doc.querySelector("textarea");
-
-        let link = "";
-
-        if(ta && ta.value.includes("m3u8")){
-            link = ta.value.trim();
-        } 
-        else {
-
-            // fallback regex (escaped + normal)
-            let match = html.match(/https?:\/\/[^"' ]+\.m3u8[^"' ]*/);
-
-            if(match){
-                link = match[0].replace(/\\\//g,"/");
-            }
-        }
-
-        if(link){
+        if(data.status === "success"){
 
             document.getElementById("out").innerHTML = `
-                <textarea style="width:100%;height:120px;">${link}</textarea>
+                <p style="color:lime">LIVE LINK FOUND</p>
+                <textarea style="width:100%;height:120px;">
+${data.url}
+                </textarea>
             `;
 
-            console.log("FOUND:", link);
+            console.log("STREAM:", data.url);
 
         } else {
-            document.getElementById("out").innerHTML = "No token found";
+
+            document.getElementById("out").innerHTML =
+                "No stream found";
+
         }
 
     } catch(err){
-        document.getElementById("out").innerHTML = "Error: " + err;
+
+        document.getElementById("out").innerHTML =
+            "Error: " + err;
+
     }
 }
 
-loadToken();
+loadStream();
 
 </script>
 
