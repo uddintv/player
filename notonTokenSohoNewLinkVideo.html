@@ -2,94 +2,52 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>M3U8 Player</title>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-<style>
-body {
-    margin:0;
-    background:#000;
-    color:#fff;
-    font-family:Arial;
-    text-align:center;
-}
-
-video {
-    width:90%;
-    max-width:900px;
-    margin-top:20px;
-    background:#000;
-}
-
-#linkBox {
-    margin-top:15px;
-    padding:12px;
-    word-break:break-all;
-    background:#111;
-    font-size:14px;
-    border-top:1px solid #333;
-}
-</style>
+<title>Token Extract</title>
 </head>
 
-<body>
+<body style="background:#000;color:#fff;font-family:Arial;">
 
-<h3>Live Stream</h3>
+<h3>FINAL M3U8 TOKEN LINK</h3>
 
-<video id="video" controls></video>
-
-<div id="linkBox">Loading stream link...</div>
+<div id="out">Loading...</div>
 
 <script>
 
-const sourcePage =
-"https://uddintv.github.io/player/newToken-show-withLlink.html";
-
-fetch(sourcePage)
-.then(res => res.text())
-.then(html => {
-
-    // m3u8 extract
-    let match = html.match(/https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/);
-
-    if(!match){
-        document.getElementById("linkBox").innerHTML =
-        "❌ Stream link not found";
-        return;
-    }
-
-    let streamURL = match[0];
-
-    // 🔥 ALWAYS SHOW LINK (even if video fails)
-    document.getElementById("linkBox").innerHTML =
-    "🔗 STREAM LINK:<br><br>" + streamURL;
-
-    let video = document.getElementById("video");
+async function loadToken(){
 
     try {
-        if (Hls.isSupported()) {
 
-            let hls = new Hls();
-            hls.loadSource(streamURL);
-            hls.attachMedia(video);
+        let res = await fetch("https://uddintv.github.io/player/newToken-show-withLlink.html");
+        let html = await res.text();
 
-            hls.on(Hls.Events.ERROR, function(event, data) {
-                console.log("HLS error:", data);
-            });
+        // extract m3u8 link
+        let match = html.match(/https:\/\/sa\.streamtpday1\.xyz:[0-9]+\/global\/[^"]+\.m3u8[^"]*/);
 
-        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-            video.src = streamURL;
+        if(match){
+
+            let link = match[0];
+
+            document.getElementById("out").innerHTML = `
+                <textarea style="width:100%;height:120px;">
+${link}
+                </textarea>
+            `;
+
+            console.log("TOKEN LINK:", link);
+
+        } else {
+
+            document.getElementById("out").innerHTML = "No token found";
+
         }
-    } catch(e) {
-        console.log("Video error:", e);
+
+    } catch(err){
+        document.getElementById("out").innerHTML = "Error: " + err;
     }
 
-})
-.catch(err => {
-    document.getElementById("linkBox").innerHTML =
-    "❌ Error loading page: " + err;
-});
+}
+
+loadToken();
 
 </script>
 
