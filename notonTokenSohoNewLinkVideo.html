@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Player Page</title>
+<title>Show Stream</title>
 </head>
 
 <body style="background:#000;color:#fff;font-family:Arial;">
@@ -13,44 +13,36 @@
 
 <script>
 
-async function loadStream(){
+async function load(){
 
     try {
 
         let res = await fetch("https://uddintv.github.io/player/newToken-show-withLlink.html");
-        let text = await res.text();  // ✅ FIX HERE
+        let text = await res.text();
 
-        // extract JSON from HTML (important)
-        let jsonStart = text.indexOf("{");
-        let jsonEnd = text.lastIndexOf("}") + 1;
+        // extract m3u8 link
+        let match = text.match(/https:\/\/sa\.streamtpday1\.xyz:[0-9]+\/global\/[^"'\s]+\.m3u8[^"'\s]*/);
 
-        let jsonString = text.slice(jsonStart, jsonEnd);
+        if(match){
 
-        let data = JSON.parse(jsonString);  // now safe
+            let link = match[0].replace(/\\\//g,"/");
 
-        if(data.status === "success"){
+            // show ONLY link
+            document.getElementById("out").innerText = link;
 
-            document.getElementById("out").innerHTML = `
-                <textarea style="width:100%;height:120px;">
-${data.url}
-                </textarea>
-            `;
-
-            console.log(data.url);
+            console.log(link);
 
         } else {
 
-            document.getElementById("out").innerHTML = "No stream found";
+            document.getElementById("out").innerText = "No link found";
         }
 
     } catch(err){
-
-        document.getElementById("out").innerHTML =
-            "Error: " + err;
+        document.getElementById("out").innerText = "Error: " + err;
     }
 }
 
-loadStream();
+load();
 
 </script>
 
