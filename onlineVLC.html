@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONLINE VLC & IPTV HUB</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+   <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>  -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+
+  
+  
 <style>
 /* =====================================================
    ১. Global body & html সেটিংস
@@ -720,7 +724,7 @@ video {
            <div id="channelOverlay" class="channel-display-overlay"></div> <div class="bg-logo"></div>
           
           <div class="video-frame">
-            <video id="mainVideo" controls autoplay playsinline></video>
+            <video id="mainVideo" controls autoplay playsinline ></video>
             <audio id="mainAudio" controls autoplay></audio>
             <iframe id="mainIframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
           </div>
@@ -815,7 +819,7 @@ video {
     urlInput.value = "";
 }
 
-
+/*
     function playVideo(url) {
         const source = proxy ? proxy + encodeURIComponent(url) : url;
         if (Hls.isSupported() && (url.includes('m3u8') || url.includes('ts'))) {
@@ -826,6 +830,258 @@ video {
             video.src = source; video.play();
         }
     }
+*/
+// ==========================================
+// HLS PLAYER
+// ==========================================
+
+let hlsPlayer = null;
+
+function destroyHLS() {
+    if (hlsPlayer) {
+        try {
+            hlsPlayer.destroy();
+        } catch (e) {
+            console.warn("HLS destroy error:", e);
+        }
+
+        hlsPlayer = null;
+    }
+}
+
+
+// URL থেকে extension বের করার জন্য
+function isHLS(url) {
+    if (!url) return false;
+
+    const cleanUrl = url
+        .split("#")[0]
+        .split("?")[0]
+        .toLowerCase();
+
+    return cleanUrl.endsWith(".m3u8");
+}
+
+
+// ==========================================
+// MAIN VIDEO PLAY FUNCTION
+// ==========================================
+
+function playVideo(url) {
+
+    if (!url) return;
+
+    console.log("PLAY URL:", url);
+
+    // আগের HLS player বন্ধ
+    destroyHLS();
+
+    // পুরনো video source পরিষ্কার
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+
+    const source = proxy
+        ? proxy + encodeURIComponent(url)
+        : url;
+
+    const hlsURL = isHLS(url);
+
+    console.log("Is HLS:", hlsURL);
+    console.log("HLS.js supported:", 
+        typeof Hls !== "undefined" && Hls.isSupported()
+    );
+
+
+    // ======================================
+    // M3U8
+    // ======================================
+
+    if (hlsURL) {
+
+        // ----------------------------------
+        // HLS.js supported
+        // ----------------------------------
+
+        if (typeof Hls !== "undefined" && Hls.isSupported()) {
+
+            hlsPlayer = new Hls({
+                enableWorker: true,
+                lowLatencyMode: false,
+
+                // network timeout
+                manifestLoadingTimeOut: 20000,
+                manifestLoadingMaxRetry: 2,
+                levelLoadingTimeOut: 20000,
+                fragLoadingTimeOut: 20000
+            });
+
+
+            // Error logging
+            hlsPlayer.on(Hls.Events.ERROR, function(event, data) {
+
+                console.error(
+                    "HLS ERROR:",
+                    data.type,
+                    data.details,
+                    data.fatal
+                );
+
+
+                // Fatal error হলে recovery
+                if (data.fatal) {
+
+                    switch (data.type) {
+
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+
+                            console.warn(
+                                "HLS network error - restarting load..."
+                            );
+
+                            hlsPlayer.startLoad();
+                            break;
+
+
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+
+                            console.warn(
+                                "HLS media error - recovering..."
+                            );
+
+                            hlsPlayer.recoverMediaError();
+                            break;
+
+
+                        default:
+
+                            console.error(
+                                "Fatal HLS error. Destroying player."
+                            );
+
+                            destroyHLS();
+
+                            break;
+                    }
+                }
+            });
+
+
+            // Media attach
+            hlsPlayer.on(
+                Hls.Events.MEDIA_ATTACHED,
+                function() {
+
+                    console.log("HLS media attached");
+
+                    hlsPlayer.loadSource(source);
+                }
+            );
+
+
+            // Manifest loaded
+            hlsPlayer.on(
+                Hls.Events.MANIFEST_PARSED,
+                function(event, data) {
+
+                    console.log(
+                        "HLS manifest loaded. Levels:",
+                        data.levels.length
+                    );
+
+                    video.play().catch(function(err) {
+
+                        console.warn(
+                            "Autoplay blocked:",
+                            err
+                        );
+
+                    });
+                }
+            );
+
+
+            // Attach video
+            hlsPlayer.attachMedia(video);
+
+        }
+
+
+        // ----------------------------------
+        // Native HLS
+        // Safari / iOS etc.
+        // ----------------------------------
+
+        else if (
+            video.canPlayType(
+                "application/vnd.apple.mpegurl"
+            )
+        ) {
+
+            console.log("Using native HLS");
+
+            video.src = source;
+
+            video.addEventListener(
+                "loadedmetadata",
+                function() {
+
+                    video.play().catch(function(err) {
+
+                        console.warn(
+                            "Autoplay blocked:",
+                            err
+                        );
+
+                    });
+
+                },
+                { once: true }
+            );
+
+        }
+
+
+        // ----------------------------------
+        // No HLS support
+        // ----------------------------------
+
+        else {
+
+            console.error(
+                "This browser does not support HLS."
+            );
+
+            alert(
+                "এই browser M3U8 / HLS playback support করে না।"
+            );
+
+        }
+
+        return;
+    }
+
+
+    // ======================================
+    // NORMAL VIDEO
+    // MP4 / WEBM / etc.
+    // ======================================
+
+    video.src = source;
+
+    video.load();
+
+    video.play().catch(function(err) {
+
+        console.warn(
+            "Video autoplay blocked:",
+            err
+        );
+
+    });
+}
+
+
 
     // একাধিক লিঙ্ক থেকে ডেটা লোড করার ফাংশন
 async function loadMultipleDefaults() {
@@ -1456,6 +1712,27 @@ function parseJSONChannels(json) {
 
     return channels;
 }
+    
+    
+    
+// ==========================================
+// ENTER KEY → PLAY
+// ==========================================
+
+document.getElementById("urlInput").addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+
+        const url = this.value.trim();
+
+        if (!url) return;
+
+        playAndHide();
+    }
+
+});
+    
   </script>
   
   
