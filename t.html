@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONLINE VLC & IPTV HUB</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.7.3/dist/hls.min.js"></script>
+<style>
+body, html {
+    margin: 0; padding: 0; background: #111; color: #fff; font-family: sans-serif; 
+}
+
+.player-wrapper { 
+ height: 100%; 
+}
+.sidebar { width: 0px !important; background: #111; display: flex !important; flex-direction: column !important; border-right: 0px solid #333; }
+.sidebar-header { display: none; gap: 0px; padding: 0px; background: #000; }
+.input-box { width: 0%; padding: 0px; background: #000; border: 0px solid #444; color: #fff; box-sizing: border-box; font-size: 0px; }
+.btn { width: 100%; padding: 0px; cursor: pointer; border: none; font-weight: bold; border-radius: 0px; color: #fff; }
+.btn-import { background: #28a745; width: 0%; margin: 0 auto !important; font-size: 0px; }
+.display-panel { flex: 1 !important; display: flex !important; flex-direction: column !important; background: #000; }
+.video-container { 
+    width: 100%; aspect-ratio: 16 / 11; background: #000; position: relative; 
+    display: flex; align-items: center; justify-content: center; overflow: hidden;  
+}
+#mainVideo, #mainAudio, #mainIframe { 
+    position: absolute; inset: 0; width: 100% !important; height: 100% !important; z-index: 2; display: none; object-fit: contain; background: transparent;
+}
+.video-frame { position: relative; width: 100%; height: 100%; border: 0px solid #9ca3af; border-radius: 0px; overflow: hidden; background: #000; }
+#placeholder { position: absolute; z-index: 1; color: #333; font-size: 0px; font-weight: bold; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+
+  
+  
+/*  ভিডিওর নিচের সাদা / dummy bar বন্ধ */
+/* buffering / loading spinner এর সময়ও clean থাকবে */
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls {
+  background: transparent !important;
+}
+/*      
+video::-webkit-media-controls-timeline {
+  touch-action: pan-y;
+} */
+/* তিন ডট বা অপশন মেনু লুকানো */
+video::-webkit-media-controls-overflow-button {
+  display: none !important;
+    }
+    
+/* ১. ডিফল্ট ফুলস্ক্রিন বাটন হাইড করা.... ,,,*/
+video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
+}  
+
+/* ৩. কারেন্ট টাইম এবং বাকি সময়ের ডিসপ্লে হাইড করা */
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display {
+    display: none !important;
+}
+/* প্রগ্রেস বা সিক বার লুকানো */
+video::-webkit-media-controls-timeline {
+  display: none !important;
+}
+
+/* Firefox / অন্যান্য ব্রাউজারের জন্য */
+video {
+  background-color: transparent !important;
+}
+     
+</style>
+</head>
+<body>
+
+  <div class="player-wrapper">
+
+
+    <div class="display-panel">
+      <div class="sidebar-header">
+        <!-- এখানে আপনার কাজ করা বড় টোকেন লিংকটি ডিফল্টভাবে বসানো হয়েছে -->
+        <input type="text" id="urlInput" class="input-box" value="https://mycoffeetime.net/play/tSDRdsaoGGQ2qYgRPDEe9q-qMIzoahbJArH3W3vOiEaB97nXMpWmLb0Ts759Tjsp/m3u8" placeholder="Paste token link here...">
+        <button class="btn btn-import" onclick="smartImport()">PLAY</button>
+      </div>
+
+      <div class="video-container">
+        <div class="video-frame">
+          <video id="mainVideo" controls autoplay  playsinline></video>
+          <audio id="mainAudio" controls autoplay></audio>
+          <iframe id="mainIframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+        </div>
+        <div id="placeholder">PLAYER READY</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let hlsInstance = null;
+  const video = document.getElementById('mainVideo');
+  const audio = document.getElementById('mainAudio');
+  const iframe = document.getElementById('mainIframe');
+  const urlInput = document.getElementById('urlInput');
+
+  function resetLayers() {
+    if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
+    }
+    video.style.display = "none"; 
+    video.pause();
+    video.removeAttribute('src'); 
+    video.load();
+    iframe.style.display = "none"; 
+    iframe.src = "";
+    document.getElementById('placeholder').style.display = "flex"; 
+  }
+
+  function smartImport() {
+      const url = urlInput.value.trim();
+      if (!url) return;
+      resetLayers();
+      document.getElementById('placeholder').style.display = "none";
+
+      video.style.display = "block";
+      playHLS(url);
+  }
+
+  function playHLS(url) {
+      if (Hls.isSupported()) {
+          hlsInstance = new Hls();
+          hlsInstance.loadSource(url);
+          hlsInstance.attachMedia(video);
+          hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+              video.play().catch(err => console.log("Autoplay restricted:", err));
+          });
+          hlsInstance.on(Hls.Events.ERROR, function (event, data) {
+              if (data.fatal) {
+                  hlsInstance.destroy();
+              }
+          });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = url;
+          video.addEventListener('loadedmetadata', () => {
+              video.play().catch(err => console.log("Autoplay error:", err));
+          });
+      }
+  }
+
+  // পেজ লোড হওয়ার সাথেই অটো প্লে করার জন্য
+  window.onload = function () {
+      smartImport();
+  };
+</script>
+</body>
+</html>
