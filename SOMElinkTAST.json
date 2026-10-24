@@ -1,74 +1,70 @@
 [
-    {
-      "title": " ALL CRICKET",
-      "cat": "Live Events",
-      "status": "LIVE",
-      "time": "",
-      "dashStreams": [
-        {
-          "title": "Willow 1",
-          "type": "dash",
-          "url": "https://a96aivottlinear-a.akamaihd.net/OTTB/iad-nitro/live/clients/dash/enc/ntomodyqm3/out/v1/cd61ecc8b6694006a1173974fcfa4e9e/cenc.mpd",
-          "key": "0cb7dc14c21cab20cd3dad68208277c3:0c0d355b82ea1406968689383d91077f"
-        },
-        {
-          "title": "Willow 2",
-          "type": "hls",
-          "url": "https://tvsen7.aynaott.com/Sports1/index.m3u8",
+  {
+    "title": "ALL CRICKET",
+    "cat": "Live Events",
+    "status": "LIVE",
+    "time": "",
+    "dashStreams": [
+      {
+        "title": "Willow 1",
+        "type": "dash",
+        "url": "https://a96aivottlinear-a.akamaihd.net/OTTB/iad-nitro/live/clients/dash/enc/ntomodyqm3/out/v1/cd61ecc8b6694006a1173974fcfa4e9e/cenc.mpd",
+        "key": "0cb7dc14c21cab20cd3dad68208277c3:0c0d355b82ea1406968689383d91077f"
+      },
+      {
+        "title": "Willow 2",
+        "type": "hls",
+        "url": "https://tvsen7.aynaott.com/Sports1/index.m3u8",
         "key": null
-        },
-
-        {
-          "title": "Willow 3",
-          "type": "dash",
-          "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd",
-          "key": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
-        },
-        {
-          "title": Tsports 1",
-          "type": "hls",
-          "url": "https://s1.itcnbd.live/T-Sports-HD/tracks-v1a1/mono.m3u8",
+      },
+      {
+        "title": "Willow 3",
+        "type": "dash",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd",
+        "key": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
+      },
+      {
+        "title": "Tsports 1",
+        "type": "hls",
+        "url": "https://s1.itcnbd.live/T-Sports-HD/tracks-v1a1/mono.m3u8",
         "key": null
-        },
-        {
-          "title": "Fancode 1",
-          "type": "dash",
-          "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
-          "key": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
-        }
-        {
-          "title": Tsports 2",
-          "type": "hls",
-          "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
+      },
+      {
+        "title": "Fancode 1",
+        "type": "dash",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+        "key": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
+      },
+      {
+        "title": "Tsports 2",
+        "type": "hls",
+        "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
         "key": null
-        },
-        {
-           "title": Asports",
-          "type": "hls",
-          "url": "https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/tracks-v1a1/mono.ts.m3u8",
+      },
+      {
+        "title": "Asports",
+        "type": "hls",
+        "url": "https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/tracks-v1a1/mono.ts.m3u8",
         "key": null
-        },
-        {
-          "title": "Sky Main",
-          "type": "dash",
-          "url": "https://livebytsctbu.vtvprime.vn/mean/HAY_TV/manifest.mpd",
-          "key": "f3d73b3a9b89462ebf7911004ea3b3b9:2e547a81ff90aa02648cb9e3f79e7339"
-        }
+      },
+      {
+        "title": "Sky Main",
+        "type": "dash",
+        "url": "https://livebytsctbu.vtvprime.vn/mean/HAY_TV/manifest.mpd",
+        "key": "f3d73b3a9b89462ebf7911004ea3b3b9:2e547a81ff90aa02648cb9e3f79e7339"
+      },
       {
         "title": "Sky Cricket",
         "type": "hls",
         "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=8Q-Mt7GTaRI2Eo9LNZ9mrg&e=2081082141",
         "key": null
       },
-
-        {
-          "title": "Fancode 2",
-          "type": "dash",
-          "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
-          "key": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-        }
-      ]
-    }
-
-
-  ]
+      {
+        "title": "Fancode 2",
+        "type": "dash",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+        "key": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+      }
+    ]
+  }
+]
