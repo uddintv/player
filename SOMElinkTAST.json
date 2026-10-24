@@ -7,10 +7,9 @@
       "server_urls": [
         {
           "name": "Willow1",
-          "type": "dash",
-          "url": "https://a96aivottlinear-a.akamaihd.net/OTTB/iad-nitro/live/clients/dash/enc/ntomodyqm3/out/v1/cd61ecc8b6694006a1173974fcfa4e9e/cenc.mpd",
-          "key": "0cb7dc14c21cab20cd3dad68208277c3:0c0d355b82ea1406968689383d91077f"
-        },
+          "type": "m3u8",
+          "url": "https://tvsen5.aynaott.com/willowhd/index.m3u8"
+        },  
         {
           "name": "Willow2",
           "type": "m3u8",
@@ -42,19 +41,8 @@
           "name": "Asports",
           "type": "m3u8",
           "url": "https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/tracks-v1a1/mono.ts.m3u8"
-        },
-        {
-          "name": "SkyMain",
-          "type": "dash",
-          "url": "https://livebytsctbu.vtvprime.vn/mean/HAY_TV/manifest.mpd",
-          "key": "f3d73b3a9b89462ebf7911004ea3b3b9:2e547a81ff90aa02648cb9e3f79e7339"
-        },
-        {
-          "name": "Fancode2",
-          "type": "dash",
-          "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
-          "key": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         }
+        
       ]
     }
     
