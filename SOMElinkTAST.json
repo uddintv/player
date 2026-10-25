@@ -42,23 +42,8 @@
           "name": "Tsports2",
           "type": "m3u8",
           "url": "https://whispering-citadel-11540-0a9768b9a869.herokuapp.com/http://45.117.61.162/01_Tsports_HD/tracks-v1a1/mono.m3u8"
-        },
-        {
-          "name": "USA",
-          "type": "m3u8",
-          "url": "https://chatgpt.hereisman.net/playlist/58626/load-playlist-multi?&.m3u8"
-        },
-        {
-          "name": "PEACOCK",
-          "type": "m3u8",
-          "url": "https://chatgpt.hereisman.net/playlist/58628/load-playlist-multi?&.m3u8"
-        },
-        
-        {
-          "name": "Tsports",
-          "type": "m3u8",
-          "url": "https://mycoffeetime.net/play/tSDRdsaoGGQ2qYgRPDEe9q-qMIzoahbJArH3W3vOiEaB97nXMpWmLb0Ts759Tjsp/m3u8"
         }
+
         
       ]
     }
