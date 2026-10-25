@@ -27,6 +27,12 @@
           "url": "https://s1.itcnbd.live/T-Sports-HD/tracks-v1a1/mono.m3u8"
         },  
         {
+          "name": "Asports",
+          "type": "m3u8",
+          "url": "https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/tracks-v1a1/mono.ts.m3u8"
+        },
+        
+        {
           "name": "Fancode1",
           "type": "dash",
           "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
@@ -38,9 +44,20 @@
           "url": "https://whispering-citadel-11540-0a9768b9a869.herokuapp.com/http://45.117.61.162/01_Tsports_HD/tracks-v1a1/mono.m3u8"
         },
         {
-          "name": "Asports",
+          "name": "USA",
           "type": "m3u8",
-          "url": "https://tvsen6.aynaott.com/zv68oqPDu7MZZwmHhRxt/tracks-v1a1/mono.ts.m3u8"
+          "url": "https://chatgpt.hereisman.net/playlist/58626/load-playlist-multi?&.m3u8"
+        },
+        {
+          "name": "PEACOCK",
+          "type": "m3u8",
+          "url": "https://chatgpt.hereisman.net/playlist/58628/load-playlist-multi?&.m3u8"
+        },
+        
+        {
+          "name": "Tsports",
+          "type": "m3u8",
+          "url": "https://mycoffeetime.net/play/tSDRdsaoGGQ2qYgRPDEe9q-qMIzoahbJArH3W3vOiEaB97nXMpWmLb0Ts759Tjsp/m3u8"
         }
         
       ]
