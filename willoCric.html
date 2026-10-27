@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Stream Player</title>
+    <!-- Hls.js লাইব্রেরি সিডিএন -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+        }
+        .video-container {
+    width:100vw;
+    height:100vh;
+    position:relative;
+        }
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* ভিডিওর অনুপাত ঠিক রাখতে, প্রয়োজনে fill ব্যবহার করতে পারেন */
+            background: #000;
+        }
+        #loadingOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-family: sans-serif;
+            z-index: 999;
+        }
+      
+      
+  
+/* ভিডিও কন্টেইনারের ব্যাকগ্রাউন্ড সুন্দর রাখা */
+.video-container {
+  background: radial-gradient(circle at center, #111 0%, #000 70%) !important;
+}
+/*  ভিডিওর নিচের সাদা / dummy bar বন্ধ */
+/* buffering / loading spinner এর সময়ও clean থাকবে */
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls {
+  background: transparent !important;
+}
+/*      
+video::-webkit-media-controls-timeline {
+  touch-action: pan-y;
+} */
+/* তিন ডট বা অপশন মেনু লুকানো */
+video::-webkit-media-controls-overflow-button {
+  display: none !important;
+    }
+    
+/* ১. ডিফল্ট ফুলস্ক্রিন বাটন হাইড করা.... ,,,*/
+video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
+} 
+      /* 
+video::-webkit-media-controls-play-button {
+    display: none !important;
+}*/
+/* ৩. কারেন্ট টাইম এবং বাকি সময়ের ডিসপ্লে হাইড করা */
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display {
+    display: none !important;
+}
+/* প্রগ্রেস বা সিক বার লুকানো */
+video::-webkit-media-controls-timeline {
+  display: none !important;
+}
+/* video::-webkit-media-controls {
+  display: none !important;
+} */
+/* Firefox / অন্যান্য ব্রাউজারের জন্য */
+video {
+  background-color: transparent !important;
+}
+      
+#playBtn {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+   /*  transform: translate(-50%, -50%);*/
+    font-size: 17px;  /* 60px; */
+    color: lime;
+    background: rgba(0,0,0,0.0);  /* rgba(0,0,0,0.4); */
+     /*  width: 90px; */
+     /* height:  90px; */
+    border-radius: 0%;  /* 50%;  */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+}
+#pauseBtn {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+   /*  transform: translate(-50%, -50%);*/
+    font-size: 22px;  /* 60px; */
+    color: lime;
+    background: rgba(0,0,0,0.0);  /* rgba(0,0,0,0.4); */
+     /*  width: 90px; */
+     /* height:  90px; */
+    border-radius: 0%;  /* 50%;  */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+}
+  
+#volume {
+    width: 60px;
+    height:  3px;
+    position: absolute;
+    bottom: 20px;
+    left: 50px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  
+}
+  
+      
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+            
+      
+        <!-- লোডিং স্ক্রিন -->
+        <div id="loadingOverlay">Video Loding...</div>
+        <!-- ভিডিও প্লেয়ার -->
+        <video id="videoPlayer" controls autoplay playsinline></video>
+    </div>
+
+    <script>
+        // কনফিগারেশন
+        const config = {
+            streamUrl: "https://blooming-anchorage-74937-01abcbf2453c.herokuapp.com/https:\/\/ds169.bluetier.top\/WILLOWCRICKET\/index.m3u8?token=V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863",
+            channelSlug: "WILLOWCRICKET",
+            tokenExpiresIn: 300, // সেকেন্ড
+            currentToken: "V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863"
+        };
+                
+        let hls = null;
+        let tokenRefreshTimer = null;
+        let expiryCountdown = null;
+                
+        // প্লেয়ার ইনিশিয়ালাইজ করা
+        function initPlayer() {
+            const video = document.getElementById('videoPlayer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+                        
+            if (Hls.isSupported()) {
+                hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                    backBufferLength: 90,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60,
+                    maxBufferSize: 60 * 1000 * 1000,
+                    maxBufferHole: 0.5,
+                    highBufferWatchdogPeriod: 2,
+                    nudgeOffset: 0.1,
+                    nudgeMaxRetry: 3,
+                    maxFragLookUpTolerance: 0.25,
+                    liveSyncDurationCount: 3,
+                    liveMaxLatencyDurationCount: 10,
+                    liveDurationInfinity: true,
+                    enableSoftwareAES: true
+                });
+                                
+                hls.loadSource(config.streamUrl);
+                hls.attachMedia(video);
+                                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play().catch(e => console.log('Auto-play prevented:', e));
+                    loadingOverlay.style.display = 'none';
+                });
+                                
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (data.fatal) {
+                        switch(data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.error('Network error');
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.error('Media error');
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                console.error('Fatal error');
+                                break;
+                        }
+                    }
+                });
+                            
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // সাফারি ব্রাউজারের জন্য নেটিভ HLS সাপোর্ট
+                video.src = config.streamUrl;
+                video.addEventListener('loadedmetadata', function() {
+                    loadingOverlay.style.display = 'none';
+                });
+            } else {
+                alert(' ');
+            }
+        }
+                
+        // টোকেন রিফ্রেশ সিস্টেম
+        function scheduleTokenRefresh() {
+            const refreshTime = (config.tokenExpiresIn - 30) * 1000;
+                        
+            tokenRefreshTimer = setTimeout(async () => {
+                await refreshToken();
+            }, refreshTime);
+        }
+                
+        
+
+async function refreshToken() {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        let response;
+
+        try {
+            response = await fetch(
+                'https://whispering-citadel-11540-0a9768b9a869.herokuapp.com/https://wideiptv.top/api/refresh_token.php',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        channel: config.channelSlug,
+                        current_token: config.currentToken
+                    }),
+                    signal: controller.signal
+                }
+            );
+        } finally {
+            clearTimeout(timeoutId);
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success || !data.token) {
+            throw new Error('API নতুন টোকেন দেয়নি');
+        }
+
+        const newToken = data.token;
+
+        // একই URL-এ শুধু token পরিবর্তন
+        config.streamUrl = config.streamUrl.replace(
+            /([?&]token=)[^&]*/,
+            (_, prefix) => prefix + encodeURIComponent(newToken)
+        );
+
+        config.currentToken = newToken;
+        config.tokenExpiresIn = Number(data.expires_in) || 300;
+
+        console.log('নতুন টোকেন পাওয়া গেছে');
+
+        return true;
+
+    } catch (error) {
+        console.error('Token refresh failed:', error);
+        return false;
+    }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    // API সর্বোচ্চ ৪ সেকেন্ড অপেক্ষা করবে
+    const refreshed = await refreshToken();
+
+    // নতুন টোকেন পাওয়া গেলে সেটি, না হলে আগের URL ব্যবহার
+    initPlayer();
+
+    if (tokenRefreshTimer) {
+        clearTimeout(tokenRefreshTimer);
+    }
+
+    scheduleTokenRefresh();
+});
+
+
+                
+        // পেজ ক্লোজ করার সময় ক্লিনআপ করা
+        window.addEventListener('beforeunload', () => {
+            if (hls) {
+                hls.destroy();
+            }
+            if (tokenRefreshTimer) {
+                clearTimeout(tokenRefreshTimer);
+            }
+            if (expiryCountdown) {
+                clearInterval(expiryCountdown);
+            }
+        });
+    </script>
+</body>
+</html>
