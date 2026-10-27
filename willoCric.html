@@ -19,158 +19,207 @@
             overflow: hidden;
         }
         .video-container {
-    width:100vw;
-    height:100vh;
-    position:relative;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+          /*  background: radial-gradient(circle at center, #111 0%, #000 70%) !important; */
+          
+          
         }
         #videoPlayer {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* ভিডিওর অনুপাত ঠিক রাখতে, প্রয়োজনে fill ব্যবহার করতে পারেন */
+            object-fit: contain;
             background: #000;
         }
+      
         #loadingOverlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.75); /* */ /* background: transparent !important; */ 
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 18px;
+            font-size: 14px; 
+            font-weight: 700;
             font-family: sans-serif;
             z-index: 999;
+        }  
+      
+        #loadingOverlay #loadingText {
+            position: absolute; 
+            top: 55%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 14px; 
+            font-weight: 700;
+            font-family: sans-serif;
+            z-index: 9999;
+            animation: blink 1s infinite; 
         }
       
+        @keyframes blink { 
+            0% {opacity:1;} 
+            50% {opacity:0.0;} 
+            100% {opacity:1;} 
+        } 
+
+        #loadingOverlay .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #1e293b;
+            border-bottom: 2px solid #38bdf8;
+            border-radius: 50%;
+            animation: loaderSpin 0.8s linear infinite;
+        }
+
+        @keyframes loaderSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #BufferingLoding {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+             background: transparent !important; /* background: rgba(0, 0, 0, 0.85);*/
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px; 
+            font-weight: 700;
+            font-family: sans-serif;
+            z-index: 999;
+            display: none; /* ডিফল্টভাবে লুকিয়ে রাখা হলো */
+        }  
       
-  
-/* ভিডিও কন্টেইনারের ব্যাকগ্রাউন্ড সুন্দর রাখা */
-.video-container {
-  background: radial-gradient(circle at center, #111 0%, #000 70%) !important;
-}
-/*  ভিডিওর নিচের সাদা / dummy bar বন্ধ */
-/* buffering / loading spinner এর সময়ও clean থাকবে */
-video::-webkit-media-controls-panel,
-video::-webkit-media-controls {
-  background: transparent !important;
-}
-/*      
-video::-webkit-media-controls-timeline {
-  touch-action: pan-y;
-} */
-/* তিন ডট বা অপশন মেনু লুকানো */
-video::-webkit-media-controls-overflow-button {
-  display: none !important;
-    }
-    
-/* ১. ডিফল্ট ফুলস্ক্রিন বাটন হাইড করা.... ,,,*/
-video::-webkit-media-controls-fullscreen-button {
-    display: none !important;
-} 
-      /* 
-video::-webkit-media-controls-play-button {
-    display: none !important;
-}*/
-/* ৩. কারেন্ট টাইম এবং বাকি সময়ের ডিসপ্লে হাইড করা */
-video::-webkit-media-controls-current-time-display,
-video::-webkit-media-controls-time-remaining-display {
-    display: none !important;
-}
-/* প্রগ্রেস বা সিক বার লুকানো */
-video::-webkit-media-controls-timeline {
-  display: none !important;
-}
-/* video::-webkit-media-controls {
-  display: none !important;
-} */
-/* Firefox / অন্যান্য ব্রাউজারের জন্য */
-video {
-  background-color: transparent !important;
-}
-      
-#playBtn {
-    position: absolute;
-    bottom: 14px;
-    left: 16px;
-   /*  transform: translate(-50%, -50%);*/
-    font-size: 17px;  /* 60px; */
-    color: lime;
-    background: rgba(0,0,0,0.0);  /* rgba(0,0,0,0.4); */
-     /*  width: 90px; */
-     /* height:  90px; */
-    border-radius: 0%;  /* 50%;  */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 20;
-}
-#pauseBtn {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-   /*  transform: translate(-50%, -50%);*/
-    font-size: 22px;  /* 60px; */
-    color: lime;
-    background: rgba(0,0,0,0.0);  /* rgba(0,0,0,0.4); */
-     /*  width: 90px; */
-     /* height:  90px; */
-    border-radius: 0%;  /* 50%;  */
-    display: none;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 20;
-}
-  
-#volume {
-    width: 60px;
-    height:  3px;
-    position: absolute;
-    bottom: 20px;
-    left: 50px;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  
-}
-  
-      
+        #BufferingLoding #BufferingText {
+            position: absolute; 
+            top: 55%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 14px; 
+            font-weight: 700;
+            font-family: sans-serif;
+            z-index: 9999;
+            animation: blink 1s infinite; 
+        }     
+
+        #BufferingLoding .Buffering-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #1e293b;
+            border-bottom: 2px solid #38bdf8;
+            border-radius: 50%;
+            animation: loaderSpin 0.8s linear infinite;
+        }
+/*
+        video::-webkit-media-controls-panel,
+        video::-webkit-media-controls {
+            background: transparent !important;
+        }
+      */
+        video::-webkit-media-controls-overflow-button,
+        video::-webkit-media-controls-fullscreen-button,
+        video::-webkit-media-controls-current-time-display,
+        video::-webkit-media-controls-time-remaining-display,
+        video::-webkit-media-controls-timeline {
+            display: none !important;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            z-index: 9999;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .refresh-icon {
+            width: 28px;
+            height: 28px;
+            fill: yellow;
+            transition: transform 0.3s linear;
+        }
+
+        .refresh-btn.spin .refresh-icon {
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
     <div class="video-container">
-            
-      
         <!-- লোডিং স্ক্রিন -->
-        <div id="loadingOverlay">Video Loding...</div>
-        <!-- ভিডিও প্লেয়ার -->
+        <div id="loadingOverlay">
+            <div id="loadingText">Video Loading...</div>   
+            <!--<div class="loader-spinner"></div>-->
+        </div>
+      
+        <!-- বাফারিং স্ক্রিন -->
+        <div id="BufferingLoding">
+            <div id="BufferingText">Buffering...</div>   
+            <div class="Buffering-spinner"></div>
+        </div>      
+      
+        <!-- ভিডিও প্লেয়ার -->
         <video id="videoPlayer" controls autoplay playsinline></video>
+     
+        <!-- 🔄 REFRESH বাটন -->
+        <button class="refresh-btn" onclick="refreshVideo()">
+            <svg class="refresh-icon" viewBox="0 0 24 24">
+                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path>
+            </svg>  
+        </button>   
     </div>
 
     <script>
+        // URL থেকে ?id=getParameter বের করার ফাংশন
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // ইউজার লিঙ্ক থেকে id বা চ্যানেল নাম ডায়নামিকভাবে নেওয়া (যেমন: ?id=WILLOWCRICKET)
+        const channelId = getUrlParameter('id') || "WILLOWCRICKET";
+
         // কনফিগারেশন
         const config = {
-            streamUrl: "https://blooming-anchorage-74937-01abcbf2453c.herokuapp.com/https:\/\/ds169.bluetier.top\/WILLOWCRICKET\/index.m3u8?token=V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863",
-            channelSlug: "WILLOWCRICKET",
-            tokenExpiresIn: 300, // সেকেন্ড
+            streamUrl: `https://blooming-anchorage-74937-01abcbf2453c.herokuapp.com/https://ds169.bluetier.top/${channelId}/index.m3u8?token=V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863`,
+            channelSlug: channelId,
+            tokenExpiresIn: 300,
             currentToken: "V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863"
         };
-                
+            
         let hls = null;
         let tokenRefreshTimer = null;
-        let expiryCountdown = null;
-                
-        // প্লেয়ার ইনিশিয়ালাইজ করা
+        const video = document.getElementById('videoPlayer');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const BufferingLoding = document.getElementById("BufferingLoding");
+            
+        // প্লেयर ইনিশিয়ালাইজ করা
         function initPlayer() {
-            const video = document.getElementById('videoPlayer');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-                        
             if (Hls.isSupported()) {
                 hls = new Hls({
                     enableWorker: true,
@@ -189,139 +238,124 @@ video {
                     liveDurationInfinity: true,
                     enableSoftwareAES: true
                 });
-                                
+                    
                 hls.loadSource(config.streamUrl);
                 hls.attachMedia(video);
-                                
+                    
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     video.play().catch(e => console.log('Auto-play prevented:', e));
                     loadingOverlay.style.display = 'none';
                 });
-                                
+                    
                 hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
                         switch(data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.error('Network error');
                                 hls.startLoad();
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.error('Media error');
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                console.error('Fatal error');
+                                hls.destroy();
                                 break;
                         }
                     }
                 });
-                            
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // সাফারি ব্রাউজারের জন্য নেটিভ HLS সাপোর্ট
                 video.src = config.streamUrl;
                 video.addEventListener('loadedmetadata', function() {
                     loadingOverlay.style.display = 'none';
                 });
-            } else {
-                alert(' ');
             }
         }
-                
+            
         // টোকেন রিফ্রেশ সিস্টেম
         function scheduleTokenRefresh() {
             const refreshTime = (config.tokenExpiresIn - 30) * 1000;
-                        
             tokenRefreshTimer = setTimeout(async () => {
                 await refreshToken();
             }, refreshTime);
         }
-                
-        
+            
+        async function refreshToken() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-async function refreshToken() {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
+                let response = await fetch(
+                    'https://whispering-citadel-11540-0a9768b9a869.herokuapp.com/https://wideiptv.top/api/refresh_token.php',
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            channel: config.channelSlug,
+                            current_token: config.currentToken
+                        }),
+                        signal: controller.signal
+                    }
+                );
+                clearTimeout(timeoutId);
 
-        let response;
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
 
-        try {
-            response = await fetch(
-                'https://whispering-citadel-11540-0a9768b9a869.herokuapp.com/https://wideiptv.top/api/refresh_token.php',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        channel: config.channelSlug,
-                        current_token: config.currentToken
-                    }),
-                    signal: controller.signal
-                }
-            );
-        } finally {
-            clearTimeout(timeoutId);
+                if (!data.success || !data.token) throw new Error('API নতুন টোকেন দেয়নি');
+
+                const newToken = data.token;
+                config.streamUrl = config.streamUrl.replace(
+                    /([?&]token=)[^&]*/,
+                    (_, prefix) => prefix + encodeURIComponent(newToken)
+                );
+                config.currentToken = newToken;
+                config.tokenExpiresIn = Number(data.expires_in) || 300;
+                return true;
+            } catch (error) {
+                console.error('Token refresh failed:', error);
+                return false;
+            }
         }
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
+        window.addEventListener('DOMContentLoaded', async () => {
+            await refreshToken();
+            initPlayer();
+            if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
+            scheduleTokenRefresh();
+        });
 
-        const data = await response.json();
+        // বাফারিং ডিটেক্ট করা (Waiting & Playing ইভেন্ট)
+        video.addEventListener("waiting", () => {
+            BufferingLoding.style.display = "flex";
+        });
 
-        if (!data.success || !data.token) {
-            throw new Error('API নতুন টোকেন দেয়নি');
-        }
+        video.addEventListener("playing", () => {
+            BufferingLoding.style.display = "none";
+        });
 
-        const newToken = data.token;
+        video.addEventListener("canplay", () => {
+            BufferingLoding.style.display = "none";
+        });
 
-        // একই URL-এ শুধু token পরিবর্তন
-        config.streamUrl = config.streamUrl.replace(
-            /([?&]token=)[^&]*/,
-            (_, prefix) => prefix + encodeURIComponent(newToken)
-        );
+        // রিফ্রেশ ভিডিও ফাংশন ঠিক করা হয়েছে
+        function refreshVideo() {
+            const btn = document.querySelector(".refresh-btn");
+            btn.classList.add("spin");
+            
+            loadingOverlay.style.display = 'flex';
 
-        config.currentToken = newToken;
-        config.tokenExpiresIn = Number(data.expires_in) || 300;
-
-        console.log('নতুন টোকেন পাওয়া গেছে');
-
-        return true;
-
-    } catch (error) {
-        console.error('Token refresh failed:', error);
-        return false;
-    }
-}
-
-window.addEventListener('DOMContentLoaded', async () => {
-    // API সর্বোচ্চ ৪ সেকেন্ড অপেক্ষা করবে
-    const refreshed = await refreshToken();
-
-    // নতুন টোকেন পাওয়া গেলে সেটি, না হলে আগের URL ব্যবহার
-    initPlayer();
-
-    if (tokenRefreshTimer) {
-        clearTimeout(tokenRefreshTimer);
-    }
-
-    scheduleTokenRefresh();
-});
-
-
-                
-        // পেজ ক্লোজ করার সময় ক্লিনআপ করা
-        window.addEventListener('beforeunload', () => {
             if (hls) {
                 hls.destroy();
             }
-            if (tokenRefreshTimer) {
-                clearTimeout(tokenRefreshTimer);
-            }
-            if (expiryCountdown) {
-                clearInterval(expiryCountdown);
-            }
+            initPlayer();
+
+            setTimeout(() => {
+                btn.classList.remove("spin");
+            }, 700);
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (hls) hls.destroy();
+            if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
         });
     </script>
 </body>
