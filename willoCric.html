@@ -32,34 +32,57 @@
             object-fit: contain;
             background: #000;
         }
-                
+      
         #loadingOverlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.75); /* */ /* background: transparent !important; */ 
+            color: #ffffff;
             display: flex;
-            align-items: center;
             justify-content: center;
-            z-index: 1000;
-        }                
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid white;
+            align-items: center;
+            font-size: 14px; 
+            font-weight: 700;
+            font-family: sans-serif;
+            z-index: 999;
+        }  
+      
+        #loadingOverlay #loadingText {
+            position: absolute; 
+            top: 55%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 14px; 
+            font-weight: 700;
+            font-family: sans-serif;
+            z-index: 9999;
+            animation: blink 1s infinite; 
+        }
+      
+        @keyframes blink { 
+            0% {opacity:1;} 
+            50% {opacity:0.0;} 
+            100% {opacity:1;} 
+        } 
+
+        #loadingOverlay .loader-spinner {
             width: 40px;
             height: 40px;
-            animation: spin 1s linear infinite;
-        }
-                
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            border: 2px solid #1e293b;
+            border-bottom: 2px solid #38bdf8;
+            border-radius: 50%;
+            animation: loaderSpin 0.8s linear infinite;
         }
 
-
+        @keyframes loaderSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         #BufferingLoding {
             position: absolute;
@@ -100,15 +123,6 @@
             border-radius: 50%;
             animation: loaderSpin 0.8s linear infinite;
         }
-
-
-        @keyframes loaderSpin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        
 /*
         video::-webkit-media-controls-panel,
         video::-webkit-media-controls {
@@ -157,13 +171,10 @@
 <body>
 
     <div class="video-container">
-      
-        <!-- Loading overlay  ==== লোডিং স্ক্রিন -->
+        <!-- লোডিং স্ক্রিন -->
         <div id="loadingOverlay">
-            <div style="text-align: center;">
-                <div class="loading-spinner" style="margin: 0 auto 20px;"></div>
-                <p style="color: white; font-size: 16px; margintop: 9px;font-weight: 600;">Loading Stream..</p>
-            </div>
+            <div id="loadingText">Video Loading...</div>   
+            <!--<div class="loader-spinner"></div>-->
         </div>
       
         <!-- বাফারিং স্ক্রিন -->
@@ -195,7 +206,7 @@
 
         // কনফিগারেশন
         const config = {
-            streamUrl: `https://blooming-anchorage-74937-01abcbf2453c.herokuapp.com/https://ds169.bluetier.top/${channelId}/index.m3u8?token=V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863`,
+            streamUrl: `https://ds169.bluetier.top/${channelId}/index.m3u8?token=V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863`,
             channelSlug: channelId,
             tokenExpiresIn: 300,
             currentToken: "V0lMTE9XQ1JJQ0tFVHxub19jaGVja19pcHwxNzkzMDY4OTQ5.6970aa91ab120c6a6383b707ff3d8f49610fc3ed6c45b42ba98dcf62fe9af863"
@@ -312,7 +323,8 @@
             scheduleTokenRefresh();
         });
 
-        // বাফারিং ডিটেক্ট করা (Waiting & Playing ইভেন্ট)
+      /*
+      // বাফারিং ডিটেক্ট করা (Waiting & Playing ইভেন্ট)
         video.addEventListener("waiting", () => {
             BufferingLoding.style.display = "flex";
         });
@@ -324,6 +336,8 @@
         video.addEventListener("canplay", () => {
             BufferingLoding.style.display = "none";
         });
+      
+      */
 
         // রিফ্রেশ ভিডিও ফাংশন ঠিক করা হয়েছে
         function refreshVideo() {
